@@ -33,8 +33,9 @@ class Asset {
      * @return {Asset}
      */
     static parse(str) {
-        str = str.trim()
         if (_.isEmpty(str)) return null;
+
+        str = str.trim()
         let blankPos = str.indexOf(' ');
         if (blankPos < 0) return null;
 
