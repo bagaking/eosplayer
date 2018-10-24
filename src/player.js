@@ -102,7 +102,6 @@ const Asset = require('./asset');
  * @property {Object} voter_info
  */
 
-
 class Player {
 
     constructor(netConf, cbScatterfailed) {
@@ -219,7 +218,7 @@ class Player {
      */
     async getBalanceAsset(code = "eosio.token", account_name = undefined) {
         let strAsset = await this.getBalance(code, account_name);
-        return Asset.parse(strAsset);
+        return Asset.parse(strAsset)
     }
 
     async transcal(code, quantity, func, ...args) {

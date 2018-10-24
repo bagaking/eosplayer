@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 class Asset {
     constructor(val, decimal, sym) {
         this._val = val;
