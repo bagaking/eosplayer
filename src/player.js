@@ -257,7 +257,14 @@ class Player {
 
     get help() {
         let helpInfo =`
-# Usage
+## Imported libs
+
+window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
+window.env = env; /** {isPc} */
+window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
+window.eosplayer = new Player(networks);
+        
+## Usage of eosplayer
 
 {void} switchNetwork(val) // switch network
 {void} setNetConf(network_name, conf) // add a network config to the sandbox

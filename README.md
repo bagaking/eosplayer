@@ -6,6 +6,13 @@ eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provi
 
 `npm run build` or `yarn run build`
 
+## Imported libs
+
+window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
+window.env = env; /** {isPc} */
+window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
+window.eosplayer = new Player(networks);
+
 ## Usage
 
 ```

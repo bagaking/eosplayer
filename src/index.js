@@ -11,7 +11,26 @@ class env {
     }
 }
 
-window.eosenv = env;
-window.eosplayer = new Player(networks);
+/**
+ * @see {@url https://www.npmjs.com/package/eosjs}
+ * @type {Eos}
+ */
 window.eosjs = Eos;
-window.idb = idb
+
+/**
+ * env of browser
+ * @type {isPc}
+ */
+window.env = env;
+
+/**
+ * @see {@url https://www.npmjs.com/package/idb }
+ * @type {{DB: DB; Transaction: Transaction; ObjectStore: ObjectStore; UpgradeDB: UpgradeDB; Index: Index; IDBStatic: IDBStatic; HasCursor: HasCursor; Cursor: Cursor; default}}
+ */
+window.idb = idb;
+
+/**
+ * the eos player
+ * @type {Player}
+ */
+window.eosplayer = new Player(networks);
