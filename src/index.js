@@ -9,4 +9,4 @@ class env {
 }
 
 window.eosenv = env;
-window.eosplayer = new Player(networks)
+window.eosplayer = new Player(networks);

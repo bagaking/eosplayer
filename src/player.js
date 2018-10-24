@@ -1,4 +1,4 @@
-const Chance = require('chance');
+//const Chance = require('chance');
 const Eos = require('eosjs');
 const _ = require('lodash');
 
@@ -110,8 +110,20 @@ class Player {
         this._db = new DB({
             network_name: 'mainnet',
             lang: 'ch',
-            seed: new Chance().word({length: 10}),
         });
+        console.log(`eosplayer created: \n${this.netName} \n${this.netConf}`)
+    }
+
+    switchNetwork(val){
+        if(val in this._networks) {
+            this._db.set("network_name", val);
+            this._eosClient = null;
+            console.log(`network changed to ${this.netName}`)
+        }
+    }
+
+    setNetConf(network_name, conf){
+        this._networks[network_name]= conf;
     }
 
     /**
@@ -202,7 +214,7 @@ class Player {
      * @param account_name - user's account name, name of cur identity by default
      * @return {Promise<string|undefined>} asset format '1.0000 EOS'
      */
-    async getBalance(code = "eosio.token", account_name = undefined) {
+    async getBalance(account_name = undefined, code = "eosio.token") {
         if (!account_name) {
             account_name = (await this.getIdentity()).name;
         }
@@ -216,7 +228,7 @@ class Player {
      * @param account_name - user's account name, name of cur identity by default
      * @return {Promise<Asset>}
      */
-    async getBalanceAsset(code = "eosio.token", account_name = undefined) {
+    async getBalanceAsset(account_name = undefined, code = "eosio.token") {
         let strAsset = await this.getBalance(code, account_name);
         return Asset.parse(strAsset)
     }
@@ -249,6 +261,9 @@ class Player {
         let helpInfo =`
 # Usage
 
+{void} switchNetwork(val) // switch network
+{void} setNetConf(network_name, conf) // add a network config to the sandbox
+
 get {string} help // get and print help info of usage 
 
 get {string} window.eosplayer.netName // get current network name
@@ -263,11 +278,11 @@ async {void} window.eosplayer.logout() // return back the identity
 
 async {AccountInfo} window.eosplayer.getAccountInfo(account_name = identity.name) // get account info for any user
 
-async {string} getBalance(code = "eosio.token", account_name = undefined) // get balance string of a account. ex. "1.0000 EOS"
-async {string} getBalanceAsset(code = "eosio.token", account_name = undefined) // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
+async {string} window.eosplayer.getBalance(account_name = undefined, code = "eosio.token") // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token, 
+async {string} window.eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async transcal(code, quantity, func, ...args) // send a action of transcal to contract
-async call(code, quantity, func, ...args) // send a action to contract
+async {void} transcal(code, quantity, func, ...args) // send a action of transcal to contract
+async {void} call(code, quantity, func, ...args) // send a action to contract
             `;
         console.log(helpInfo);
         return helpInfo;
