@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        eosglue : './src/index.js'
+        eosplayer : './src/index.js'
     },
     module: {
         rules: [

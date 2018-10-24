@@ -42,3 +42,5 @@ class Asset {
         return new Asset(val, strSym, decimal);
     }
 }
+
+module.exports = Asset
