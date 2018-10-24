@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 class Asset {
     constructor(val, sym, decimal = 4) {
         this._val = val;
@@ -33,7 +31,7 @@ class Asset {
      * @return {Asset}
      */
     static parse(str) {
-        if (_.isEmpty(str)) return null;
+        if (!str || typeof str !== "string") return null;
 
         str = str.trim()
         let blankPos = str.indexOf(' ');
@@ -41,7 +39,7 @@ class Asset {
 
         let strVal = str.slice(0, blankPos)
         let strSym = str.slice(1 + blankPos)
-        if (_.isEmpty(strVal) || _.isEmpty(strSym)) return null;
+        if (!strVal || !strSym) return null;
         let decimalPos = str.indexOf('.');
         let decimal = decimalPos < 0 ? 0 : blankPos - decimalPos - 1;
         let val = parseFloat(strVal.slice(0, blankPos))

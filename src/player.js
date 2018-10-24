@@ -1,6 +1,4 @@
-//const Chance = require('chance');
 const Eos = require('eosjs');
-const _ = require('lodash');
 
 const DB = require('./db');
 const Asset = require('./asset');
@@ -202,7 +200,7 @@ class Player {
      * @return {Promise<{AccountInfo}>}
      */
     async getAccountInfo(account_name) {
-        if (_.isEmpty(account_name)) {
+        if (!account_name || typeof account_name !== "string" ) {
             account_name = (await this.getIdentity()).name;
         }
         return await this.eosClient.getAccount({account_name})

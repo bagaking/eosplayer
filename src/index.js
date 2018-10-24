@@ -1,3 +1,6 @@
+const Eos = require('eosjs');
+const idb = require('idb');
+
 const Player = require('./player')
 const {networks} = require('./conf')
 
@@ -10,3 +13,5 @@ class env {
 
 window.eosenv = env;
 window.eosplayer = new Player(networks);
+window.eosjs = Eos;
+window.idb = idb

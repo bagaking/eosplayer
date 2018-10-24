@@ -1,6 +1,4 @@
-//const idb = require('idb')
-const _ = require('lodash')
-
+const idb = require('idb')
 
 class DB {
     constructor(defualts) {
@@ -8,8 +6,9 @@ class DB {
     }
 
     get(key) {
+        key = `eosplayer::${key}`;
         let item = localStorage.getItem(key)
-        if(!_.isEmpty(item)){
+        if(!!item){
             return item;
         }
         if(key in this._defualts){
@@ -21,6 +20,7 @@ class DB {
     }
 
     set(key, val){
+        key = `eosplayer::${key}`;
         localStorage.setItem(key, val);
     }
 }
