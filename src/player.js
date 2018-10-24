@@ -69,8 +69,20 @@ class player {
         return this.scatter.identity.accounts.find(acc => acc.blockchain === 'eos');
     }
 
-    async forgetIdentity() {
-        await this.scatter.forgetIdentity(this.netName);
+    /**
+     * login - require account identity from scatter
+     * @return {Promise<{name, active, eos}>}
+     */
+    async login() {
+        return await this.getAccount();
+    }
+
+    /**
+     * logout
+     * @return {Promise<void>}
+     */
+    async logout() {
+        return await this.scatter.forgetIdentity(this.netName);
     }
 
     async transcal(code, quantity, func, ...args) {
@@ -97,7 +109,7 @@ class player {
         })
     }
 
-    async getBalance(code, name = undefined) {
+    async getBalance(code = "eosio.token", name = undefined) {
         if (!name) {
             name = (await this.getAccount()).name;
         }
