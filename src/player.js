@@ -195,6 +195,20 @@ class player {
         return await this.eosplayer.eosClient.getAccount({account_name})
     }
 
+    /**
+     * get balance of specific account
+     * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
+     * @param account_name - user's account name, name of cur identity by default
+     * @return {Promise<string|undefined>} asset format '1.0000 EOS'
+     */
+    async getBalance(code = "eosio.token", account_name = undefined) {
+        if (!account_name) {
+            account_name = (await this.getIdentity()).name;
+        }
+        let result = await this.eosClient.getCurrencyBalance(code, account_name)
+        return result[0] ? result[0].trim() : null;
+    }
+
     async transcal(code, quantity, func, ...args) {
         const account = await this.getIdentity()
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
@@ -219,13 +233,6 @@ class player {
         })
     }
 
-    async getBalance(code = "eosio.token", name = undefined) {
-        if (!name) {
-            name = (await this.getIdentity()).name;
-        }
-        let result = await this.eosClient.getCurrencyBalance(code, name)
-        return result[0] ? parseFloat(result[0].split(' ', 1)[0]).toFixed(4) : 0;
-    }
 
 }
 
