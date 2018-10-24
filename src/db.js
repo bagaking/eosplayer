@@ -1,5 +1,5 @@
 //const idb = require('idb')
-//const _ = require('lodash')
+const _ = require('lodash')
 
 
 class DB {
@@ -9,7 +9,7 @@ class DB {
 
     get(key) {
         let item = localStorage.getItem(key)
-        if(item !== undefined){
+        if(!_.isEmpty(item)){
             return item;
         }
         if(key in this._defualts){
