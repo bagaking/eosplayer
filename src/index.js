@@ -1,4 +1,4 @@
-const player = require('./player')
+const Player = require('./player')
 const {networks} = require('./conf')
 
 class env {
@@ -9,4 +9,4 @@ class env {
 }
 
 window.eosenv = env;
-window.eosplayer = new player(networks)
+window.eosplayer = new Player(networks)

@@ -3,6 +3,7 @@ const Eos = require('eosjs');
 const _ = require('lodash');
 
 const DB = require('./db');
+const Asset = require('./asset');
 
 /**
  * @interface eosAPI
@@ -101,7 +102,8 @@ const DB = require('./db');
  * @property {Object} voter_info
  */
 
-class player {
+
+class Player {
 
     constructor(netConf, cbScatterfailed) {
         this._networks = netConf;
@@ -192,7 +194,7 @@ class player {
         if (_.isEmpty(account_name)) {
             account_name = (await this.getIdentity()).name;
         }
-        return await this.eosplayer.eosClient.getAccount({account_name})
+        return await this.eosClient.getAccount({account_name})
     }
 
     /**
@@ -207,6 +209,17 @@ class player {
         }
         let result = await this.eosClient.getCurrencyBalance(code, account_name)
         return result[0] ? result[0].trim() : null;
+    }
+
+    /**
+     * get balance value of specific account
+     * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
+     * @param account_name - user's account name, name of cur identity by default
+     * @return {Promise<Asset>}
+     */
+    async getBalanceAsset(code = "eosio.token", account_name = undefined) {
+        let strAsset = await this.getBalance(code, account_name);
+        return Asset.parse(strAsset);
     }
 
     async transcal(code, quantity, func, ...args) {
@@ -236,6 +249,6 @@ class player {
 
 }
 
-module.exports = player
+module.exports = Player
 
 
