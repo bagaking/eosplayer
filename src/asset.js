@@ -39,7 +39,7 @@ class Asset {
         if (_.isEmpty(strVal) || _.isEmpty(strSym)) return null;
         let decimalPos = str.indexOf('.');
         let decimal = decimalPos < 0 ? 0 : blankPos - decimalPos - 1;
-        let val = parseFloat(strVal.slice(0, blankPos)).toFixed(decimal);
+        let val = parseFloat(strVal.slice(0, blankPos))
 
         return new Asset(val, strSym, decimal);
     }
