@@ -4,6 +4,103 @@ const _ = require('lodash');
 
 const DB = require('./db');
 
+/**
+ * @interface eosAPI
+ * @property {Function} abiBinToJson
+ * @property {Function} abiJsonToBin
+ * @property {Function} bidname
+ * @property {Function} buyram
+ * @property {Function} buyrambytes
+ * @property {Function} canceldelay
+ * @property {Function} claimrewards
+ * @property {Function} contract
+ * @property {Function} create
+ * @property {Function} createTransaction
+ * @property {Function} delegatebw
+ * @property {Function} deleteauth
+ * @property {Function} getAbi
+ * @property {Function<Promise>} getAccount - getAccount({account_name: [[account_name]] })
+ * @property {Function} getActions
+ * @property {Function} getBlock
+ * @property {Function} getBlockHeaderState
+ * @property {Function} getCode
+ * @property {Function} getCodeHash
+ * @property {Function} getControlledAccounts
+ * @property {Function} getCurrencyBalance
+ * @property {Function} getCurrencyStats
+ * @property {Function} getInfo
+ * @property {Function} getKeyAccounts
+ * @property {Function} getProducerSchedule
+ * @property {Function} getProducers
+ * @property {Function} getRawCodeAndAbi
+ * @property {Function} getRequiredKeys
+ * @property {Function} getScheduledTransactions
+ * @property {Function} getTableRows
+ * @property {Function} getTransaction
+ * @property {Function} issue
+ * @property {Function} linkauth
+ * @property {Function} newaccount
+ * @property {Function} nonce
+ * @property {Function} onerror
+ * @property {Function} pushBlock
+ * @property {Function} pushTransaction
+ * @property {Function} pushTransactions
+ * @property {Function} refund
+ * @property {Function} regproducer
+ * @property {Function} regproxy
+ * @property {Function} reqauth
+ * @property {Function} rmvproducer
+ * @property {Function} sellram
+ * @property {Function} setabi
+ * @property {Function} setalimits
+ * @property {Function} setcode
+ * @property {Function} setglimits
+ * @property {Function} setparams
+ * @property {Function} setpriv
+ * @property {Function} setprods
+ * @property {Function} setram
+ * @property {Function} transaction
+ * @property {Function} transfer
+ * @property {Function} undelegatebw
+ * @property {Function} unlinkauth
+ * @property {Function} unregprod
+ * @property {Function} updateauth
+ * @property {Function} voteproducer
+ */
+
+/**
+ * @interface Scatter
+ * @property {Promise} authenticate
+ * @property {Function} forgetIdentity - authenticate()
+ * @property {Function} getArbitrarySignature - getArbitrarySignature(e,t,r="",n=!1)
+ * @property {Function} getIdentity - getIdentity(e={}){return E(i.e,{network:m,fields:e}).then(async e=> {…}
+ * @property {Function} requireVersion - ƒ requireVersion(e)
+ * @property {Function} suggestNetwork - ƒ suggestNetwork(e)
+ * @property {Function} useIdentity
+ * @property {Function} eos - create eosApi object : f eos({blockchain, host, port, chainID}, Eos, option={}, protocol="http")
+ * @property {Function} eth - ummmmm ...
+ */
+
+/**
+ * @interface Identity
+ * @property {string} name
+ * @property {string} authority - default: active
+ * @property {string} blockchain - default: eos
+ */
+
+/**
+ * @interface AccountInfo
+ * @property {string} account_name
+ * @property {string} core_liquid_balance - asset format, which is a string like '1.0000 EOS'
+ * @property {Object.<available,max,used>} cpu_limit
+ * @property {Object.<available,max,used>} net_limit
+ * @property {number} ram_quota
+ * @property {number} ram_usage
+ * @property {Array.<Object>}permissions
+ * @property {Object.<cpu_weight,net_weight,owner,ram_bytes>} total_resources
+ * @property {Object} voter_info
+ */
+
 class player {
 
     constructor(netConf, cbScatterfailed) {
@@ -19,7 +116,7 @@ class player {
     /**
      * get network name in use
      */
-    get netName(){
+    get netName() {
         return this._db.get("network_name");
     }
 
@@ -33,6 +130,7 @@ class player {
     /**
      * try get scatter
      * @see https://get-scatter.com/docs/examples-interaction-flow
+     * @return {Scatter}
      */
     get scatter() {
         let scatter = window.scatter;
@@ -46,7 +144,7 @@ class player {
 
     /**
      * get or create scatter
-     * @return {*}
+     * @return {eosAPI}
      */
     get eosClient() {
         if (!this._eosClient) {
@@ -57,7 +155,7 @@ class player {
 
     /**
      * getIdentity of cur scatter user
-     * @return {Promise<{name,active,eos}>}
+     * @return {Promise<{Identity}>}
      */
     async getIdentity() {
         await this.scatter.getIdentity({
@@ -71,7 +169,7 @@ class player {
 
     /**
      * login - require account identity from scatter
-     * @return {Promise<{name, active, eos}>}
+     * @return {Promise<{Identity}>}
      */
     async login() {
         return await this.getIdentity();
@@ -86,15 +184,15 @@ class player {
     }
 
     /**
-     *
+     * get account info of any user, if the account name not given, account info of current identity will return
      * @param account_name
-     * @return {Promise<{account_name,core_liquid_balance,cpu_limit,net_limit,ram_quota,ram_usage,permissions,total_resources}>}
+     * @return {Promise<{AccountInfo}>}
      */
     async getAccountInfo(account_name) {
-        if(_.isEmpty(account_name)){
+        if (_.isEmpty(account_name)) {
             account_name = (await this.getIdentity()).name;
         }
-        return await eosplayer.eosClient.getAccount({account_name})
+        return await this.eosplayer.eosClient.getAccount({account_name})
     }
 
     async transcal(code, quantity, func, ...args) {
@@ -128,6 +226,7 @@ class player {
         let result = await this.eosClient.getCurrencyBalance(code, name)
         return result[0] ? parseFloat(result[0].split(' ', 1)[0]).toFixed(4) : 0;
     }
+
 }
 
 module.exports = player
