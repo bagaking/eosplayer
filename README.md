@@ -8,10 +8,24 @@ eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provi
 
 ## Usage
 
-window.eosplayer.login()
-window.eosplayer.logout()
+```
+get {string} help // get and print help info of usage
 
-window.eosplayer.getBalance("eosio.token") // return asset string like "1.0000 EOS"
-window.eosplayer.getBalanceAsset("eosio.token") // return asset structure like {val:1.0000, sym:"EOS", decimal:4}
+get {string} window.eosplayer.netName // get current network name
+get {string} window.eosplayer.netConf // get current network config
 
+get {Scatter} window.eosplayer.scatter // get scatter instance
+get {Eos} window.eosplayer.eosClient // get eos instance
 
+async {Identity} window.eosplayer.getIdentity() // get identity
+async {Identity} window.eosplayer.login() // let user allow you using identity
+async {void} window.eosplayer.logout() // return back the identity
+
+async {AccountInfo} window.eosplayer.getAccountInfo(account_name = identity.name) // get account info for any user
+
+async {string} getBalance(code = "eosio.token", account_name = undefined) // get balance string of a account. ex. "1.0000 EOS"
+async {string} getBalanceAsset(code = "eosio.token", account_name = undefined) // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
+
+async transcal(code, quantity, func, ...args) // send a action of transcal to contract
+async call(code, quantity, func, ...args) // send a action to contract
+```
