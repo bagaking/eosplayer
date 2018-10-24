@@ -59,7 +59,7 @@ class player {
      * getIdentity of cur scatter user
      * @return {Promise<{name,active,eos}>}
      */
-    async getAccount() {
+    async getIdentity() {
         await this.scatter.getIdentity({
             accounts: [this.netConf],
         }).catch((err) => {
@@ -74,7 +74,7 @@ class player {
      * @return {Promise<{name, active, eos}>}
      */
     async login() {
-        return await this.getAccount();
+        return await this.getIdentity();
     }
 
     /**
@@ -85,15 +85,27 @@ class player {
         return await this.scatter.forgetIdentity(this.netName);
     }
 
+    /**
+     *
+     * @param account_name
+     * @return {Promise<{account_name,core_liquid_balance,cpu_limit,net_limit,ram_quota,ram_usage,permissions,total_resources}>}
+     */
+    async getAccountInfo(account_name) {
+        if(_.isEmpty(account_name)){
+            account_name = (await this.getIdentity()).name;
+        }
+        return await eosplayer.eosClient.getAccount({account_name})
+    }
+
     async transcal(code, quantity, func, ...args) {
-        const account = await this.getAccount()
+        const account = await this.getIdentity()
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, code, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
         console.log(`Transaction ID: ${trx.transaction_id}`);
     }
 
     async call(code, func, data) {
-        const account = await this.getAccount();
+        const account = await this.getIdentity();
         this.scatter.transaction({
             actions: [
                 {
@@ -111,7 +123,7 @@ class player {
 
     async getBalance(code = "eosio.token", name = undefined) {
         if (!name) {
-            name = (await this.getAccount()).name;
+            name = (await this.getIdentity()).name;
         }
         let result = await this.eosClient.getCurrencyBalance(code, name)
         return result[0] ? parseFloat(result[0].split(' ', 1)[0]).toFixed(4) : 0;
