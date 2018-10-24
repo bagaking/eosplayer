@@ -1,14 +1,8 @@
 const Chance = require('chance');
 const Eos = require('eosjs');
+const _ = require('lodash');
+
 const DB = require('./db');
-const {networks} = require('./conf')
-
-class env {
-
-    static isPc() {
-        return /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ? false : true;
-    }
-}
 
 class player {
 
@@ -61,6 +55,10 @@ class player {
         return this._eosClient;
     }
 
+    /**
+     * getIdentity of cur scatter user
+     * @return {Promise<{name,active,eos}>}
+     */
     async getAccount() {
         await this.scatter.getIdentity({
             accounts: [this.netConf],
@@ -72,7 +70,7 @@ class player {
     }
 
     async forgetIdentity() {
-        await this.eosClient.forgetIdentity(this.netName);
+        await this.scatter.forgetIdentity(this.netName);
     }
 
     async transcal(code, quantity, func, ...args) {
@@ -106,10 +104,8 @@ class player {
         let result = await this.eosClient.getCurrencyBalance(code, name)
         return result[0] ? parseFloat(result[0].split(' ', 1)[0]).toFixed(4) : 0;
     }
-
-
-
 }
 
-window.eosenv = env;
-window.eosplayer = new player(networks)
+module.exports = player
+
+
