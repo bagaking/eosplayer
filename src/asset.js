@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 class Asset {
-    constructor(val, decimal, sym) {
+    constructor(val, sym, decimal = 4) {
         this._val = val;
         this._sym = sym;
         this._decimal = decimal;
@@ -19,8 +19,12 @@ class Asset {
         return this._decimal;
     }
 
+    get valStr() {
+        return this._val.toFixed(this.decimal);
+    }
+
     toString() {
-        return `${this.val.toFixed(this.decimal)} ${this.sym}`
+        return `${this.valStr} ${this.sym}`
     }
 
     /**
