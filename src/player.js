@@ -112,8 +112,8 @@ class Player {
         console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
     }
 
-    switchNetwork(val){
-        if(val in this._networks) {
+    switchNetwork(val) {
+        if (val in this._networks) {
             this._db.set("network_name", val);
             this._eosClient = null;
             console.log(`network changed to ${this.netName}.`)
@@ -122,8 +122,8 @@ class Player {
         }
     }
 
-    setNetConf(network_name, conf){
-        this._networks[network_name]= conf;
+    setNetConf(network_name, conf) {
+        this._networks[network_name] = conf;
     }
 
     /**
@@ -171,12 +171,20 @@ class Player {
      * @return {Promise<{Identity}>}
      */
     async getIdentity() {
+        let originChainID = this._db.get("latest_chain_id");
+        if((!!originChainID) && this.netConf.chainId !== originChainID){
+            console.log(`a changing of chain_id detected: ${originChainID} -> ${this.netConf.chainId} `);
+            await this.logout();
+            console.log(`log out from ${originChainID}`);
+        }
         await this.scatter.getIdentity({
             accounts: [this.netConf],
         }).catch((err) => {
             console.error(err);
             alert('cannot get identity');
         });
+        ;
+        this._db.set("latest_chain_id", this.netConf.chainId);
         return this.scatter.identity.accounts.find(acc => acc.blockchain === 'eos');
     }
 
@@ -202,7 +210,7 @@ class Player {
      * @return {Promise<{AccountInfo}>}
      */
     async getAccountInfo(account_name) {
-        if (!account_name || typeof account_name !== "string" ) {
+        if (!account_name || typeof account_name !== "string") {
             account_name = (await this.getIdentity()).name;
         }
         return await this.eosClient.getAccount({account_name})
@@ -238,11 +246,12 @@ class Player {
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, code, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
         console.log(`Transaction ID: ${trx.transaction_id}`);
+        return trx;
     }
 
     async call(code, func, data) {
         const account = await this.getIdentity();
-        this.eosClient.transaction({
+        let trx = await this.eosClient.transaction({
             actions: [
                 {
                     account: code,
@@ -255,14 +264,17 @@ class Player {
                 }
             ]
         })
+        console.log(`Transaction ID: ${trx.transaction_id}`);
+        return trx;
     }
+
 
     get version() {
         return "0.0.1beta-1";
     }
 
     get help() {
-        let helpInfo =`
+        let helpInfo = `
       =============================================================
         
                -----      ------        ------      -------

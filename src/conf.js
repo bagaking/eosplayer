@@ -2,6 +2,14 @@ module.exports = {
     networks: {
         mainnet: {
             blockchain: 'eos',
+            host: 'nodes.get-scatter.com',
+            port: 443,
+            chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+            protocol: 'https',
+            httpEndpoint: 'https://nodes.get-scatter.com:443',
+        },
+        mainnet2: {
+            blockchain: 'eos',
             host: 'api1.eosasia.one',
             port: 443,
             chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
