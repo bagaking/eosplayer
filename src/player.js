@@ -109,7 +109,7 @@ class Player {
             network_name: 'mainnet',
             lang: 'ch',
         });
-        console.log(`eosplayer created: \n${this.netName} \n${this.netConf}`)
+        console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
     }
 
     switchNetwork(val){
@@ -227,7 +227,7 @@ class Player {
      * @return {Promise<Asset>}
      */
     async getBalanceAsset(account_name = undefined, code = "eosio.token") {
-        let strAsset = await this.getBalance(code, account_name);
+        let strAsset = await this.getBalance(account_name, code);
         return Asset.parse(strAsset)
     }
 

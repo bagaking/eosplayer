@@ -42,7 +42,7 @@ class Asset {
         if (!strVal || !strSym) return null;
         let decimalPos = str.indexOf('.');
         let decimal = decimalPos < 0 ? 0 : blankPos - decimalPos - 1;
-        let val = parseFloat(strVal.slice(0, blankPos))
+        let val = parseFloat(strVal)
 
         return new Asset(val, strSym, decimal);
     }
