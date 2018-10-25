@@ -245,7 +245,9 @@ class Player {
         const account = await this.getIdentity()
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
-        if (!!trx) console.log(`Transaction ID: ${trx.transaction_id}`);
+        if (!!trx) {
+            console.log(`Transaction ID: ${trx.transaction_id}`);
+        }
         return trx;
     }
 
@@ -264,19 +266,38 @@ class Player {
                 }
             ]
         })
-        console.log(`Transaction ID: ${trx.transaction_id}`);
+        if (!!trx) {
+            console.log(`Transaction ID: ${trx.transaction_id}`);
+        }
         return trx;
     }
 
-    async checkTable(code, tableName, scope) {
+    async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
         let result = await this.eosClient.getTableRows({
             json: true,
             code: code,
             scope: scope,
-            table: tableName
+            table: tableName,
+            limit,
+            lower_bound,
+            upper_bound,
+            index_position
         });
-        // todo: deal with 'more'
+        // todo: deal with 'more' ?
         return result;
+    }
+
+    async checkTableItem(code, tableName, scope, key, index_position = 1) {
+        let result = await this.checkTable(code, tableName, scope, 1, key, key, index_position);
+        return result && result.rows ? result.rows[0] : null;
+    }
+
+    async checkTableRange(code, tableName, scope, from, to, index_position = 1) {
+        if(to < from) {
+            throw new Error(`range error: from(${from}) must be larger than to${to}`);
+        }
+        let result = await this.checkTable(code, tableName, scope, to - from + 1, from, to, index_position);
+        return result && result.rows ? result.rows : [];
     }
 
     async infoOf(code, tableName) {
