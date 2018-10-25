@@ -272,6 +272,7 @@ class Player {
         return trx;
     }
 
+
     async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
         let result = await this.eosClient.getTableRows({
             json: true,
@@ -287,17 +288,17 @@ class Player {
         return result;
     }
 
-    async checkTableItem(code, tableName, scope, key, index_position = 1) {
-        let result = await this.checkTable(code, tableName, scope, 1, key, key, index_position);
-        return result && result.rows ? result.rows[0] : null;
+    async checkTableRange(code, tableName, scope, from, length, index_position = 1) {
+        if(length < 0) {
+            throw new Error(`range error: length(${length}) must larger than 0 `);
+        }
+        let result = await this.checkTable(code, tableName, scope, length, from, from + length, index_position);
+        return result && result.rows ? result.rows : [];
     }
 
-    async checkTableRange(code, tableName, scope, from, to, index_position = 1) {
-        if(to < from) {
-            throw new Error(`range error: from(${from}) must be larger than to${to}`);
-        }
-        let result = await this.checkTable(code, tableName, scope, to - from + 1, from, to, index_position);
-        return result && result.rows ? result.rows : [];
+    async checkTableItem(code, tableName, scope, key, index_position = 1) {
+        let rows = await this.checkTableRange(code, tableName, scope, key, 1, index_position);
+        return rows[0];
     }
 
     async infoOf(code, tableName) {
