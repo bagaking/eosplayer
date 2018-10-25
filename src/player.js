@@ -268,6 +268,42 @@ class Player {
         return trx;
     }
 
+    async checkTable(code, tableName, scope, key) {
+        let result = await this.eosClient.getTableRows(true, code, scope, tableName, key);
+        return result && result.rows ? result.rows[0] : null;
+    }
+
+    async infoOf(code, tableName) {
+        let result = await this.checkTable(code, tableName, code, 0);
+        return result;
+    }
+
+    async createAccount(name, pubKey) {
+        let result = await this.eosClient.newaccount({
+            creator: (await this.getIdentity()).name,
+            name: name,
+            owner: {
+                threshold: 1,
+                keys: [{
+                    key: pubKey,
+                    weight: 1
+                }],
+                accounts: [],
+                waits: []
+            },
+            active: {
+                threshold: 1,
+                keys: [{
+                    key: pubKey,
+                    weight: 1
+                }],
+                accounts: [],
+                waits: []
+            }
+        })
+        return result;
+    }
+
 
     get version() {
         return "0.0.1beta-1";
