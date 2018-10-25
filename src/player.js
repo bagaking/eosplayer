@@ -172,7 +172,7 @@ class Player {
      */
     async getIdentity() {
         let originChainID = this._db.get("latest_chain_id");
-        if((!!originChainID) && this.netConf.chainId !== originChainID){
+        if ((!!originChainID) && this.netConf.chainId !== originChainID) {
             console.log(`a changing of chain_id detected: ${originChainID} -> ${this.netConf.chainId} `);
             await this.logout();
             console.log(`log out from ${originChainID}`);
@@ -244,12 +244,12 @@ class Player {
     async transcal(target, quantity, func, ...args) {
         const account = await this.getIdentity()
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
-        let trx = await this.eosClient.transfer(account.name, code, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
-        console.log(`Transaction ID: ${trx.transaction_id}`);
+        let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
+        if (!!trx) console.log(`Transaction ID: ${trx.transaction_id}`);
         return trx;
     }
 
-    async call(code, func, data) {
+    async call(code, func, jsonData) {
         const account = await this.getIdentity();
         let trx = await this.eosClient.transaction({
             actions: [
@@ -260,7 +260,7 @@ class Player {
                         actor: account.name,
                         permission: account.authority
                     }],
-                    data: data
+                    data: jsonData
                 }
             ]
         })
@@ -268,17 +268,23 @@ class Player {
         return trx;
     }
 
-    async checkTable(code, tableName, scope, key) {
-        let result = await this.eosClient.getTableRows(true, code, scope, tableName, key);
-        return result && result.rows ? result.rows[0] : null;
+    async checkTable(code, tableName, scope) {
+        let result = await this.eosClient.getTableRows({
+            json: true,
+            code: code,
+            scope: scope,
+            table: tableName
+        });
+        // todo: deal with 'more'
+        return result;
     }
 
     async infoOf(code, tableName) {
         let result = await this.checkTable(code, tableName, code, 0);
-        return result;
+        return result && result.rows ? result.rows[0] : null;
     }
 
-    async createAccount(name, pubKey) {
+    async newAccount(name, pubKey) {
         let result = await this.eosClient.newaccount({
             creator: (await this.getIdentity()).name,
             name: name,
