@@ -6,8 +6,8 @@ class DB {
     }
 
     get(key) {
-        key = `eosplayer::${key}`;
-        let item = localStorage.getItem(key)
+        let pkey = `eosplayer::${key}`;
+        let item = localStorage.getItem(pkey)
         if(!!item){
             return item;
         }
@@ -20,8 +20,8 @@ class DB {
     }
 
     set(key, val){
-        key = `eosplayer::${key}`;
-        localStorage.setItem(key, val);
+        let pkey = `eosplayer::${key}`;
+        localStorage.setItem(pkey, val);
     }
 }
 
