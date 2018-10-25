@@ -116,7 +116,9 @@ class Player {
         if(val in this._networks) {
             this._db.set("network_name", val);
             this._eosClient = null;
-            console.log(`network changed to ${this.netName}`)
+            console.log(`network changed to ${this.netName}.`)
+        } else {
+            console.log(`network ${val} cannot find.`)
         }
     }
 
@@ -231,7 +233,7 @@ class Player {
         return Asset.parse(strAsset)
     }
 
-    async transcal(code, quantity, func, ...args) {
+    async transcal(target, quantity, func, ...args) {
         const account = await this.getIdentity()
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, code, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
@@ -240,7 +242,7 @@ class Player {
 
     async call(code, func, data) {
         const account = await this.getIdentity();
-        this.scatter.transaction({
+        this.eosClient.transaction({
             actions: [
                 {
                     account: code,
@@ -253,6 +255,10 @@ class Player {
                 }
             ]
         })
+    }
+
+    get version() {
+        return "0.0.1beta-1";
     }
 
     get help() {
