@@ -26,7 +26,7 @@ you can using `help` commond to show api documents on chrome console :
 ```
 
 You can use these interfaces to interact with scatter.
-> tips: windows.eosplayer === eosplayer
+> tips: window.eosplayer === eosplayer
 
 ``` js
 get {string} eosplayer.help // get and print help info of usage

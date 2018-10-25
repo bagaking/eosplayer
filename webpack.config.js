@@ -1,4 +1,5 @@
 const path = require('path');
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -13,7 +14,7 @@ module.exports = {
             }
         ]
     },
-    devtool: 'inline-source-map',
+    devtool: 'eval-source-map', // inline-source-map eval-source-map cheap-module-source-map
     resolve: {
         extensions: [ '.tsx', '.ts', '.js' ]
     },

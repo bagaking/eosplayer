@@ -257,6 +257,23 @@ class Player {
 
     get help() {
         let helpInfo =`
+      =============================================================
+        
+               -----      ------        ------      -------
+              -----     -----          ------      -------
+             -----   -----            ------      -------
+            -----  -----             ------      -------
+           ----------                ----- ---- ------ 
+          -----  -----              ----- ---- ------
+         -----    -----           ------      -------
+        -----      ------        ------      -------
+       ------       -------     ------      -------
+      --------      ---------  ------      -------
+        
+===========================================================
+
+# eosplayer
+        
 ## Imported libs
 
 window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
@@ -288,8 +305,12 @@ async {string} window.eosplayer.getBalanceAsset(account_name = undefined, code =
 
 async {void} transcal(code, quantity, func, ...args) // send a action of transcal to contract
 async {void} call(code, quantity, func, ...args) // send a action to contract
-            `;
-        console.log(helpInfo);
+
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*
+ == for more : {@url https://github.com/bagaking/eosplayer} ===
+*= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+`;
+        //console.log(helpInfo);
         return helpInfo;
     }
 
