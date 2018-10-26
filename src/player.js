@@ -102,8 +102,7 @@ const EventHandler = require('./eventHandler')
  */
 
 
-
-class Player extends EventHandler{
+class Player extends EventHandler {
 
     constructor(netConf) {
         super(Player.EventNames);
@@ -116,11 +115,11 @@ class Player extends EventHandler{
         console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
     }
 
-    static get EventNames(){
+    static get EventNames() {
         return {
-            getScatterFailed : "getScatterFailed",
-            getIdentityFailed : "getIdentityFailed",
-            transcalFailed : "transcalFailed"
+            getScatterFailed: "getScatterFailed",
+            getIdentityFailed: "getIdentityFailed",
+            transcalFailed: "transcalFailed"
         }
     }
 
@@ -273,8 +272,24 @@ class Player extends EventHandler{
         return await this.transcal(target, `0.0001 ${symbol}`, func, ...args);
     }
 
-    async waitTx(txID){
-        return await this.eosClient.getTransaction(txID);
+    async waitTx(txID, maxRound = 12, timeSpanMS = 1009) { // Unmanaged polling uses prime as the default interval
+        const waitForMs = (time) => new Promise(resolve => setTimeout(resolve, time));
+        const checkTx = async (_txID, round = 0) => { // can only use lambda, cuz this is used
+            try {
+                const tx = await this.eosClient.getTransaction(_txID);
+                if (tx) return tx;
+            } catch (err) {
+                console.log(`wait tx ${_txID}, retry round: ${round}. ${err.message}`);
+            }
+            if (round >= maxRound) {
+                console.error(`wait tx failed, round out.`)
+                return null;
+            }
+            await waitForMs(timeSpanMS);
+            return checkTx(_txID, round + 1);
+        }
+
+        return await checkTx(txID);
     }
 
     async call(code, func, jsonData) {
@@ -314,7 +329,7 @@ class Player extends EventHandler{
     }
 
     async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) {
-        if(length < 0) {
+        if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
         let result = await this.checkTable(code, tableName, scope, length, from, from + length, index_position);
