@@ -102,9 +102,10 @@ const Asset = require('./asset');
 
 class Player {
 
-    constructor(netConf, cbScatterfailed) {
+    constructor(netConf, cbScatterFailed = null, cbIdentityFailed = null) {
         this._networks = netConf;
-        this._cbScatterFailed = cbScatterfailed || alert;
+        this._cbScatterFailed = cbScatterFailed || alert;
+        this._cbIdentityFailed = cbIdentityFailed || alert;
         this._db = new DB({
             network_name: 'mainnet',
             lang: 'ch',
@@ -180,8 +181,8 @@ class Player {
         await this.scatter.getIdentity({
             accounts: [this.netConf],
         }).catch((err) => {
-            console.error(err);
             alert('cannot get identity');
+            throw new Error(err);
         });
         ;
         this._db.set("latest_chain_id", this.netConf.chainId);
@@ -243,6 +244,7 @@ class Player {
 
     async transcal(target, quantity, func, ...args) {
         const account = await this.getIdentity()
+
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
         if (!!trx) {
@@ -288,7 +290,7 @@ class Player {
         return result;
     }
 
-    async checkTableRange(code, tableName, scope, from, length, index_position = 1) {
+    async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) {
         if(length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
@@ -296,14 +298,9 @@ class Player {
         return result && result.rows ? result.rows : [];
     }
 
-    async checkTableItem(code, tableName, scope, key, index_position = 1) {
+    async checkTableItem(code, tableName, scope, key = 0, index_position = 1) {
         let rows = await this.checkTableRange(code, tableName, scope, key, 1, index_position);
         return rows[0];
-    }
-
-    async infoOf(code, tableName) {
-        let result = await this.checkTable(code, tableName, code, 0);
-        return result && result.rows ? result.rows[0] : null;
     }
 
     async newAccount(name, pubKey) {
