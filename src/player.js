@@ -246,11 +246,17 @@ class Player {
         const account = await this.getIdentity()
 
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
-        let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(console.error);
+        let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(
+            console.error
+        );
         if (!!trx) {
             console.log(`Transaction ID: ${trx.transaction_id}`);
         }
         return trx;
+    }
+
+    async transget(target, symbol, func, ...args) {
+        return await this.transcal(target, `0.0001 ${symbol}`, func, ...args);
     }
 
     async call(code, func, jsonData) {
