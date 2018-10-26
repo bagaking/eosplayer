@@ -162,7 +162,7 @@ class Player extends EventHandler{
         if (!scatter) {
             let err = new Error('scatter cannot found');
             this.emitEvent(Player.EventNames.getScatterFailed, err);
-            throw new Error(err);
+            throw err;
         }
         return scatter;
     }
@@ -271,6 +271,10 @@ class Player extends EventHandler{
 
     async transget(target, symbol, func, ...args) {
         return await this.transcal(target, `0.0001 ${symbol}`, func, ...args);
+    }
+
+    async waitTx(txID){
+        return await this.eosClient.getTransaction(txID);
     }
 
     async call(code, func, jsonData) {
