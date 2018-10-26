@@ -6,7 +6,7 @@ class EventHandler {
     }
 
     on(event, fnCallback, context) {
-        if (!this._supportedEvents.find(event)) {
+        if (!this._supportedEvents.find(name => name === event)) {
             throw new Error(`event handler : event ${event} are not supported.`);
         }
         this._eventMap[event] = {cb: fnCallback, ctx: context}

@@ -2,6 +2,7 @@ const Eos = require('eosjs');
 
 const DB = require('./db');
 const Asset = require('./asset');
+const EventHandler = require('./eventHandler')
 
 /**
  * @interface eosAPI
@@ -100,12 +101,17 @@ const Asset = require('./asset');
  * @property {Object} voter_info
  */
 
-class Player {
 
-    constructor(netConf, cbScatterFailed = null, cbIdentityFailed = null) {
+
+class Player extends EventHandler{
+
+    constructor(netConf) {
+        super(["getScatterFailed", "getIdentityFailed", "transcalFailed"])
+        this.on("getScatterFailed", alert);
+        this.on("getIdentityFailed", alert);
+        this.on("transcalFailed", alert);
+
         this._networks = netConf;
-        this._cbScatterFailed = cbScatterFailed || alert;
-        this._cbIdentityFailed = cbIdentityFailed || alert;
         this._db = new DB({
             network_name: 'mainnet',
             lang: 'ch',
@@ -150,7 +156,7 @@ class Player {
         let scatter = window.scatter;
         if (!scatter) {
             let errInfo = 'scatter cannot found';
-            this._cbScatterFailed(errInfo);
+            this.emit('getScatterFailed', errInfo);
             throw new Error(errInfo);
         }
         return scatter;
@@ -181,8 +187,8 @@ class Player {
         await this.scatter.getIdentity({
             accounts: [this.netConf],
         }).catch((err) => {
-            alert('cannot get identity');
-            throw new Error(err);
+            this.emit('getIdentityFailed', 'cannot get identity', err);
+            throw err;
         });
         ;
         this._db.set("latest_chain_id", this.netConf.chainId);
@@ -247,7 +253,10 @@ class Player {
 
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(
-            console.error
+            err => {
+                this.emit("transcalFailed", err)
+                throw err;
+            }//console.error
         );
         if (!!trx) {
             console.log(`Transaction ID: ${trx.transaction_id}`);
@@ -279,7 +288,6 @@ class Player {
         }
         return trx;
     }
-
 
     async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
         let result = await this.eosClient.getTableRows({
