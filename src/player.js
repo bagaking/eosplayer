@@ -106,10 +106,7 @@ const EventHandler = require('./eventHandler')
 class Player extends EventHandler{
 
     constructor(netConf) {
-        super(["getScatterFailed", "getIdentityFailed", "transcalFailed"])
-        this.on("getScatterFailed", alert);
-        this.on("getIdentityFailed", alert);
-        this.on("transcalFailed", alert);
+        super(Player.EventNames);
 
         this._networks = netConf;
         this._db = new DB({
@@ -117,6 +114,14 @@ class Player extends EventHandler{
             lang: 'ch',
         });
         console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
+    }
+
+    static get EventNames(){
+        return {
+            getScatterFailed : "getScatterFailed",
+            getIdentityFailed : "getIdentityFailed",
+            transcalFailed : "transcalFailed"
+        }
     }
 
     switchNetwork(val) {
@@ -155,9 +160,9 @@ class Player extends EventHandler{
     get scatter() {
         let scatter = window.scatter;
         if (!scatter) {
-            let errInfo = 'scatter cannot found';
-            this.emit('getScatterFailed', errInfo);
-            throw new Error(errInfo);
+            let err = new Error('scatter cannot found');
+            this.emitEvent(Player.EventNames.getScatterFailed, err);
+            throw new Error(err);
         }
         return scatter;
     }
@@ -187,7 +192,7 @@ class Player extends EventHandler{
         await this.scatter.getIdentity({
             accounts: [this.netConf],
         }).catch((err) => {
-            this.emit('getIdentityFailed', 'cannot get identity', err);
+            this.emitEvent(Player.EventNames.getIdentityFailed, err);
             throw err;
         });
         ;
@@ -254,7 +259,7 @@ class Player extends EventHandler{
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(
             err => {
-                this.emit("transcalFailed", err)
+                this.emitEvent(Player.EventNames.transcalFailed, err)
                 throw err;
             }//console.error
         );
@@ -396,8 +401,10 @@ async {AccountInfo} window.eosplayer.getAccountInfo(account_name = identity.name
 async {string} window.eosplayer.getBalance(account_name = undefined, code = "eosio.token") // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token, 
 async {string} window.eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async {void} transcal(code, quantity, func, ...args) // send a action of transcal to contract
-async {void} call(code, quantity, func, ...args) // send a action to contract
+async {txID} transcal(code, quantity, func, ...args) // send a action of transcal to contract
+async {txID} transget(code, symbol, func, ...args) // send a action of trancal (quantity value = 0.0001) to contract
+
+async {txID} call(code, quantity, func, ...args) // send a action to contract
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*
  == for more : {@url https://github.com/bagaking/eosplayer} ===

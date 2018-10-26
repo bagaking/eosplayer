@@ -49,6 +49,8 @@ async {AccountInfo} eosplayer.getAccountInfo(account_name = identity.name) // ge
 async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.token") // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token,
 async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async {void} transcal(code, quantity, func, ...args) // send a action of transcal to contract
-async {void} call(code, quantity, func, ...args) // send a action to contract
+async {txID} transcal(code, quantity, func, ...args) // send a action of transcal to contract
+async {txID} transget(code, symbol, func, ...args) // send a action of trancal (quantity value = 0.0001) to contract
+
+async {txID} call(code, quantity, func, ...args) // send a action to contract
 ```
