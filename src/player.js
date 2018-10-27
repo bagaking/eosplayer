@@ -123,18 +123,27 @@ class Player extends EventHandler {
         }
     }
 
-    switchNetwork(val) {
-        if (val in this._networks) {
-            this._db.set("network_name", val);
+    /**
+     * switch to an network with name
+     * @param key
+     */
+    switchNetwork(key) {
+        if (key in this._networks) {
+            this._db.set("network_name", key);
             this._eosClient = null;
             console.log(`network changed to ${this.netName}.`)
         } else {
-            console.log(`network ${val} cannot find.`)
+            console.log(`network ${key} cannot find.`)
         }
     }
 
-    setNetConf(network_name, conf) {
-        this._networks[network_name] = conf;
+    /**
+     * add net config to table at runtime
+     * @param netName
+     * @param conf
+     */
+    setNetConf(netName, conf) {
+        this._networks[netName] = conf;
     }
 
     /**
@@ -252,6 +261,14 @@ class Player extends EventHandler {
         return Asset.parse(strAsset)
     }
 
+    /**
+     * call contract with transfer (match eoskit)
+     * @param {string} target - eos account, can be user or contract
+     * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
+     * @param {string} func - function name
+     * @param args
+     * @return {Promise<Object>} transactionData
+     */
     async transcal(target, quantity, func, ...args) {
         const account = await this.getIdentity()
 
@@ -268,10 +285,25 @@ class Player extends EventHandler {
         return trx;
     }
 
+    /**
+     * transcal with "0.0001 SYM" token
+     * @param {string} target - eos account, can be user or contract
+     * @param {string} symbol
+     * @param {string} func
+     * @param args
+     * @return {Promise<*>}
+     */
     async transget(target, symbol, func, ...args) {
         return await this.transcal(target, `0.0001 ${symbol}`, func, ...args);
     }
 
+    /**
+     * check a transaction info, retry once per sec until success
+     * @param {string} txID
+     * @param {number} maxRound
+     * @param {number} timeSpanMS
+     * @return {Promise<Object>} transaction
+     */
     async waitTx(txID, maxRound = 12, timeSpanMS = 1009) { // Unmanaged polling uses prime as the default interval
         const waitForMs = (time) => new Promise(resolve => setTimeout(resolve, time));
         const checkTx = async (_txID, round = 0) => { // can only use lambda, cuz this is used
@@ -292,6 +324,13 @@ class Player extends EventHandler {
         return await checkTx(txID);
     }
 
+    /**
+     * send action to a contract
+     * @param {string} code - account of contract
+     * @param {string} func - function name
+     * @param {Object} jsonData - data
+     * @return {Promise<*>} - transaction
+     */
     async call(code, func, jsonData) {
         const account = await this.getIdentity();
         let trx = await this.eosClient.transaction({
@@ -313,6 +352,17 @@ class Player extends EventHandler {
         return trx;
     }
 
+    /**
+     * check a table
+     * @param {string} code - the contract
+     * @param {string} tableName - name of the table
+     * @param {string} scope
+     * @param {number} limit
+     * @param {number} lower_bound
+     * @param {number} upper_bound
+     * @param {number} index_position
+     * @return {Promise<Object>}
+     */
     async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
         let result = await this.eosClient.getTableRows({
             json: true,
@@ -328,6 +378,16 @@ class Player extends EventHandler {
         return result;
     }
 
+    /**
+     * check range in table
+     * @param {string} code - the contract
+     * @param {string} tableName - name of the table
+     * @param {string} scope
+     * @param {number} from - start position
+     * @param {number} length
+     * @param {number} index_position
+     * @return {Promise<Array>}
+     */
     async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
@@ -336,11 +396,26 @@ class Player extends EventHandler {
         return result && result.rows ? result.rows : [];
     }
 
+    /**
+     * check a item in a table
+     * @param {string} code - the contract
+     * @param {string} tableName
+     * @param {string} scope
+     * @param {number} key
+     * @param {number} index_position
+     * @return {Promise<*>}
+     */
     async checkTableItem(code, tableName, scope, key = 0, index_position = 1) {
         let rows = await this.checkTableRange(code, tableName, scope, key, 1, index_position);
         return rows[0];
     }
 
+    /**
+     * create a name using the public key
+     * @param name
+     * @param pubKey
+     * @return {Promise<void>}
+     */
     async newAccount(name, pubKey) {
         let result = await this.eosClient.newaccount({
             creator: (await this.getIdentity()).name,
@@ -368,10 +443,16 @@ class Player extends EventHandler {
     }
 
 
+    /**
+     *  get version
+     */
     get version() {
         return "0.0.1beta-1";
     }
 
+    /**
+     *  get help info
+     */
     get help() {
         let helpInfo = `
       =============================================================
@@ -400,30 +481,51 @@ window.eosplayer = new Player(networks);
         
 ## Usage of eosplayer
 
-{void} switchNetwork(val) // switch network
-{void} setNetConf(network_name, conf) // add a network config to the sandbox
+get {string} help // get help info of usage
+get {string} version // get the version info
 
-get {string} help // get and print help info of usage 
+{void} eosplayer.switchNetwork(val) // switch network
+{void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime
 
-get {string} window.eosplayer.netName // get current network name
-get {string} window.eosplayer.netConf // get current network config
+get {string} eosplayer.netName // get current network name
+get {string} eosplayer.netConf // get current network config
 
-get {Scatter} window.eosplayer.scatter // get scatter instance
-get {Eos} window.eosplayer.eosClient // get eos instance
+get {Scatter} eosplayer.scatter // get scatter instance
+get {Eos} eosplayer.eosClient // get eos instance
 
-async {Identity} window.eosplayer.getIdentity() // get identity
-async {Identity} window.eosplayer.login() // let user allow you using identity
-async {void} window.eosplayer.logout() // return back the identity
+async {Identity} eosplayer.getIdentity() // get identity
+async {Identity} eosplayer.login() // let user allow you using identity
+async {void} eosplayer.logout() // return back the identity
 
-async {AccountInfo} window.eosplayer.getAccountInfo(account_name = identity.name) // get account info for any user
+async {AccountInfo} eosplayer.getAccountInfo(account_name = identity.name) 
+    // get account info for any user
 
-async {string} window.eosplayer.getBalance(account_name = undefined, code = "eosio.token") // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token, 
-async {string} window.eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
+async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.token")  
+    // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token,
 
-async {txID} transcal(code, quantity, func, ...args) // send a action of transcal to contract
-async {txID} transget(code, symbol, func, ...args) // send a action of trancal (quantity value = 0.0001) to contract
+async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 
+    // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async {txID} call(code, quantity, func, ...args) // send a action to contract
+async {txID} eosplayer.transcal(code, quantity, func, ...args) 
+    // send a action of transcal to contract
+    
+async {txID} eosplayer.transget(code, symbol, func, ...args) 
+    // send a action of trancal (quantity value = 0.0001) to contract
+
+async {txID} eosplayer.call(code, quantity, func, ...args) 
+    // send a action to contract
+
+async {transaction} waitTx(txID, maxRound = 12, timeSpanMS = 1009); 
+    // check a transaction info, retry once per sec until success
+
+async {table} checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) 
+    // check all items in a table
+
+async {item[]} checkTableRange(code, tableName, scope, from, length = 1, index_position = 1)
+    // check a range of items in a table
+    
+async {item} checkTableItem(code, tableName, scope, key = 0, index_position = 1)
+    // check a specific item in a table 
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*
  == for more : {@url https://github.com/bagaking/eosplayer} ===
