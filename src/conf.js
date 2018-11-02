@@ -18,11 +18,11 @@ module.exports = {
         },
         dev:{
             blockchain: 'eos',
-            host: '10.1.100.251',
+            host: 'eos.toneos.pro',
             port: 7777,
             chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
             protocol: 'http',
-            httpEndpoint: 'http://10.1.100.251:7777',
+            httpEndpoint: 'http://eos.toneos.pro:7777',
         }
     },
 };
