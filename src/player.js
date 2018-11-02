@@ -403,7 +403,7 @@ class Player extends EventHandler {
      * @param {string} code - the contract
      * @param {string} tableName - name of the table
      * @param {string} scope
-     * @param {number} from - start position
+     * @param {number | string} from - start position or username
      * @param {number} length
      * @param {number} index_position
      * @return {Promise<Array>}
@@ -412,7 +412,7 @@ class Player extends EventHandler {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
-        let result = await this.checkTable(code, tableName, scope, length, from, from + length, index_position);
+        let result = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : undefined, index_position);
         return result && result.rows ? result.rows : [];
     }
 
