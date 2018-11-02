@@ -68,7 +68,7 @@ async {tx} eosplayer.transget(code, symbol, func, ...args)
 async {Contract} eosplayer.contract(code)
     // get contract object
 
-async {tx} eosplayer.call(code, quantity, func, ...args)
+async {tx} call(code, func, jsonData)
     // send a action to contract
 
 async {tx} eosplayer.waitTx(txID, maxRound = 12, timeSpanMS = 1009)

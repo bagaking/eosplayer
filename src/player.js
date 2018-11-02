@@ -490,7 +490,7 @@ class Player extends EventHandler {
         
 ===========================================================
 
-# eosplayer
+# eosplayer ${this.version}
         
 ## Imported libs
 
@@ -526,22 +526,22 @@ async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.toke
 async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 
     // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async {txID} transfer(target, quantity, memo = "")
+async {tx} transfer(target, quantity, memo = "")
     // transfer tokens to target
 
-async {txID} eosplayer.transcal(code, quantity, func, ...args) 
+async {tx} eosplayer.transcal(code, quantity, func, ...args) 
     // send a action of transcal to contract
     
-async {txID} eosplayer.transget(code, symbol, func, ...args) 
+async {tx} eosplayer.transget(code, symbol, func, ...args) 
     // send a action of trancal (quantity value = 0.0001) to contract
 
 async {Contract} eosplayer.contract(code)
     // get contract object
 
-async {txID} eosplayer.call(code, quantity, func, ...args) 
+async {tx} call(code, func, jsonData)
     // send a action to contract
 
-async {transaction} waitTx(txID, maxRound = 12, timeSpanMS = 1009); 
+async {tx} waitTx(txID, maxRound = 12, timeSpanMS = 1009); 
     // check a transaction info, retry once per sec until success
 
 async {table} checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) 
