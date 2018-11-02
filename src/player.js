@@ -262,6 +262,29 @@ class Player extends EventHandler {
     }
 
     /**
+     * transfer
+     * @param {string} target - eos account, can be user or contract
+     * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
+     * @param {string} memo - memo
+     * @return {Promise<Object>} transactionData
+     */
+    async transfer(target, quantity, memo = "") {
+        const account = await this.getIdentity()
+
+        const transOptions = {authorization: [`${account.name}@${account.authority}`]}
+        let trx = await this.eosClient.transfer(account.name, target, quantity, memo, transOptions).catch(
+            err => {
+                this.emitEvent(Player.EventNames.transcalFailed, err)
+                throw err;
+            }
+        );
+        if (!!trx) {
+            console.log(`Transaction ID: ${trx.transaction_id}`);
+        }
+        return trx;
+    }
+
+    /**
      * call contract with transfer (match eoskit)
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
@@ -270,19 +293,7 @@ class Player extends EventHandler {
      * @return {Promise<Object>} transactionData
      */
     async transcal(target, quantity, func, ...args) {
-        const account = await this.getIdentity()
-
-        const transOptions = {authorization: [`${account.name}@${account.authority}`]}
-        let trx = await this.eosClient.transfer(account.name, target, quantity, `@[${func}:${args.join(',')}]`, transOptions).catch(
-            err => {
-                this.emitEvent(Player.EventNames.transcalFailed, err)
-                throw err;
-            }//console.error
-        );
-        if (!!trx) {
-            console.log(`Transaction ID: ${trx.transaction_id}`);
-        }
-        return trx;
+        return await this.transfer(target, quantity, `@[${func}:${args.join(',')}]`);
     }
 
     /**
@@ -447,7 +458,7 @@ class Player extends EventHandler {
      *  get version
      */
     get version() {
-        return "0.0.1beta-1";
+        return "0.1.1";
     }
 
     /**
@@ -505,6 +516,9 @@ async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.toke
 
 async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 
     // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
+
+async {txID} transfer(target, quantity, memo = "")
+    // transfer tokens to target
 
 async {txID} eosplayer.transcal(code, quantity, func, ...args) 
     // send a action of transcal to contract

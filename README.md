@@ -56,6 +56,9 @@ async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.toke
 async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token")
     // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
+async {txID} transfer(target, quantity, memo = "")
+    // transfer tokens to target
+
 async {tx} eosplayer.transcal(code, quantity, func, ...args)
     // send a action of transcal to contract
 
@@ -77,3 +80,12 @@ async {item[]} checkTableRange(code, tableName, scope, from, length = 1, index_p
 async {item} checkTableItem(code, tableName, scope, key = 0, index_position = 1)
     // check a specific item in a table
 ```
+
+
+## Updates
+
+### 0.1.1
+
+#### add
+eosplayer.transfer(target, quantity, memo)
+
