@@ -19,6 +19,7 @@
 	- 配置端口 为侧链端口
 	    如 7777
 	- 配置 chain_id (一般情况下 chainid 可以从节点API的 /v1/chain/get_info 里拿到)
+
 2、导入身份
     - scatter主页 -> 身份 —> 新建
     - 网络选择 dev
