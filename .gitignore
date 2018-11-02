@@ -6,7 +6,7 @@
 # Build
 dist
 yarn.lock
-sample
+_*/
 
 # Logs
 logs
