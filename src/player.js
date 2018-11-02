@@ -336,6 +336,15 @@ class Player extends EventHandler {
     }
 
     /**
+     * get contract
+     * @param code
+     * @return {Promise<void>}
+     */
+    async contract(code){
+        return await this.eosClient.contract(code)
+    }
+
+    /**
      * send action to a contract
      * @param {string} code - account of contract
      * @param {string} func - function name
@@ -525,6 +534,9 @@ async {txID} eosplayer.transcal(code, quantity, func, ...args)
     
 async {txID} eosplayer.transget(code, symbol, func, ...args) 
     // send a action of trancal (quantity value = 0.0001) to contract
+
+async {Contract} eosplayer.contract(code)
+    // get contract object
 
 async {txID} eosplayer.call(code, quantity, func, ...args) 
     // send a action to contract

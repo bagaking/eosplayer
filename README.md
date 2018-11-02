@@ -65,6 +65,9 @@ async {tx} eosplayer.transcal(code, quantity, func, ...args)
 async {tx} eosplayer.transget(code, symbol, func, ...args)
     // send a action of trancal (quantity value = 0.0001) to contract
 
+async {Contract} eosplayer.contract(code)
+    // get contract object
+
 async {tx} eosplayer.call(code, quantity, func, ...args)
     // send a action to contract
 
@@ -87,5 +90,7 @@ async {item} checkTableItem(code, tableName, scope, key = 0, index_position = 1)
 ### 0.1.1
 
 #### add
-eosplayer.transfer(target, quantity, memo)
+
+- async eosplayer.transfer(target, quantity, memo)
+- async eosplayer.contract(code)
 

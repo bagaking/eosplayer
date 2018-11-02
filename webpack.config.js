@@ -14,7 +14,7 @@ module.exports = {
             }
         ]
     },
-    devtool: 'eval-source-map', // inline-source-map eval-source-map cheap-module-source-map
+    devtool: 'cheap-module-source-map', // inline-source-map eval-source-map cheap-module-source-map
     resolve: {
         extensions: [ '.tsx', '.ts', '.js' ]
     },
