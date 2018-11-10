@@ -1,6 +1,6 @@
 module.exports = {
     networks: {
-        mainnet: {
+        scatter: {
             blockchain: 'eos',
             host: 'nodes.get-scatter.com',
             port: 443,
@@ -8,7 +8,7 @@ module.exports = {
             protocol: 'https',
             httpEndpoint: 'https://nodes.get-scatter.com:443',
         },
-        mainnet2: {
+        eosasia: {
             blockchain: 'eos',
             host: 'api1.eosasia.one',
             port: 443,
@@ -18,7 +18,7 @@ module.exports = {
         },
         dev:{
             blockchain: 'eos',
-            host: 'eos.toneos.pro',
+            host: 'dev.toneos.pro',
             port: 7777,
             chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
             protocol: 'http',
