@@ -103,6 +103,7 @@ const EVENT_NAMES = {
 }
 
 const EventHandler = require('./utils/eventHandler')
+const ChainHelper = require('./helpers/chain')
 const EosProvider = require('./eosProvider')
 
 class Player extends EosProvider {
@@ -114,6 +115,10 @@ class Player extends EosProvider {
 
     get events() {
         return this._events || (this._events = new EventHandler());
+    }
+
+    get chain(){
+        return new ChainHelper(this.eosClient);
     }
 
     /**

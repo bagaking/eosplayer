@@ -1,8 +1,8 @@
 'use strict'
 
-module.exports = class ChainHelper{
+module.exports = class ChainHelper {
 
-    constructor(eosClient){
+    constructor(eosClient) {
         this._eos = eosClient;
     }
 
