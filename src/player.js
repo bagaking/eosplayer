@@ -117,7 +117,7 @@ class Player extends EosProvider {
         return this._events || (this._events = new EventHandler());
     }
 
-    get chain(){
+    get chain() {
         return new ChainHelper(this.eosClient);
     }
 
@@ -126,11 +126,8 @@ class Player extends EosProvider {
      * @param account_name
      * @return {Promise<{AccountInfo}>}
      */
-    async getAccountInfo(account_name) {
-        if (!account_name || typeof account_name !== "string") {
-            account_name = (await this.getIdentity()).name;
-        }
-        return await this.eosClient.getAccount({account_name})
+    async getAccountInfo(account_name = undefined) {
+        return await this.chain.getAccountInfo(account_name || (await this.getIdentity()).name);
     }
 
     /**
@@ -140,11 +137,7 @@ class Player extends EosProvider {
      * @return {Promise<string|undefined>} asset format '1.0000 EOS'
      */
     async getBalance(account_name = undefined, code = "eosio.token") {
-        if (!account_name) {
-            account_name = (await this.getIdentity()).name;
-        }
-        let result = await this.eosClient.getCurrencyBalance(code, account_name)
-        return result[0] ? result[0].trim() : null;
+        return this.chain.getBalance(account_name || (await this.getIdentity()).name, code)
     }
 
     /**
@@ -206,42 +199,6 @@ class Player extends EosProvider {
     }
 
     /**
-     * check a transaction info, retry once per sec until success
-     * @param {string} txID
-     * @param {number} maxRound
-     * @param {number} timeSpanMS
-     * @return {Promise<Object>} transaction
-     */
-    async waitTx(txID, maxRound = 12, timeSpanMS = 1009) { // Unmanaged polling uses prime as the default interval
-        const waitForMs = (time) => new Promise(resolve => setTimeout(resolve, time));
-        const checkTx = async (_txID, round = 0) => { // can only use lambda, cuz this is used
-            try {
-                const tx = await this.eosClient.getTransaction(_txID);
-                if (tx) return tx;
-            } catch (err) {
-                console.log(`wait tx ${_txID}, retry round: ${round}. ${err.message}`);
-            }
-            if (round >= maxRound) {
-                console.error(`wait tx failed, round out.`)
-                return null;
-            }
-            await waitForMs(timeSpanMS);
-            return checkTx(_txID, round + 1);
-        }
-
-        return await checkTx(txID);
-    }
-
-    /**
-     * get contract
-     * @param code
-     * @return {Promise<void>}
-     */
-    async contract(code) {
-        return await this.eosClient.contract(code)
-    }
-
-    /**
      * send action to a contract
      * @param {string} code - account of contract
      * @param {string} func - function name
@@ -250,19 +207,10 @@ class Player extends EosProvider {
      */
     async call(code, func, jsonData) {
         const account = await this.getIdentity();
-        let trx = await this.eosClient.transaction({
-            actions: [
-                {
-                    account: code,
-                    name: func,
-                    authorization: [{
-                        actor: account.name,
-                        permission: account.authority
-                    }],
-                    data: jsonData
-                }
-            ]
-        })
+        let trx = await this.chain.call(code, func, jsonData, {
+            actor: account.name,
+            permission: account.authority
+        });
         if (!!trx) {
             console.log(`Transaction ID: ${trx.transaction_id}`);
         }
@@ -270,7 +218,20 @@ class Player extends EosProvider {
     }
 
     /**
+     * check a transaction info, retry once per sec until success
+     * @deprecated - use eosplayer.chain.waitTx instead
+     * @param {string} txID
+     * @param {number} maxRound
+     * @param {number} timeSpanMS
+     * @return {Promise<Object>} transaction
+     */
+    async waitTx(txID, maxRound = 12, timeSpanMS = 1009) {
+        return await this.chain.waitTx(txID, maxRound, timeSpanMS);
+    }
+
+    /**
      * check a table
+     * @deprecated - use eosplayer.chain.checkTable instead
      * @param {string} code - the contract
      * @param {string} tableName - name of the table
      * @param {string} scope
@@ -281,22 +242,12 @@ class Player extends EosProvider {
      * @return {Promise<Object>}
      */
     async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
-        let result = await this.eosClient.getTableRows({
-            json: true,
-            code: code,
-            scope: scope,
-            table: tableName,
-            limit,
-            lower_bound,
-            upper_bound,
-            index_position
-        });
-        // todo: deal with 'more' ?
-        return result;
+        return await this.chain.checkTable(code, tableName, scope, limit, lower_bound, upper_bound, index_position);
     }
 
     /**
      * check range in table
+     * @deprecated - use eosplayer.chain.checkTableRange instead
      * @param {string} code - the contract
      * @param {string} tableName - name of the table
      * @param {string} scope
@@ -306,15 +257,12 @@ class Player extends EosProvider {
      * @return {Promise<Array>}
      */
     async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) {
-        if (length < 0) {
-            throw new Error(`range error: length(${length}) must larger than 0 `);
-        }
-        let result = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : undefined, index_position);
-        return result && result.rows ? result.rows : [];
+        return await this.chain.checkTableRange(code, tableName, scope, from, length, index_position);
     }
 
     /**
      * check a item in a table
+     * @deprecated - use eosplayer.chain.checkTableItem instead
      * @param {string} code - the contract
      * @param {string} tableName
      * @param {string} scope
@@ -323,8 +271,7 @@ class Player extends EosProvider {
      * @return {Promise<*>}
      */
     async checkTableItem(code, tableName, scope, key = 0, index_position = 1) {
-        let rows = await this.checkTableRange(code, tableName, scope, key, 1, index_position);
-        return rows[0];
+        return await this.chain.checkTableItem(code, tableName, scope, key, index_position);
     }
 
     /**
@@ -358,6 +305,7 @@ class Player extends EosProvider {
         })
         return result;
     }
+
 
 
     /**
@@ -429,9 +377,6 @@ async {Contract} eosplayer.contract(code)
 async {tx} eosplayer.call(code, func, jsonData)
     // send a action to contract
 
-async {tx} eosplayer.waitTx(txID, maxRound = 12, timeSpanMS = 1009); 
-    // check a transaction info, retry once per sec until success
-
 async {table} eosplayer.checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) 
     // check all items in a table
 
@@ -440,6 +385,7 @@ async {item[]} eosplayer.checkTableRange(code, tableName, scope, from, length = 
     
 async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_position = 1)
     // check a specific item in a table 
+
 
 `;
         return helpInfo;
