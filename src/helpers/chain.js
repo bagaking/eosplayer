@@ -36,21 +36,28 @@ module.exports = class ChainHelper {
         return (await this._eos.abiJsonToBin(params)).binargs;
     }
 
-    async getAllActions(accountName, pos) {
-        if (!pos) {
-            pos = 0;
-        }
-        let newPos = pos;
+    /**
+     * get account info of any user
+     * @param {string|number} account_name - string name or id
+     * @return {Promise<{AccountInfo}>}
+     */
+    async getAccountInfo(account_name) {
+        return await this._eos.getAccount({account_name})
+    }
+
+    /**
+     * get account info of any user
+     * @param {string|number} account_name - string name or id
+     * @return {Promise<Array>}
+     */
+    async getAllActions(account_name, startPos = 0) {
+        let pos = startPos;
         let actions = [];
         while (true) {
-            let ret = await this._eos.getActions({
-                account_name: accountName,
-                pos: newPos,
-                offset: 100
-            })
+            let ret = await this._eos.getActions({account_name, pos, offset: 100});
             let acts = ret.actions;
             actions = actions.concat(acts);
-            newPos += 100;
+            pos += 100;
             if (acts.length < 100) {
                 return actions;
             }
