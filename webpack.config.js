@@ -3,7 +3,7 @@ const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
     entry: {
-        eosplayer : './src/index.js'
+        eosplayer : './scatterBinder/index.js'
     },
     module: {
         rules: [
