@@ -1,4 +1,4 @@
-# 用 scatter 在私链上玩 scatter
+# 用 scatter 在私链上玩 Dapp
 
 ## 配置 scatter
 
