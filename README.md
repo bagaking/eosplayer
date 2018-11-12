@@ -12,7 +12,7 @@ eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provi
 
 ### Events
 
-ERR_TRANSCAL_FAILED  
+ERR_TRANSCAL_FAILED
 
 ### APIs
 
@@ -77,8 +77,8 @@ async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_pos
 
 ### Events
 
-ERR_GET_SCATTER_FAILED  
-ERR_GET_IDENTITY_FAILED  
+ERR_GET_SCATTER_FAILED
+ERR_GET_IDENTITY_FAILED
 
 ### APIs
 
@@ -101,10 +101,10 @@ async {void} eosplayer.logout() // return back the identity
 
 ``` js
 
-window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */  
-window.env = env; /** {isPc} */  
-window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */  
-window.eosplayer = new ScatterPlayer(networks);  
+window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
+window.env = env; /** {isPc} */
+window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
+window.eosplayer = new ScatterPlayer(networks);
 
 ```
 
@@ -125,10 +125,10 @@ in this version, scatter are split from the Player.
 
 #### add
 
-- Module: scatterBinder  
-- Class: src/eosProvider  
-- Class: scatterBinder/scatterPlayer  
-- void eventHandler.enableEvents(eventKeys)  
+- Module: scatterBinder
+- Class: src/eosProvider
+- Class: scatterBinder/scatterPlayer
+- void eventHandler.enableEvents(eventKeys)
 
 #### remove
 
@@ -136,7 +136,9 @@ in this version, scatter are split from the Player.
 
 #### modify
 
-- Rename events :  
+- Rename events :
   - ERR_TRANSCAL_FAILED
   - ERR_GET_SCATTER_FAILED
   - ERR_GET_IDENTITY_FAILED
+
+### 0.1.3

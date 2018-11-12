@@ -1,4 +1,4 @@
-const Asset = require('./asset');
+const Asset = require('./utils/asset');
 
 
 /**
@@ -102,7 +102,7 @@ const EVENT_NAMES = {
     ERR_TRANSCAL_FAILED: "ERR_TRANSCAL_FAILED"
 }
 
-const EventHandler = require('./eventHandler')
+const EventHandler = require('./utils/eventHandler')
 const EosProvider = require('./eosProvider')
 
 class Player extends EosProvider {

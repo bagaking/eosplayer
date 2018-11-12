@@ -1,6 +1,6 @@
 const Eos = require('eosjs');
 
-const DB = require('../src/db');
+const DB = require('../src/utils/db');
 const Player = require('../src/player')
 
 const EVENT_NAMES = {
