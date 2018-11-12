@@ -1,8 +1,5 @@
-const Eos = require('eosjs');
-
-const DB = require('./db');
 const Asset = require('./asset');
-const EventHandler = require('./eventHandler')
+
 
 /**
  * @interface eosAPI
@@ -101,127 +98,21 @@ const EventHandler = require('./eventHandler')
  * @property {Object} voter_info
  */
 
+const EVENT_NAMES = {
+    ERR_TRANSCAL_FAILED: "transcalFailed"
+}
 
-class Player extends EventHandler {
+const EventHandler = require('./eventHandler')
+const EosProvider = require('./eosProvider')
+module.exports = class Player extends EosProvider {
 
-    constructor(netConf) {
-        super(Player.EventNames);
-
-        this._networks = netConf;
-        this._db = new DB({
-            network_name: 'mainnet',
-            lang: 'ch',
-        });
-        console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
+    constructor() {
+        super();
+        this.events.enableEvents(EVENT_NAMES);
     }
 
-    static get EventNames() {
-        return {
-            getScatterFailed: "getScatterFailed",
-            getIdentityFailed: "getIdentityFailed",
-            transcalFailed: "transcalFailed"
-        }
-    }
-
-    /**
-     * switch to an network with name
-     * @param key
-     */
-    switchNetwork(key) {
-        if (key in this._networks) {
-            this._db.set("network_name", key);
-            this._eosClient = null;
-            console.log(`network changed to ${this.netName}.`)
-        } else {
-            console.log(`network ${key} cannot find.`)
-        }
-    }
-
-    /**
-     * add net config to table at runtime
-     * @param netName
-     * @param conf
-     */
-    setNetConf(netName, conf) {
-        this._networks[netName] = conf;
-    }
-
-    /**
-     * get network name in use
-     */
-    get netName() {
-        return this._db.get("network_name");
-    }
-
-    /**
-     * get network config of cur netName
-     */
-    get netConf() {
-        return this._networks[this.netName];
-    }
-
-    /**
-     * try get scatter
-     * @see https://get-scatter.com/docs/examples-interaction-flow
-     * @return {Scatter}
-     */
-    get scatter() {
-        let scatter = window.scatter;
-        if (!scatter) {
-            let err = new Error('scatter cannot found');
-            this.emitEvent(Player.EventNames.getScatterFailed, err);
-            throw err;
-        }
-        return scatter;
-    }
-
-    /**
-     * get or create scatter
-     * @return {eosAPI}
-     */
-    get eosClient() {
-        if (!this._eosClient) {
-            this._eosClient = this.scatter.eos(this.netConf, Eos, {}, this.netConf.protocol);
-        }
-        return this._eosClient;
-    }
-
-    /**
-     * getIdentity of cur scatter user
-     * @return {Promise<{Identity}>}
-     */
-    async getIdentity() {
-        let originChainID = this._db.get("latest_chain_id");
-        if ((!!originChainID) && this.netConf.chainId !== originChainID) {
-            console.log(`a changing of chain_id detected: ${originChainID} -> ${this.netConf.chainId} `);
-            await this.logout();
-            console.log(`log out from ${originChainID}`);
-        }
-        await this.scatter.getIdentity({
-            accounts: [this.netConf],
-        }).catch((err) => {
-            this.emitEvent(Player.EventNames.getIdentityFailed, err);
-            throw err;
-        });
-        ;
-        this._db.set("latest_chain_id", this.netConf.chainId);
-        return this.scatter.identity.accounts.find(acc => acc.blockchain === 'eos');
-    }
-
-    /**
-     * login - require account identity from scatter
-     * @return {Promise<{Identity}>}
-     */
-    async login() {
-        return await this.getIdentity();
-    }
-
-    /**
-     * logout
-     * @return {Promise<void>}
-     */
-    async logout() {
-        return await this.scatter.forgetIdentity(this.netName);
+    get events(){
+        return this._events || (this._events = new EventHandler());
     }
 
     /**
@@ -274,7 +165,7 @@ class Player extends EventHandler {
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this.eosClient.transfer(account.name, target, quantity, memo, transOptions).catch(
             err => {
-                this.emitEvent(Player.EventNames.transcalFailed, err)
+                this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err)
                 throw err;
             }
         );
@@ -340,7 +231,7 @@ class Player extends EventHandler {
      * @param code
      * @return {Promise<void>}
      */
-    async contract(code){
+    async contract(code) {
         return await this.eosClient.contract(code)
     }
 
@@ -492,30 +383,15 @@ class Player extends EventHandler {
 
 # eosplayer ${this.version}
         
-## Imported libs
-
-window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
-window.env = env; /** {isPc} */
-window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
-window.eosplayer = new Player(networks);
-        
 ## Usage of eosplayer
 
 get {string} help // get help info of usage
 get {string} version // get the version info
 
-{void} eosplayer.switchNetwork(val) // switch network
-{void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime
+{void} eosplayer.event.setEvent(event, fnCallback, context) //listen to a event
 
-get {string} eosplayer.netName // get current network name
-get {string} eosplayer.netConf // get current network config
-
-get {Scatter} eosplayer.scatter // get scatter instance
 get {Eos} eosplayer.eosClient // get eos instance
-
 async {Identity} eosplayer.getIdentity() // get identity
-async {Identity} eosplayer.login() // let user allow you using identity
-async {void} eosplayer.logout() // return back the identity
 
 async {AccountInfo} eosplayer.getAccountInfo(account_name = identity.name) 
     // get account info for any user
@@ -526,7 +402,7 @@ async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.toke
 async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 
     // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async {tx} transfer(target, quantity, memo = "")
+async {tx} eosplayer.transfer(target, quantity, memo = "")
     // transfer tokens to target
 
 async {tx} eosplayer.transcal(code, quantity, func, ...args) 
@@ -538,31 +414,28 @@ async {tx} eosplayer.transget(code, symbol, func, ...args)
 async {Contract} eosplayer.contract(code)
     // get contract object
 
-async {tx} call(code, func, jsonData)
+async {tx} eosplayer.call(code, func, jsonData)
     // send a action to contract
 
-async {tx} waitTx(txID, maxRound = 12, timeSpanMS = 1009); 
+async {tx} eosplayer.waitTx(txID, maxRound = 12, timeSpanMS = 1009); 
     // check a transaction info, retry once per sec until success
 
-async {table} checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) 
+async {table} eosplayer.checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) 
     // check all items in a table
 
-async {item[]} checkTableRange(code, tableName, scope, from, length = 1, index_position = 1)
+async {item[]} eosplayer.checkTableRange(code, tableName, scope, from, length = 1, index_position = 1)
     // check a range of items in a table
     
-async {item} checkTableItem(code, tableName, scope, key = 0, index_position = 1)
+async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_position = 1)
     // check a specific item in a table 
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*
  == for more : {@url https://github.com/bagaking/eosplayer} ===
 *= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 `;
-        //console.log(helpInfo);
         return helpInfo;
     }
 
 }
-
-module.exports = Player
 
 
