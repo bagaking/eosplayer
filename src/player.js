@@ -99,19 +99,20 @@ const Asset = require('./asset');
  */
 
 const EVENT_NAMES = {
-    ERR_TRANSCAL_FAILED: "transcalFailed"
+    ERR_TRANSCAL_FAILED: "ERR_TRANSCAL_FAILED"
 }
 
 const EventHandler = require('./eventHandler')
 const EosProvider = require('./eosProvider')
-module.exports = class Player extends EosProvider {
+
+class Player extends EosProvider {
 
     constructor() {
         super();
         this.events.enableEvents(EVENT_NAMES);
     }
 
-    get events(){
+    get events() {
         return this._events || (this._events = new EventHandler());
     }
 
@@ -385,6 +386,12 @@ module.exports = class Player extends EosProvider {
         
 ## Usage of eosplayer
 
+### Events
+
+ERR_TRANSCAL_FAILED
+
+### APIs
+
 get {string} help // get help info of usage
 get {string} version // get the version info
 
@@ -429,9 +436,6 @@ async {item[]} eosplayer.checkTableRange(code, tableName, scope, from, length = 
 async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_position = 1)
     // check a specific item in a table 
 
-  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*
- == for more : {@url https://github.com/bagaking/eosplayer} ===
-*= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 `;
         return helpInfo;
     }
@@ -439,3 +443,4 @@ async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_pos
 }
 
 
+module.exports = Player;

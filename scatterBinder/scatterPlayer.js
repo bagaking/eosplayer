@@ -3,15 +3,13 @@ const Eos = require('eosjs');
 const DB = require('../src/db');
 const Player = require('../src/player')
 
-
 const EVENT_NAMES = {
-    ERR_GET_SCATTER_FAILED: "getScatterFailed",
-    ERR_GET_IDENTITY_FAILED: "getIdentityFailed",
+    ERR_GET_SCATTER_FAILED: "ERR_GET_SCATTER_FAILED",
+    ERR_GET_IDENTITY_FAILED: "ERR_GET_IDENTITY_FAILED",
 }
 
-module.exports = class ScatterPlayer extends Player
-{
-    constructor(netConf){
+class ScatterPlayer extends Player {
+    constructor(netConf) {
         super();
         this.events.enableEvents(EVENT_NAMES);
 
@@ -121,7 +119,7 @@ module.exports = class ScatterPlayer extends Player
         await this.scatter.getIdentity({
             accounts: [this.netConf],
         }).catch((err) => {
-            this.events.emitEvent(Player.EventNames.ERR_GET_IDENTITY_FAILED, err);
+            this.events.emitEvent(EVENT_NAMES.ERR_GET_IDENTITY_FAILED, err);
             throw err;
         });
         ;
@@ -129,9 +127,18 @@ module.exports = class ScatterPlayer extends Player
         return this.scatter.identity.accounts.find(acc => acc.blockchain === 'eos');
     }
 
-    get help(){
+    get help() {
         return super.help() + `
-    
+  
+## Usage of eosplayer (for broswer)
+  
+### Events
+
+ERR_GET_SCATTER_FAILED
+ERR_GET_IDENTITY_FAILED
+
+### APIs
+
 {void} eosplayer.switchNetwork(val) // switch network
 {void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime    
 
@@ -153,3 +160,5 @@ window.eosplayer = new ScatterPlayer(networks);
 `
     }
 }
+
+module.exports = ScatterPlayer;

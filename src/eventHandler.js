@@ -3,13 +3,14 @@
 module.exports = class EventHandler {
 
     constructor(supportedEvents) {
+        this._eventMap = {};
+        this._defaultCb = function (v) {
+            alert(`${JSON.stringify(this)} : ${JSON.stringify(v)}`);
+        }
+
         if (!!supportedEvents) {
             this.enableEvents(supportedEvents);
             this._eventMap = Array.isArray(supportedEvents) ? {} : supportedEvents;
-        }
-
-        this._defaultCb = function (v) {
-            alert(`${JSON.stringify(this)} : ${JSON.stringify(v)}`);
         }
     }
 
