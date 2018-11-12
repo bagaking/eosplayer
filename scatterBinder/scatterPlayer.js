@@ -128,14 +128,14 @@ class ScatterPlayer extends Player {
     }
 
     get help() {
-        return super.help() + `
+        return super.help + `
   
 ## Usage of eosplayer (for broswer)
   
 ### Events
 
-ERR_GET_SCATTER_FAILED
-ERR_GET_IDENTITY_FAILED
+ERR_GET_SCATTER_FAILED  
+ERR_GET_IDENTITY_FAILED  
 
 ### APIs
 

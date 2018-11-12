@@ -359,7 +359,7 @@ class Player extends EosProvider {
      *  get version
      */
     get version() {
-        return "0.1.1";
+        return "0.1.2";
     }
 
     /**

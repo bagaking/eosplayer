@@ -2,22 +2,19 @@
 
 eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provides better usability for the application layer. It can be used on browsers already installed scatter or in Dapp wallets..
 
-## build
+## build (for broswer)
 
 `npm run build` or `yarn run build`
 
-## Usage
+---
 
-### Inserted libs
+## Usage of eosplayer
 
-``` js
-window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
-window.env = env; /** {isPc} */
-window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
-window.eosplayer = new Player(networks);
-```
+### Events
 
-### eosplayer
+ERR_TRANSCAL_FAILED  
+
+### APIs
 
 you can using `help` commond to show api documents on chrome console :
 
@@ -34,18 +31,10 @@ You can use these interfaces to interact with scatter.
 get {string} help // get help info of usage
 get {string} version // get the version info
 
-{void} eosplayer.switchNetwork(val) // switch network
-{void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime
+{void} eosplayer.event.setEvent(event, fnCallback, context) //listen to a event
 
-get {string} eosplayer.netName // get current network name
-get {string} eosplayer.netConf // get current network config
-
-get {Scatter} eosplayer.scatter // get scatter instance
 get {Eos} eosplayer.eosClient // get eos instance
-
 async {Identity} eosplayer.getIdentity() // get identity
-async {Identity} eosplayer.login() // let user allow you using identity
-async {void} eosplayer.logout() // return back the identity
 
 async {AccountInfo} eosplayer.getAccountInfo(account_name = identity.name)
     // get account info for any user
@@ -56,7 +45,7 @@ async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.toke
 async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token")
     // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async {txID} transfer(target, quantity, memo = "")
+async {tx} eosplayer.transfer(target, quantity, memo = "")
     // transfer tokens to target
 
 async {tx} eosplayer.transcal(code, quantity, func, ...args)
@@ -68,22 +57,58 @@ async {tx} eosplayer.transget(code, symbol, func, ...args)
 async {Contract} eosplayer.contract(code)
     // get contract object
 
-async {tx} call(code, func, jsonData)
+async {tx} eosplayer.call(code, func, jsonData)
     // send a action to contract
 
-async {tx} eosplayer.waitTx(txID, maxRound = 12, timeSpanMS = 1009)
+async {tx} eosplayer.waitTx(txID, maxRound = 12, timeSpanMS = 1009);
     // check a transaction info, retry once per sec until success
 
-async {table} checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1)
+async {table} eosplayer.checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1)
     // check all items in a table
 
-async {item[]} checkTableRange(code, tableName, scope, from, length = 1, index_position = 1)
+async {item[]} eosplayer.checkTableRange(code, tableName, scope, from, length = 1, index_position = 1)
     // check a range of items in a table
 
-async {item} checkTableItem(code, tableName, scope, key = 0, index_position = 1)
+async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_position = 1)
     // check a specific item in a table
 ```
 
+## Usage of eosplayer (for broswer)
+
+### Events
+
+ERR_GET_SCATTER_FAILED  
+ERR_GET_IDENTITY_FAILED  
+
+### APIs
+
+``` js
+
+{void} eosplayer.switchNetwork(val) // switch network
+{void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime
+
+get {Scatter} eosplayer.scatter // get scatter instance
+
+get {string} eosplayer.netName // get current network name
+get {string} eosplayer.netConf // get current network config
+
+async {Identity} eosplayer.login() // let user allow you using identity
+async {void} eosplayer.logout() // return back the identity
+
+```
+
+## Imported libs
+
+``` js
+
+window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */  
+window.env = env; /** {isPc} */  
+window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */  
+window.eosplayer = new ScatterPlayer(networks);  
+
+```
+
+---
 
 ## Updates
 
@@ -94,3 +119,24 @@ async {item} checkTableItem(code, tableName, scope, key = 0, index_position = 1)
 - async eosplayer.transfer(target, quantity, memo)
 - async eosplayer.contract(code)
 
+### 0.1.2
+
+in this version, scatter are split from the Player.
+
+#### add
+
+- Module: scatterBinder  
+- Class: src/eosProvider  
+- Class: scatterBinder/scatterPlayer  
+- void eventHandler.enableEvents(eventKeys)  
+
+#### remove
+
+- Player.EventNames
+
+#### modify
+
+- Rename events :  
+  - ERR_TRANSCAL_FAILED
+  - ERR_GET_SCATTER_FAILED
+  - ERR_GET_IDENTITY_FAILED
