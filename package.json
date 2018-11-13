@@ -6,6 +6,7 @@
   "repository": "git@github.com:bagaking/eosplayer.git",
   "author": "bagaking <zfaustk@qq.com>",
   "license": "Apache License 2.0",
+  "keywords": ["eos", "tonarts", "contract", "eosjs", "scatter", "blockchain"],
   "scripts": {
     "build": "webpack -p",
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec"
