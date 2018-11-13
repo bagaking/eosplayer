@@ -28,10 +28,13 @@ module.exports = class ChainHelper {
         return await this._eos.contract(code)
     }
 
+    async getAbi(code){
+        return await this._eos.getAbi(code);
+    }
+
     async getTableAbi(code, tableName){
-        let abi = this._eos.getAbi(code);
-        let tableInd = abi.tables.find(desc => desc.name === tableName);
-        return abi.tables[tableInd];
+        let abi = await this.getAbi(code);
+        return abi.abi.tables.find(desc => desc.name === tableName);
     }
 
     async abiJsonToBin(code, action, args) {
@@ -159,7 +162,7 @@ module.exports = class ChainHelper {
                 lower_bound: _l.toFixed(0),
                 upper_bound: _u.toFixed(0),
             }).then(result => {
-                let _myInd = pool.find(v => v === _promise);
+                let _myInd = pool.findIndex(v => v === _promise);
                 pool.splice(_myInd, 1);
                 if (!result) {
                     return;
@@ -208,6 +211,7 @@ module.exports = class ChainHelper {
      * @return {Promise<Array>}
      */
     async checkTable(code, tableName, scope, lower_bound = 0, upper_bound = -1, limit = 10, index_position = 1) {
+        console.log('search ',Date.now(), lower_bound, upper_bound, limit);
         let result = await this._eos.getTableRows({
             json: true,
             code: code,
@@ -220,10 +224,11 @@ module.exports = class ChainHelper {
         });
         let ret = result && result.rows ? result.rows : [];
         if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // deal with 'more'
-            let abi = this.getTableAbi(code, tableName);
+            let abi = await this.getTableAbi(code, tableName);
             let key = abi.key_names[0];
             let largestIndVal = ret[ret.length - 1][key]; // the new start from where the last search end.
-            return ret.concat(await this.checkTable(code, tableName, scope, largestIndVal + 1, upper_bound, limit - ret.length, index_position)); //todo: the meaning of 'limit', should be considered
+            return ret.concat(await this.checkTable(code, tableName, scope, BN(largestIndVal).plus(1).toFixed(0), upper_bound, limit - ret.length, index_position));
+            //todo: the meaning of 'limit', should be considered
         }
         return ret;
     }
