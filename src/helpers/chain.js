@@ -28,6 +28,11 @@ module.exports = class ChainHelper {
         return await this._eos.contract(code)
     }
 
+    async getTableAbi(code, tableName){
+        let abi = this._eos.getAbi(code);
+        let tableInd = abi.tables.find(desc => desc.name === tableName);
+        return abi.tables[tableInd];
+    }
 
     async abiJsonToBin(code, action, args) {
         let params = {
@@ -190,6 +195,7 @@ module.exports = class ChainHelper {
         return ret;
     }
 
+
     /**
      * check a table
      * @param {string} code - the contract
@@ -213,10 +219,12 @@ module.exports = class ChainHelper {
             index_position
         });
         let ret = result && result.rows ? result.rows : [];
-        // if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // deal with 'more'
-        //     let largestIndVal = ret[ret.length - 1].id; //todo: the primary key should be obtained from the abi
-        //     return ret.concat(this.checkTable(code, tableName, scope, largestIndVal + 1, upper_bound, limit - ret.length, index_position));
-        // }
+        if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // deal with 'more'
+            let abi = this.getTableAbi(code, tableName);
+            let key = abi.key_names[0];
+            let largestIndVal = ret[ret.length - 1][key]; // the new start from where the last search end.
+            return ret.concat(await this.checkTable(code, tableName, scope, largestIndVal + 1, upper_bound, limit - ret.length, index_position)); //todo: the meaning of 'limit', should be considered
+        }
         return ret;
     }
 
