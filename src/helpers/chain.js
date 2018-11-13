@@ -126,35 +126,17 @@ module.exports = class ChainHelper {
     }
 
     /**
-     * check a table
+     *
      * @param {string} code - the contract
      * @param {string} tableName - name of the table
      * @param {string} scope
-     * @param {number | string} lower_bound
-     * @param {number | string} upper_bound
-     * @param {number} limit
-     * @param {number} index_position
+     * @param {string|number} lower - lower position, can be number or stringNumber, cannot be account_name
+     * @param {string|number} upper - lower position, can be number or stringNumber, cannot be account_name
+     * @param {Array} hint - hint table to speed up search
+     * @example getTable("contract", "table", "scope", 0, -1, "4611686018427387903", "6917529027641081856", "9223372036854775808", "13835058055282163712")
      * @return {Promise<Array>}
      */
-    async checkTable(code, tableName, scope, lower_bound = 0, upper_bound = -1, limit = 10, index_position = 1) {
-        let result = await this._eos.getTableRows({
-            json: true,
-            code: code,
-            scope: scope,
-            table: tableName,
-            limit,
-            lower_bound,
-            upper_bound,
-            index_position
-        });
-        if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // todo: deal with 'more' ?
-            throw new Error("checkTable error: tag 'more' detected but not handled");
-        }
-
-        return result && result.rows ? result.rows : [];
-    }
-
-    async checkTableAllInRange(code, tableName, scope, lower, upper, ...hint) {
+    async getTable(code, tableName, scope, lower, upper, ...hint) {
         lower = lower ? BN(lower) : BN(0);
         upper = upper && upper !== -1 ? BN(upper) : BN("18446744073709551615")
 
@@ -201,12 +183,43 @@ module.exports = class ChainHelper {
         }
 
         while(pool.length > 0) {
-            await forMs(100);
+            await forMs(50);
         }
         console.log('done search ',Date.now(), lower.toFixed(0), upper.toFixed(0));
 
         return ret;
     }
+
+    /**
+     * check a table
+     * @param {string} code - the contract
+     * @param {string} tableName - name of the table
+     * @param {string} scope
+     * @param {number | string} lower_bound
+     * @param {number | string} upper_bound
+     * @param {number} limit
+     * @param {number} index_position
+     * @return {Promise<Array>}
+     */
+    async checkTable(code, tableName, scope, lower_bound = 0, upper_bound = -1, limit = 10, index_position = 1) {
+        let result = await this._eos.getTableRows({
+            json: true,
+            code: code,
+            scope: scope,
+            table: tableName,
+            limit,
+            lower_bound,
+            upper_bound,
+            index_position
+        });
+        let ret = result && result.rows ? result.rows : [];
+        // if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // deal with 'more'
+        //     let largestIndVal = ret[ret.length - 1].id; //todo: the primary key should be obtained from the abi
+        //     return ret.concat(this.checkTable(code, tableName, scope, largestIndVal + 1, upper_bound, limit - ret.length, index_position));
+        // }
+        return ret;
+    }
+
 
     /**
      * check range in table
@@ -221,7 +234,7 @@ module.exports = class ChainHelper {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
-        let rows = await this.checkTableAllInRange(code, tableName, scope, from, (typeof from === "number") ? from + length : undefined);
+        let rows = await this.checkTable(code, tableName, scope, from, (typeof from === "number") ? from + length : undefined);
         return rows;
     }
 
