@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/bagaking/eosglue#readme",
   "dependencies": {
+    "bignumber.js": "^8.0.1",
     "eosjs": "^16.0.9",
     "idb": "^2.1.3"
   },

@@ -1,4 +1,6 @@
 'use strict'
+const {forMs} = require("../utils/wait")
+const BN = require('bignumber.js').BigNumber;
 
 module.exports = class ChainHelper {
 
@@ -23,7 +25,7 @@ module.exports = class ChainHelper {
      * @return {Promise<void>}
      */
     async getContract(code) {
-        return await this.eosClient.contract(code)
+        return await this._eos.contract(code)
     }
 
 
@@ -128,13 +130,13 @@ module.exports = class ChainHelper {
      * @param {string} code - the contract
      * @param {string} tableName - name of the table
      * @param {string} scope
+     * @param {number | string} lower_bound
+     * @param {number | string} upper_bound
      * @param {number} limit
-     * @param {number} lower_bound
-     * @param {number} upper_bound
      * @param {number} index_position
-     * @return {Promise<Object>}
+     * @return {Promise<Array>}
      */
-    async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
+    async checkTable(code, tableName, scope, lower_bound = 0, upper_bound = -1, limit = 10, index_position = 1) {
         let result = await this._eos.getTableRows({
             json: true,
             code: code,
@@ -145,8 +147,60 @@ module.exports = class ChainHelper {
             upper_bound,
             index_position
         });
-        // todo: deal with 'more' ?
-        return result;
+        if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // todo: deal with 'more' ?
+            throw new Error("checkTable error: tag 'more' detected but not handled");
+        }
+
+        return result && result.rows ? result.rows : [];
+    }
+
+    async checkTableAllInRange(code, tableName, scope, lower, upper) {
+        lower = lower ? BN(lower) : BN(0);
+        upper = upper ? BN(upper) : BN("18446744073709551615")
+
+        let ret = [];
+        let pool = [];
+        const Require = (_l, _u) => {
+            console.log('search ',Date.now(), _l.toFixed(0), _u.toFixed(0));
+            if (_l.gte(_u)) return;
+            let _promise = this._eos.getTableRows({
+                json: true,
+                code: code,
+                scope: scope,
+                table: tableName,
+                limit: -1,
+                lower_bound: _l.toFixed(0),
+                upper_bound: _u.toFixed(0),
+            }).then(result => {
+                let _myInd = pool.find(v => v === _promise);
+                pool.splice(_myInd, 1);
+                if (!result) {
+                    return;
+                }
+
+                if (!result.more) {
+                    if(result.rows){
+                        ret.push(...result.rows);
+                    }
+                } else {
+                    let _mid = _u.minus(_l).dividedBy(2).decimalPlaces(0).plus(_l);
+                    Require(_l, _mid.minus(1));
+                    Require(_mid, _u);
+                }
+            }).catch(err => {
+                let _myInd = pool.find(v => v === _promise);
+                pool.splice(_myInd, 1);
+                throw err;
+            })
+            pool.push(_promise);
+        }
+        Require(lower, upper);
+        while(pool.length > 0) {
+            await forMs(100);
+        }
+        console.log('done search ',Date.now(), lower.toFixed(0), upper.toFixed(0));
+
+        return ret;
     }
 
     /**
@@ -163,8 +217,8 @@ module.exports = class ChainHelper {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
-        let result = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : undefined, index_position);
-        return result && result.rows ? result.rows : [];
+        let rows = await this.checkTable(code, tableName, scope, from, (typeof from === "number") ? from + length : undefined, length, index_position);
+        return rows;
     }
 
     /**
