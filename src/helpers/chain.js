@@ -28,11 +28,11 @@ module.exports = class ChainHelper {
         return await this._eos.contract(code)
     }
 
-    async getAbi(code){
+    async getAbi(code) {
         return await this._eos.getAbi(code);
     }
 
-    async getTableAbi(code, tableName){
+    async getTableAbi(code, tableName) {
         let abi = await this.getAbi(code);
         return abi.abi.tables.find(desc => desc.name === tableName);
     }
@@ -58,20 +58,56 @@ module.exports = class ChainHelper {
     /**
      * get account info of any user
      * @param {string|number} account_name - string name or id
-     * @return {Promise<Array>}
+     * @return {Promise<number>}
      */
-    async getAllActions(account_name, startPos = 0) {
-        let pos = startPos;
-        let actions = [];
-        while (true) {
-            let ret = await this._eos.getActions({account_name, pos, offset: 100});
-            let acts = ret.actions;
-            actions = actions.concat(acts);
-            pos += 100;
-            if (acts.length < 100) {
-                return actions;
-            }
+    async getActionCount(account_name) {
+        let recentActions = await this.getRecentActions(account_name);
+        if (!recentActions || !recentActions.actions) {
+            throw new Error(`getActionCount failed: cannot find recent actions of ${account_name})`);
         }
+        let acts = recentActions.actions;
+        return acts.length === 0 ? 0 : [acts.length - 1].account_action_seq;
+    }
+
+    async getRecentActions(account_name) {
+        return await this._eos.getActions({account_name});
+    }
+
+    /**
+     * get account info of any user
+     * @param {string|number} account_name - string name or id
+     * @param {number} startPos - start from 0
+     * @param {number} offset - when offset is 0, one object returned
+     * @return {Promise<Array>} - [startPos, ..., startPos + offset]
+     */
+    async getActions(account_name, startPos = 0, offset = 0) {
+        let pos = startPos;
+        let endPos = startPos + offset;
+        let actions = [];
+
+        while (true) {
+            let ret = await this._eos.getActions({account_name, pos, offset: endPos - pos});
+            if (!ret || !ret.actions) {
+                throw new Error(`getActions failed: cannot find actions of ${account_name} (pos:${pos}, offset:${offset})`);
+            }
+            let acts = ret.actions;
+
+            console.log('getActions find', acts[acts.length - 1]);
+
+            let maxActionInd = acts.length === 0 ? pos : acts[acts.length - 1].account_action_seq;
+            if (maxActionInd <= pos) {
+                break;
+            }
+
+            actions.push(...acts);
+            if (maxActionInd >= endPos) {
+                break;
+            }
+
+            pos = maxActionInd + 1;
+        }
+
+        return actions;
     }
 
     /**
@@ -151,7 +187,7 @@ module.exports = class ChainHelper {
         let ret = [];
         let pool = [];
         const Require = (_l, _u) => {
-            console.log('search ',Date.now(), _l.toFixed(0), _u.toFixed(0));
+            console.log('search ', Date.now(), _l.toFixed(0), _u.toFixed(0));
             if (_l.gte(_u)) return;
             let _promise = this._eos.getTableRows({
                 json: true,
@@ -169,7 +205,7 @@ module.exports = class ChainHelper {
                 }
 
                 if (!result.more) {
-                    if(result.rows){
+                    if (result.rows) {
                         ret.push(...result.rows);
                     }
                 } else {
@@ -184,16 +220,19 @@ module.exports = class ChainHelper {
             })
             pool.push(_promise);
         }
-        if(!hint || hint.length <= 0) {
+        if (!hint || hint.length <= 0) {
             Require(lower, upper);
         } else {
-            [... hint.map(i => BN(i)), upper].reduce((_l, _m) => { Require(_l,_m); return _m; }, lower);
+            [... hint.map(i => BN(i)), upper].reduce((_l, _m) => {
+                Require(_l, _m);
+                return _m;
+            }, lower);
         }
 
-        while(pool.length > 0) {
+        while (pool.length > 0) {
             await forMs(50);
         }
-        console.log('done search ',Date.now(), lower.toFixed(0), upper.toFixed(0));
+        console.log('done search ', Date.now(), lower.toFixed(0), upper.toFixed(0));
 
         return ret;
     }
@@ -204,14 +243,14 @@ module.exports = class ChainHelper {
      * @param {string} code - the contract
      * @param {string} tableName - name of the table
      * @param {string} scope
+     * @param {number} limit
      * @param {number | string} lower_bound
      * @param {number | string} upper_bound
-     * @param {number} limit
      * @param {number} index_position
      * @return {Promise<Array>}
      */
-    async checkTable(code, tableName, scope, lower_bound = 0, upper_bound = -1, limit = 10, index_position = 1) {
-        console.log('search ',Date.now(), lower_bound, upper_bound, limit);
+    async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
+        console.log('search ', Date.now(), lower_bound, upper_bound, limit);
         let result = await this._eos.getTableRows({
             json: true,
             code: code,
@@ -227,7 +266,7 @@ module.exports = class ChainHelper {
             let abi = await this.getTableAbi(code, tableName);
             let key = abi.key_names[0];
             let largestIndVal = ret[ret.length - 1][key]; // the new start from where the last search end.
-            return ret.concat(await this.checkTable(code, tableName, scope, BN(largestIndVal).plus(1).toFixed(0), upper_bound, limit - ret.length, index_position));
+            return ret.concat(await this.checkTable(code, tableName, scope, limit - ret.length, BN(largestIndVal).plus(1).toFixed(0), upper_bound, index_position));
             //todo: the meaning of 'limit', should be considered
         }
         return ret;
@@ -241,13 +280,14 @@ module.exports = class ChainHelper {
      * @param {string} scope
      * @param {number | string} from - start position or username
      * @param {number} length
+     * @param {number} index_position
      * @return {Promise<Array>}
      */
-    async checkTableRange(code, tableName, scope, from, length = 1) {
+    async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
-        let rows = await this.checkTable(code, tableName, scope, from, (typeof from === "number") ? from + length : undefined);
+        let rows = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : -1, index_position);
         return rows;
     }
 
