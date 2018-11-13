@@ -12,7 +12,9 @@ eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provi
 
 ### Events
 
+```js
 ERR_TRANSCAL_FAILED
+```
 
 ### APIs
 
@@ -73,12 +75,22 @@ async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_pos
     // check a specific item in a table
 ```
 
+#### chain APIs
+
+```js
+
+//todo
+
+```
+
 ## Usage of eosplayer (for broswer)
 
 ### Events
 
-ERR_GET_SCATTER_FAILED
+```js
+ERR_GET_SCATTER_FAILED  
 ERR_GET_IDENTITY_FAILED
+```
 
 ### APIs
 
