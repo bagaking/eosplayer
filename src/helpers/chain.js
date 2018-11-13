@@ -154,9 +154,9 @@ module.exports = class ChainHelper {
         return result && result.rows ? result.rows : [];
     }
 
-    async checkTableAllInRange(code, tableName, scope, lower, upper) {
+    async checkTableAllInRange(code, tableName, scope, lower, upper, ...hint) {
         lower = lower ? BN(lower) : BN(0);
-        upper = upper ? BN(upper) : BN("18446744073709551615")
+        upper = upper && upper !== -1 ? BN(upper) : BN("18446744073709551615")
 
         let ret = [];
         let pool = [];
@@ -194,7 +194,12 @@ module.exports = class ChainHelper {
             })
             pool.push(_promise);
         }
-        Require(lower, upper);
+        if(!hint || hint.length <= 0) {
+            Require(lower, upper);
+        } else {
+            [... hint.map(i => BN(i)), upper].reduce((_l, _m) => { Require(_l,_m); return _m; }, lower);
+        }
+
         while(pool.length > 0) {
             await forMs(100);
         }
@@ -210,14 +215,13 @@ module.exports = class ChainHelper {
      * @param {string} scope
      * @param {number | string} from - start position or username
      * @param {number} length
-     * @param {number} index_position
      * @return {Promise<Array>}
      */
-    async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) {
+    async checkTableRange(code, tableName, scope, from, length = 1) {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
-        let rows = await this.checkTable(code, tableName, scope, from, (typeof from === "number") ? from + length : undefined, length, index_position);
+        let rows = await this.checkTableAllInRange(code, tableName, scope, from, (typeof from === "number") ? from + length : undefined);
         return rows;
     }
 
@@ -230,8 +234,8 @@ module.exports = class ChainHelper {
      * @param {number} index_position
      * @return {Promise<*>}
      */
-    async checkTableItem(code, tableName, scope, key = 0, index_position = 1) {
-        let rows = await this.checkTableRange(code, tableName, scope, key, 1, index_position);
+    async checkTableItem(code, tableName, scope, key = 0) {
+        let rows = await this.checkTableRange(code, tableName, scope, key, 1);
         return rows[0];
     }
 
