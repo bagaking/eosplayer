@@ -150,12 +150,23 @@ window.eosplayer = new ScatterPlayer(networks);
 
 ## Updates
 
-### 0.1.1
+### 0.3.0-Beta.1
 
 #### add
 
-- async eosplayer.transfer(target, quantity, memo)
-- async eosplayer.contract(code)
+- Chain: getTable
+- Chain: getActions
+
+#### modify
+
+- Chain: checkTableRange suppot 'more' now
+
+### 0.2.0 (no release)
+
+#### add
+
+- Class: chain.js
+- Method: get eosplayer.chain
 
 ### 0.1.2
 
@@ -166,7 +177,7 @@ in this version, scatter are split from the Player.
 - Module: scatterBinder
 - Class: src/eosProvider
 - Class: scatterBinder/scatterPlayer
-- void eventHandler.enableEvents(eventKeys)
+- Method: void eventHandler.enableEvents(eventKeys)
 
 #### remove
 
@@ -179,4 +190,9 @@ in this version, scatter are split from the Player.
   - ERR_GET_SCATTER_FAILED
   - ERR_GET_IDENTITY_FAILED
 
-### 0.3.0
+### 0.1.1
+
+#### add
+
+- async eosplayer.transfer(target, quantity, memo)
+- async eosplayer.contract(code)
