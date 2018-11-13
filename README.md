@@ -108,6 +108,32 @@ window.eosplayer = new ScatterPlayer(networks);
 
 ```
 
+## Usage of eosplayer (for node.js)
+
+1. install eosplayer  
+    `npm i eosplayer --save` or `yarn add eosplayer`
+2. import eosplayer  
+    `import * from 'eosplayer'` or `const Player = require('eosplayer')`
+3. extend Player to create the glue layer, implement methods : eosClient and getIdentity
+    see [scatterPlayer](https://github.com/bagaking/eosplayer/blob/master/scatterBinder/scatterPlayer.js)
+    ```js
+    const Player = require('eosplayer')
+    const Eos = require('eosjs')
+    class MyPlayer extends Player {
+            get eosClient() {
+                if (!this._eosClient) {
+                    this._eosClient = new Eos(myAwsomeConf);
+                }
+                return this._eosClient;
+            }
+
+            async getIdentity() {
+                return { name: "myawsomename", authority: "active" }
+            }
+    }
+    ```
+4. have fun
+
 ---
 
 ## Updates
@@ -141,4 +167,4 @@ in this version, scatter are split from the Player.
   - ERR_GET_SCATTER_FAILED
   - ERR_GET_IDENTITY_FAILED
 
-### 0.1.3
+### 0.3.0
