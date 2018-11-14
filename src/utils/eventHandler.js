@@ -1,6 +1,9 @@
 'use strict'
 
-module.exports = class EventHandler {
+/**
+ * Event Handler
+ */
+class EventHandler {
 
     constructor(supportedEvents) {
         this._eventMap = {};
@@ -39,3 +42,5 @@ module.exports = class EventHandler {
         return await emitEvent(event, ...args);
     }
 }
+
+module.exports = EventHandler;

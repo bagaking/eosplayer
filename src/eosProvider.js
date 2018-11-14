@@ -1,6 +1,9 @@
 'use strict'
 
-module.exports = class EOSProvider {
+/**
+ * EOSProvider - defined the MUST interfaces of a player
+ */
+class EOSProvider {
 
     /**
      * get or create scatter
@@ -20,3 +23,5 @@ module.exports = class EOSProvider {
     }
 
 }
+
+module.exports = EOSProvider;

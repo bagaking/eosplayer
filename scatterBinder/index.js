@@ -32,7 +32,6 @@ window.BigNumber = BigNumber;
 /**
  * index data base
  * @see {@url https://www.npmjs.com/package/idb }
- * @type {{DB: DB; Transaction: Transaction; ObjectStore: ObjectStore; UpgradeDB: UpgradeDB; Index: Index; IDBStatic: IDBStatic; HasCursor: HasCursor; Cursor: Cursor; default}}
  */
 window.idb = idb;
 

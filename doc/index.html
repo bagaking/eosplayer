@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>eosplayer</h1><p>eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provides better usability for the application layer. It can be used on browsers already installed scatter or in Dapp wallets..</p>
+<h2>build (for broswer)</h2><p><code>npm run build</code> or <code>yarn run build</code></p>
+<hr>
+<h2>Usage of eosplayer</h2><h3>Events</h3><pre class="prettyprint source lang-js"><code>ERR_TRANSCAL_FAILED</code></pre><h3>APIs</h3><p>you can using <code>help</code> commond to show api documents on chrome console :</p>
+<pre class="prettyprint source lang-js"><code>> eosplayer.help // get the help info of usage
+> eosplayer.version // get the version info of usage</code></pre><p>You can use these interfaces to interact with scatter.</p>
+<blockquote>
+<p>tips: window.eosplayer === eosplayer</p>
+</blockquote>
+<pre class="prettyprint source lang-js"><code>
+get {string} help // get help info of usage
+get {string} version // get the version info
+
+{void} eosplayer.event.setEvent(event, fnCallback, context) //listen to a event
+
+get {Eos} eosplayer.eosClient // get eos instance
+async {Identity} eosplayer.getIdentity() // get identity
+
+async {AccountInfo} eosplayer.getAccountInfo(account_name = identity.name)
+    // get account info for any user
+
+async {string} eosplayer.getBalance(account_name = undefined, code = &quot;eosio.token&quot;)
+    // get balance string of a account. ex. &quot;1.0000 EOS&quot;, null means that the account dosen't have any token,
+
+async {string} eosplayer.getBalanceAsset(account_name = undefined, code = &quot;eosio.token&quot;)
+    // get balance structure of a account. ex. {val:1, sym:&quot;EOS&quot;, decimal:4}
+
+async {tx} eosplayer.transfer(target, quantity, memo = &quot;&quot;)
+    // transfer tokens to target
+
+async {tx} eosplayer.transcal(code, quantity, func, ...args)
+    // send a action of transcal to contract
+
+async {tx} eosplayer.transget(code, symbol, func, ...args)
+    // send a action of trancal (quantity value = 0.0001) to contract
+
+async {Contract} eosplayer.contract(code)
+    // get contract object
+
+async {tx} eosplayer.call(code, func, jsonData)
+    // send a action to contract
+
+async {tx} eosplayer.waitTx(txID, maxRound = 12, timeSpanMS = 1009);
+    // check a transaction info, retry once per sec until success
+
+async {table} eosplayer.checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1)
+    // check all items in a table
+
+async {item[]} eosplayer.checkTableRange(code, tableName, scope, from, length = 1, index_position = 1)
+    // check a range of items in a table
+
+async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_position = 1)
+    // check a specific item in a table</code></pre><h4>chain APIs</h4><pre class="prettyprint source lang-js"><code>
+//todo
+</code></pre><h2>Usage of eosplayer (for broswer)</h2><h3>Events</h3><pre class="prettyprint source lang-js"><code>ERR_GET_SCATTER_FAILED  
+ERR_GET_IDENTITY_FAILED</code></pre><h3>APIs</h3><pre class="prettyprint source lang-js"><code>
+{void} eosplayer.switchNetwork(val) // switch network
+{void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime
+
+get {Scatter} eosplayer.scatter // get scatter instance
+
+get {string} eosplayer.netName // get current network name
+get {string} eosplayer.netConf // get current network config
+
+async {Identity} eosplayer.login() // let user allow you using identity
+async {void} eosplayer.logout() // return back the identity
+</code></pre><h2>Imported libs</h2><pre class="prettyprint source lang-js"><code>
+window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
+window.BigNumber = BigNumber; /** big number library @see {@url https://www.npmjs.com/package/bignumber.js} */
+window.env = env; /** {isPc} */
+window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
+window.eosplayer = new ScatterPlayer(networks);
+</code></pre><h2>Usage of eosplayer (for node.js)</h2><ol>
+<li>install eosplayer<br> <code>npm i eosplayer --save</code> or <code>yarn add eosplayer</code></li>
+<li>import eosplayer<br> <code>import * from 'eosplayer'</code> or <code>const Player = require('eosplayer')</code></li>
+<li><p>extend Player to create the glue layer, implement methods : eosClient and getIdentity
+ see <a href="https://github.com/bagaking/eosplayer/blob/master/scatterBinder/scatterPlayer.js">scatterPlayer</a></p>
+<pre class="prettyprint source lang-js"><code> const Player = require('eosplayer')
+ const Eos = require('eosjs')
+ class MyPlayer extends Player {
+         get eosClient() {
+             if (!this._eosClient) {
+                 this._eosClient = new Eos(myAwsomeConf);
+             }
+             return this._eosClient;
+         }
+
+         async getIdentity() {
+             return { name: &quot;myawsomename&quot;, authority: &quot;active&quot; }
+         }
+ }</code></pre></li>
+<li>have fun</li>
+</ol>
+<hr>
+<h2>Updates</h2><h3>0.3.0</h3><h4>add</h4><ul>
+<li>Method: chain.getTable</li>
+<li>Method: chain.getActionCount</li>
+<li>Method: chain.getRecentActions</li>
+<li>Method: chain.getActions</li>
+</ul>
+<h4>modify</h4><ul>
+<li>Method: the checkTableRange methods deals with 'more' now</li>
+</ul>
+<h4>Export</h4><ul>
+<li>Scatter: bigNumber</li>
+</ul>
+<h3>0.2.0 (no release)</h3><h4>add</h4><ul>
+<li>Class: chain.js</li>
+<li>Method: get eosplayer.chain</li>
+</ul>
+<h3>0.1.2</h3><p>in this version, scatter are split from the Player.</p>
+<h4>add</h4><ul>
+<li>Module: scatterBinder</li>
+<li>Class: src/eosProvider</li>
+<li>Class: scatterBinder/scatterPlayer</li>
+<li>Method: void eventHandler.enableEvents(eventKeys)</li>
+</ul>
+<h4>remove</h4><ul>
+<li>Player.EventNames</li>
+</ul>
+<h4>modify</h4><ul>
+<li>Rename events :<ul>
+<li>ERR_TRANSCAL_FAILED</li>
+<li>ERR_GET_SCATTER_FAILED</li>
+<li>ERR_GET_IDENTITY_FAILED</li>
+</ul>
+</li>
+</ul>
+<h3>0.1.1</h3><h4>add</h4><ul>
+<li>async eosplayer.transfer(target, quantity, memo)</li>
+<li>async eosplayer.contract(code)</li>
+</ul>
+<hr>
+<h2>Contact</h2><p>email : <a href="kinghand@tonarts.org">kinghand@tonarts.org</a>
+issue : <a href="https://github.com/bagaking/eosplayer/issues">https://github.com/bagaking/eosplayer/issues</a></p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Asset.html">Asset</a></li><li><a href="ChainHelper.html">ChainHelper</a></li><li><a href="DB.html">DB</a></li><li><a href="EOSProvider.html">EOSProvider</a></li><li><a href="EventHandler.html">EventHandler</a></li><li><a href="Player.html">Player</a></li><li><a href="ScatterPlayer.html">ScatterPlayer</a></li><li><a href="window.env.html">env</a></li></ul><h3>Interfaces</h3><ul><li><a href="AccountInfo.html">AccountInfo</a></li><li><a href="eosAPI.html">eosAPI</a></li><li><a href="Identity.html">Identity</a></li><li><a href="Scatter.html">Scatter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#EVENT_NAMES">EVENT_NAMES</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 14 2018 12:04:19 GMT+0800 (China Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

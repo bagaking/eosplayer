@@ -1,5 +1,8 @@
-const idb = require('idb')
+'using strict'
 
+/**
+ * Storage
+ */
 class DB {
     constructor(defualts) {
         this._defualts = defualts;

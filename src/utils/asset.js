@@ -1,3 +1,9 @@
+'use strict'
+
+
+/**
+ * Asset - asset type of eos
+ */
 class Asset {
     constructor(val, sym, decimal = 4) {
         this._val = val;
@@ -5,22 +11,42 @@ class Asset {
         this._decimal = decimal;
     }
 
+    /**
+     * get value
+     * @return {*}
+     */
     get val() {
         return this._val;
     }
 
+    /**
+     * get symbol
+     * @return {*}
+     */
     get sym() {
         return this._sym;
     }
 
+    /**
+     * get decimal
+     * @return {number|*}
+     */
     get decimal() {
         return this._decimal;
     }
 
+    /**
+     * Get String val without symbol
+     * @return {string | *}
+     */
     get valStr() {
         return this._val.toFixed(this.decimal);
     }
 
+    /**
+     * Get string val with symbol, such as '1.0000 EOS'
+     * @return {string}
+     */
     toString() {
         return `${this.valStr} ${this.sym}`
     }
