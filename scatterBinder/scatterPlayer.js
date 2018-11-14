@@ -1,6 +1,6 @@
 const Eos = require('eosjs');
 
-const DB = require('../src/utils/db');
+const DB = require('./db');
 const Player = require('../src/player')
 
 /**
@@ -16,6 +16,7 @@ const EVENT_NAMES = {
  * Player on browser (need scatter)
  */
 class ScatterPlayer extends Player {
+
     constructor(netConf) {
         super();
         this.events.enableEvents(EVENT_NAMES);
@@ -29,6 +30,10 @@ class ScatterPlayer extends Player {
         console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
     }
 
+    /**
+     * storage of scatter player
+     * @return {DB}
+     */
     get storage() {
         return this._db;
     }
@@ -117,7 +122,7 @@ class ScatterPlayer extends Player {
      * @return {Promise<{Identity}>}
      */
     async getIdentity() {
-        let originChainID = this._db.get("latest_chain_id");
+        let originChainID = this.storage.get("latest_chain_id");
         if ((!!originChainID) && this.netConf.chainId !== originChainID) {
             console.log(`a changing of chain_id detected: ${originChainID} -> ${this.netConf.chainId} `);
             await this.logout();
@@ -129,8 +134,8 @@ class ScatterPlayer extends Player {
             this.events.emitEvent(EVENT_NAMES.ERR_GET_IDENTITY_FAILED, err);
             throw err;
         });
-        ;
-        this._db.set("latest_chain_id", this.netConf.chainId);
+
+        this.storage.set("latest_chain_id", this.netConf.chainId);
         return this.scatter.identity.accounts.find(acc => acc.blockchain === 'eos');
     }
 

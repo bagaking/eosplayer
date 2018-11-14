@@ -9,7 +9,8 @@
   "keywords": ["eos", "tonarts", "contract", "eosjs", "scatter", "blockchain"],
   "scripts": {
     "build": "webpack -p",
-    "test": "./node_modules/.bin/mocha test/*test.js --reporter spec"
+    "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
+    "doc": "jsdoc -c .jsdocrc"
   },
   "homepage": "https://github.com/bagaking/eosglue#readme",
   "dependencies": {
