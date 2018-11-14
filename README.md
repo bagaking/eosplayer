@@ -154,12 +154,12 @@ window.eosplayer = new ScatterPlayer(networks);
 
 #### add
 
-- Chain: getTable
-- Chain: getActions
+- Method: chain.getTable
+- Method: chain.getActions
 
 #### modify
 
-- Chain: checkTableRange suppot 'more' now
+- Method: checkTableRange suppot 'more' now
 
 ### 0.2.0 (no release)
 
@@ -196,3 +196,10 @@ in this version, scatter are split from the Player.
 
 - async eosplayer.transfer(target, quantity, memo)
 - async eosplayer.contract(code)
+
+---
+
+## Contact
+
+email : [kinghand@tonarts.org](kinghand@tonarts.org)
+issue : [https://github.com/bagaking/eosplayer/issues](https://github.com/bagaking/eosplayer/issues)

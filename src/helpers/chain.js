@@ -153,10 +153,10 @@ module.exports = class ChainHelper {
      * @param {string} code - account of contract
      * @param {string} func - function name
      * @param {Object} jsonData - data
-     * @param {Object} authorization - should be an object who has keys {actor, permission}
+     * @param {Array.<Object>} authorization - should be an object who has keys {actor, permission}
      * @return {Promise<*>} - transaction
      */
-    async call(code, func, jsonData, authorization) {
+    async call(code, func, jsonData, ...authorization) {
         return await this._eos.transaction({
             actions: [
                 {
