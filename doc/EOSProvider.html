@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Class: EOSProvider</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>EOSProvider - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Class: EOSProvider</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Asset.html">Asset</a><ul class='methods'><li data-type='method'><a href="Asset.html#.parse">parse</a></li><li data-type='method'><a href="Asset.html#toString">toString</a></li></ul></li><li><a href="ChainHelper.html">ChainHelper</a><ul class='methods'><li data-type='method'><a href="ChainHelper.html#abiJsonToBin">abiJsonToBin</a></li><li data-type='method'><a href="ChainHelper.html#call">call</a></li><li data-type='method'><a href="ChainHelper.html#checkTable">checkTable</a></li><li data-type='method'><a href="ChainHelper.html#checkTableItem">checkTableItem</a></li><li data-type='method'><a href="ChainHelper.html#checkTableRange">checkTableRange</a></li><li data-type='method'><a href="ChainHelper.html#getAbi">getAbi</a></li><li data-type='method'><a href="ChainHelper.html#getAccountInfo">getAccountInfo</a></li><li data-type='method'><a href="ChainHelper.html#getActionCount">getActionCount</a></li><li data-type='method'><a href="ChainHelper.html#getActions">getActions</a></li><li data-type='method'><a href="ChainHelper.html#getBalance">getBalance</a></li><li data-type='method'><a href="ChainHelper.html#getBlock">getBlock</a></li><li data-type='method'><a href="ChainHelper.html#getContract">getContract</a></li><li data-type='method'><a href="ChainHelper.html#getInfo">getInfo</a></li><li data-type='method'><a href="ChainHelper.html#getRecentActions">getRecentActions</a></li><li data-type='method'><a href="ChainHelper.html#getTable">getTable</a></li><li data-type='method'><a href="ChainHelper.html#getTableAbi">getTableAbi</a></li><li data-type='method'><a href="ChainHelper.html#waitTx">waitTx</a></li></ul></li><li><a href="DB.html">DB</a></li><li><a href="EOSProvider.html">EOSProvider</a><ul class='methods'><li data-type='method'><a href="EOSProvider.html#getIdentity">getIdentity</a></li></ul></li><li><a href="EventHandler.html">EventHandler</a></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#call">call</a></li><li data-type='method'><a href="Player.html#checkTable">checkTable</a></li><li data-type='method'><a href="Player.html#checkTableItem">checkTableItem</a></li><li data-type='method'><a href="Player.html#checkTableRange">checkTableRange</a></li><li data-type='method'><a href="Player.html#getAccountInfo">getAccountInfo</a></li><li data-type='method'><a href="Player.html#getBalance">getBalance</a></li><li data-type='method'><a href="Player.html#getBalanceAsset">getBalanceAsset</a></li><li data-type='method'><a href="Player.html#newAccount">newAccount</a></li><li data-type='method'><a href="Player.html#transcal">transcal</a></li><li data-type='method'><a href="Player.html#transfer">transfer</a></li><li data-type='method'><a href="Player.html#transget">transget</a></li><li data-type='method'><a href="Player.html#waitTx">waitTx</a></li></ul></li><li><a href="ScatterPlayer.html">ScatterPlayer</a><ul class='methods'><li data-type='method'><a href="ScatterPlayer.html#getIdentity">getIdentity</a></li><li data-type='method'><a href="ScatterPlayer.html#login">login</a></li><li data-type='method'><a href="ScatterPlayer.html#logout">logout</a></li><li data-type='method'><a href="ScatterPlayer.html#setNetConf">setNetConf</a></li><li data-type='method'><a href="ScatterPlayer.html#switchNetwork">switchNetwork</a></li></ul></li><li><a href="window.env.html">env</a></li></ul><h3>Interfaces</h3><ul><li><a href="AccountInfo.html">AccountInfo</a></li><li><a href="eosAPI.html">eosAPI</a></li><li><a href="Identity.html">Identity</a></li><li><a href="Scatter.html">Scatter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#EVENT_NAMES">EVENT_NAMES</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">EOSProvider</h1>
+    
 
     
 
@@ -28,7 +43,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>EOSProvider<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2>
+        EOSProvider
+        </h2>
         
             <div class="class-description"><p>EOSProvider - defined the MUST interfaces of a player</p></div>
         
@@ -36,30 +53,18 @@
 </header>
 
 <article>
-    <div class="container-overview">
     
+        <div class="container-overview">
         
+            
 
     
     <h2>Constructor</h2>
     
 
-    
     <h4 class="name" id="EOSProvider"><span class="type-signature"></span>new EOSProvider<span class="signature">()</span><span class="type-signature"></span></h4>
-    
 
     
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -67,34 +72,34 @@
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="src_eosProvider.js.html">src/eosProvider.js</a>, <a href="src_eosProvider.js.html#line6">line 6</a>
     </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
     
 
     
@@ -121,8 +126,20 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
     
-    </div>
 
     
 
@@ -130,9 +147,7 @@
 
     
 
-    
-
-    
+     
 
     
 
@@ -148,41 +163,8 @@
 
 
 
-<div class="description">
-    <p>get or create scatter</p>
-</div>
-
-
-
-
-
-
 
 <dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
     <dt class="tag-source">Source:</dt>
@@ -196,7 +178,41 @@
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description">
+    <p>get or create scatter</p>
+</div>
+
+
 
 
 
@@ -214,13 +230,56 @@
 
     
 
-    
     <h4 class="name" id="getIdentity"><span class="type-signature">(async) </span>getIdentity<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;{<a href="Identity.html">Identity</a>}>}</span></h4>
-    
 
     
     <p class="summary"><p>getIdentity of cur scatter user</p>.</p>
     
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="src_eosProvider.js.html">src/eosProvider.js</a>, <a href="src_eosProvider.js.html#line20">line 20</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
 
 
 
@@ -240,48 +299,6 @@
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="src_eosProvider.js.html">src/eosProvider.js</a>, <a href="src_eosProvider.js.html#line20">line 20</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
 
 
 
@@ -297,7 +314,7 @@
         
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -310,9 +327,6 @@
 </dl>
 
     
-
-
-
 
 
         
@@ -328,19 +342,19 @@
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Asset.html">Asset</a></li><li><a href="ChainHelper.html">ChainHelper</a></li><li><a href="DB.html">DB</a></li><li><a href="EOSProvider.html">EOSProvider</a></li><li><a href="EventHandler.html">EventHandler</a></li><li><a href="Player.html">Player</a></li><li><a href="ScatterPlayer.html">ScatterPlayer</a></li><li><a href="window.env.html">env</a></li></ul><h3>Interfaces</h3><ul><li><a href="AccountInfo.html">AccountInfo</a></li><li><a href="eosAPI.html">eosAPI</a></li><li><a href="Identity.html">Identity</a></li><li><a href="Scatter.html">Scatter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#EVENT_NAMES">EVENT_NAMES</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 14 2018 13:54:13 GMT+0800 (China Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 14 2018 13:59:44 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+
+
 </body>
 </html>

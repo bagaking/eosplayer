@@ -6,7 +6,14 @@
   "repository": "git@github.com:bagaking/eosplayer.git",
   "author": "bagaking <zfaustk@qq.com>",
   "license": "Apache License 2.0",
-  "keywords": ["eos", "tonarts", "contract", "eosjs", "scatter", "blockchain"],
+  "keywords": [
+    "eos",
+    "tonarts",
+    "contract",
+    "eosjs",
+    "scatter",
+    "blockchain"
+  ],
   "scripts": {
     "build": "webpack -p",
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
@@ -27,6 +34,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "compression-webpack-plugin": "^2.0.0",
+    "docdash": "^1.0.0",
     "webpack": "^4.19.0",
     "webpack-cli": "^3.1.0"
   }
