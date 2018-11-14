@@ -14,6 +14,7 @@ const EVENT_NAMES = {
 
 /**
  * Player on browser (need scatter)
+ * @author kinghand@foxmail.com
  */
 class ScatterPlayer extends Player {
 

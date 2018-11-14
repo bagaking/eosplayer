@@ -1,8 +1,8 @@
 'use strict'
 
-
 /**
  * Asset - asset type of eos
+ * @author kinghand@foxmail.com
  */
 class Asset {
     constructor(val, sym, decimal = 4) {

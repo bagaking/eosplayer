@@ -2,6 +2,7 @@
 
 /**
  * Event Handler
+ * @author kinghand@foxmail.com
  */
 class EventHandler {
 

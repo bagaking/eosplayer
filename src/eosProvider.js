@@ -2,6 +2,7 @@
 
 /**
  * EOSProvider - defined the MUST interfaces of a player
+ * @author kinghand@foxmail.com
  */
 class EOSProvider {
 

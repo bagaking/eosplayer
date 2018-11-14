@@ -2,6 +2,12 @@
 
 eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provides better usability for the application layer. It can be used on browsers already installed scatter or in Dapp wallets..
 
+license : [https://github.com/bagaking/eosplayer/blob/master/LICENSE](https://github.com/bagaking/eosplayer/blob/master/LICENSE)
+
+api documents : [http://doc.eosplayer.pro](https://doc.eosplayer.pro)
+
+frontd releases : [https://github.com/bagaking/eosplayer/releases](https://github.com/bagaking/eosplayer/releases)
+
 ## build (for broswer)
 
 `npm run build` or `yarn run build`
@@ -210,3 +216,4 @@ in this version, scatter are split from the Player.
 
 email : [kinghand@tonarts.org](kinghand@tonarts.org)
 issue : [https://github.com/bagaking/eosplayer/issues](https://github.com/bagaking/eosplayer/issues)
+

@@ -4,10 +4,20 @@
  * Storage
  */
 class DB {
-    constructor(defualts) {
+
+    /**
+     * the storage lib interact with localStorage now
+     * @param defaultValues - define what will you get when you require an key not exist
+     */
+    constructor(defaultValues) {
         this._defualts = defualts;
     }
 
+    /**
+     * get val by key
+     * @param key - will be assembled to eosplayer::${key}
+     * @return {*}
+     */
     get(key) {
         let pkey = `eosplayer::${key}`;
         let item = localStorage.getItem(pkey)
@@ -22,6 +32,11 @@ class DB {
         return undefined;
     }
 
+    /**
+     * set value
+     * @param key
+     * @param val
+     */
     set(key, val){
         let pkey = `eosplayer::${key}`;
         localStorage.setItem(pkey, val);

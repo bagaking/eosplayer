@@ -99,6 +99,7 @@ const Asset = require('./utils/asset');
 
 /**
  * event names supported in player
+ * @author kinghand@foxmail.com
  * @type {{ERR_TRANSCAL_FAILED: string}}
  */
 const EVENT_NAMES = {

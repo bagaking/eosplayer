@@ -1,9 +1,11 @@
 'use strict'
+
 const {forMs} = require("../utils/wait")
 const BN = require('bignumber.js').BigNumber;
 
 /**
  * chain helper, supported chain operations
+ * @author kinghand@foxmail.com
  */
 class ChainHelper {
 
