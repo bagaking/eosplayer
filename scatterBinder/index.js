@@ -1,14 +1,9 @@
 const idb = require('idb');
 const Eos = require('eosjs');
+const {BigNumber} = require('bignumber.js');
 
 const netConf = require('./conf');
 const ScatterPlayer = require('./scatterPlayer');
-
-/**
- * @see {@url https://www.npmjs.com/package/eosjs}
- * @type {Eos}
- */
-window.eosjs = Eos;
 
 /**
  * env of browser
@@ -21,6 +16,21 @@ window.env = class env {
 };
 
 /**
+ * eosjs
+ * @see {@url https://www.npmjs.com/package/eosjs}
+ * @type {Eos}
+ */
+window.eosjs = Eos;
+
+/**
+ * big number
+ * @see {@url https://www.npmjs.com/package/bignumber.js}
+ * @type {BigNumber}
+ */
+window.BigNumber = BigNumber;
+
+/**
+ * index data base
  * @see {@url https://www.npmjs.com/package/idb }
  * @type {{DB: DB; Transaction: Transaction; ObjectStore: ObjectStore; UpgradeDB: UpgradeDB; Index: Index; IDBStatic: IDBStatic; HasCursor: HasCursor; Cursor: Cursor; default}}
  */

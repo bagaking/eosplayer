@@ -114,6 +114,7 @@ async {void} eosplayer.logout() // return back the identity
 ``` js
 
 window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
+window.BigNumber = BigNumber; /** big number library @see {@url https://www.npmjs.com/package/bignumber.js} */
 window.env = env; /** {isPc} */
 window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
 window.eosplayer = new ScatterPlayer(networks);
@@ -150,16 +151,22 @@ window.eosplayer = new ScatterPlayer(networks);
 
 ## Updates
 
-### 0.3.0-Beta.1
+### 0.3.0
 
 #### add
 
 - Method: chain.getTable
+- Method: chain.getActionCount
+- Method: chain.getRecentActions
 - Method: chain.getActions
 
 #### modify
 
-- Method: checkTableRange suppot 'more' now
+- Method: the checkTableRange methods deals with 'more' now
+
+#### Export
+
+- Scatter: bigNumber
 
 ### 0.2.0 (no release)
 
