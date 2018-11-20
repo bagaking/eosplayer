@@ -10,7 +10,7 @@ frontd releases : [https://github.com/bagaking/eosplayer/releases](https://githu
 
 `npm run build` or `yarn run build`
 
-## Play
+## play
 
 1. clone the repo  
 1. cd into the folder  
