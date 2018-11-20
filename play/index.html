@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EOSPlayer</title>
+    <style type="text/css">
+        body{
+            background: #eeefee; color: #363636; line-height: 1.2;
+        }
+        a { color: #233333; text-decoration: none; }
+        h1, h2, h3{
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #440044;
+        }
+    </style>
+</head>
+<body >
+    <script src="./eosplayer.bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <h1>
+        using eosplayer in the console of your chrome.
+    </h1>
+    <div id="help">
+        loading ...
+    </div>
+    <script type="text/javascript">
+        document.getElementById("help").innerHTML = marked(eosplayer.help);
+    </script>
+</body>
+</html>
+

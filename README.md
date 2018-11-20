@@ -4,13 +4,24 @@ eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provi
 
 license : [https://github.com/bagaking/eosplayer/blob/master/LICENSE](https://github.com/bagaking/eosplayer/blob/master/LICENSE)
 
-api documents : [http://doc.eosplayer.pro](https://doc.eosplayer.pro)
-
 frontd releases : [https://github.com/bagaking/eosplayer/releases](https://github.com/bagaking/eosplayer/releases)
 
 ## build (for broswer)
 
 `npm run build` or `yarn run build`
+
+## Play
+
+1. clone the repo  
+1. cd into the folder  
+1. install hserve : `npm i -g hserve`
+1. serve the play folder : `hserve play`
+1. open the test site in your chrome : `http://localhost:3000` by default 
+1. test it in your chrome console
+
+## api documents : 
+
+[http://doc.eosplayer.pro](https://doc.eosplayer.pro)
 
 ---
 
@@ -214,6 +225,6 @@ in this version, scatter are split from the Player.
 
 ## Contact
 
-email : [kinghand@tonarts.org](kinghand@tonarts.org)
+email : [kinghand@tonarts.org](kinghand@tonarts.org)  
 issue : [https://github.com/bagaking/eosplayer/issues](https://github.com/bagaking/eosplayer/issues)
 
