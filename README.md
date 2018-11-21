@@ -1,10 +1,10 @@
 # eosplayer
 
-eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provides better usability for the application layer. It can be used on browsers already installed scatter or in Dapp wallets..
-
-license : [https://github.com/bagaking/eosplayer/blob/master/LICENSE](https://github.com/bagaking/eosplayer/blob/master/LICENSE)
+Eosplayer is a bonding layer of eosjs, which is based on eosjs and provides better usability for the application layer. It can be used on both the node.js server and in a browser or Dapp wallet that already has Scatter installed.
 
 frontd releases : [https://github.com/bagaking/eosplayer/releases](https://github.com/bagaking/eosplayer/releases)
+
+LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE)
 
 ## build (for broswer)
 
@@ -184,6 +184,14 @@ window.eosplayer = new ScatterPlayer(networks);
 #### Export
 
 - Scatter: bigNumber
+
+#### Deprecated
+
+- eosplayer.waitTx (eosplayer.chain.waitTx instead)
+- eosplayer.checkTable (eosplayer.chain.checkTable instead)
+- eosplayer.checkTableRange (eosplayer.chain.checkTableRange instead)
+- eosplayer.checkTableItem (eosplayer.chain.checkTableItem instead)
+
 
 ### 0.2.0 (no release)
 

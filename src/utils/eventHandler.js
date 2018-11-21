@@ -13,7 +13,7 @@ class EventHandler {
         this._eventMap = {};
         this._defaultCb = function (v) {
             let strTrigger = `${JSON.stringify(this)} : ${JSON.stringify(v)}`;
-            if(alert) {
+            if(!!alert) {
                 alert(strTrigger);
             }else{
                 throw new Error(strTrigger);

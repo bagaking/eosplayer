@@ -327,6 +327,7 @@ class Player extends EosProvider {
      */
     get help() {
         let helpInfo = `
+\`\`\`js
       =============================================================
         
                -----      ------        ------      -------
@@ -341,6 +342,8 @@ class Player extends EosProvider {
       --------      ---------  ------      -------
         
 ===========================================================
+\`\`\`
+---
 
 # eosplayer ${this.version}
         
@@ -352,6 +355,7 @@ ERR_TRANSCAL_FAILED
 
 ### APIs
 
+\`\`\`js
 get {string} help // get help info of usage
 get {string} version // get the version info
 
@@ -392,7 +396,7 @@ async {item[]} eosplayer.checkTableRange(code, tableName, scope, from, length = 
     
 async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_position = 1)
     // check a specific item in a table 
-
+\`\`\`
 
 `;
         return helpInfo;
