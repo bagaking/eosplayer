@@ -152,6 +152,7 @@ ERR_GET_IDENTITY_FAILED
 
 ### APIs
 
+\`\`\`js
 {void} eosplayer.switchNetwork(val) // switch network
 {void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime    
 
@@ -162,14 +163,17 @@ get {string} eosplayer.netConf // get current network config
         
 async {Identity} eosplayer.login() // let user allow you using identity
 async {void} eosplayer.logout() // return back the identity
+\`\`\`
 
 ## Imported libs
 
-window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
-window.env = env; /** {isPc} */
-window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
-window.eosplayer = new ScatterPlayer(networks);
-        
+\`\`\`js
+window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */  
+window.env = env; /** {isPc} */  
+window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */  
+window.eosplayer = new ScatterPlayer(networks);  
+window.BigNumber = BigNumber; /** big number @see {@url https://www.npmjs.com/package/bignumber.js} */
+\`\`\`        
 `
     }
 }

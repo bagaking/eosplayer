@@ -10,7 +10,7 @@ class DB {
      * @param defaultValues - define what will you get when you require an key not exist
      */
     constructor(defaultValues) {
-        this._defualts = defualts;
+        this._defualts = defaultValues;
     }
 
     /**
