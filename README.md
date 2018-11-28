@@ -164,7 +164,7 @@ window.eosplayer = new ScatterPlayer(networks);
     ```
 4. have fun
 
----
+---  
 
 ## Updates
 

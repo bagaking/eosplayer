@@ -98,7 +98,7 @@ class ChainHelper {
             throw new Error(`getActionCount failed: cannot find recent actions of ${account_name})`);
         }
         let acts = recentActions.actions;
-        return acts.length === 0 ? 0 : [acts.length - 1].account_action_seq;
+        return acts.length === 0 ? 0 : acts[acts.length - 1].account_action_seq;
     }
 
     /**
