@@ -346,6 +346,39 @@ class ChainHelper {
         return rows[0];
     }
 
+    get help() {
+        return `
+### Chain API
+
+\`\`\`js
+{Object} async getInfo() // get info of the chain connected
+{Object} async getBlock(blockNumOrId) // get specific block of the chain
+
+{Contract} async getContract(code) // get contract
+{Object} async getAbi(code) // get abi of contract
+{Object} async getTableAbi(code, tableName) // get table abi of contract
+{Object} async abiJsonToBin(code, action, args) 
+
+{Object} async getAccountInfo(account_name) // get account info of any user
+
+{Number} async getActionCount(account_name) // get a account's action count
+{Array} async getRecentActions(account_name) // get recent actions
+{Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
+
+{String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
+
+{Tx} async waitTx(txID, maxRound = 12, timeSpanMS = 1009) // check a transaction info, retry once per sec until success
+
+{Tx} async call(code, func, jsonData, ...authorization) // send action to a contract
+
+{Array} async getTable(code, tableName, scope, lower, upper, ...hint) // get all items in a table
+{Array} async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) // check a table
+{Array} async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) // check range in table
+{Object} async checkTableItem(code, tableName, scope, key = 0) // check a item in a table
+\`\`\`   
+`
+    }
+
 }
 
 module.exports = ChainHelper;

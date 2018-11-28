@@ -25,80 +25,80 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 
 ---
 
+> you can using `help` commond to show api documents on chrome console
+
 ## Usage of eosplayer
 
 ### Events
 
-```js
-ERR_TRANSCAL_FAILED
-```
+`ERR_TRANSCAL_FAILED`
 
 ### APIs
 
-you can using `help` commond to show api documents on chrome console :
-
 ```js
-> eosplayer.help // get the help info of usage
-> eosplayer.version // get the version info of usage
-```
+{String} get help // get help info of usage
+{String} get version // get the version info
+{Chain} get chain // get the chain
 
-You can use these interfaces to interact with scatter.
-> tips: window.eosplayer === eosplayer
+{Void} eosplayer.event.setEvent(event, fnCallback, context) //listen to a event
 
-``` js
+{Eos} get eosplayer.eosClient // get eos instance
+{Identity} async eosplayer.getIdentity() // get identity
 
-get {string} help // get help info of usage
-get {string} version // get the version info
-
-{void} eosplayer.event.setEvent(event, fnCallback, context) //listen to a event
-
-get {Eos} eosplayer.eosClient // get eos instance
-async {Identity} eosplayer.getIdentity() // get identity
-
-async {AccountInfo} eosplayer.getAccountInfo(account_name = identity.name)
+{AccountInfo} async eosplayer.getAccountInfo(account_name = identity.name) 
     // get account info for any user
 
-async {string} eosplayer.getBalance(account_name = undefined, code = "eosio.token")
+{String} async eosplayer.getBalance(account_name = undefined, code = "eosio.token")  
     // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token,
 
-async {string} eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token")
+{String} async eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 
     // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
-async {tx} eosplayer.transfer(target, quantity, memo = "")
+{Tx} async eosplayer.transfer(target, quantity, memo = "")
     // transfer tokens to target
 
-async {tx} eosplayer.transcal(code, quantity, func, ...args)
+{Tx} async eosplayer.transcal(code, quantity, func, ...args) 
     // send a action of transcal to contract
-
-async {tx} eosplayer.transget(code, symbol, func, ...args)
+    
+{Tx} async eosplayer.transget(code, symbol, func, ...args) 
     // send a action of trancal (quantity value = 0.0001) to contract
 
-async {Contract} eosplayer.contract(code)
+{Contract} async eosplayer.contract(code)
     // get contract object
 
-async {tx} eosplayer.call(code, func, jsonData)
+{Tx} async eosplayer.call(code, func, jsonData)
     // send a action to contract
-
-async {tx} eosplayer.waitTx(txID, maxRound = 12, timeSpanMS = 1009);
-    // check a transaction info, retry once per sec until success
-
-async {table} eosplayer.checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1)
-    // check all items in a table
-
-async {item[]} eosplayer.checkTableRange(code, tableName, scope, from, length = 1, index_position = 1)
-    // check a range of items in a table
-
-async {item} eosplayer.checkTableItem(code, tableName, scope, key = 0, index_position = 1)
-    // check a specific item in a table
 ```
 
-#### chain APIs
+### Chain API
 
-```js
+```js
 
-//todo
+{Object} async getInfo() // get info of the chain connected
+{Object} async getBlock(blockNumOrId) // get specific block of the chain
 
-```
+{Contract} async getContract(code) // get contract
+{Object} async getAbi(code) // get abi of contract
+{Object} async getTableAbi(code, tableName) // get table abi of contract
+{Object} async abiJsonToBin(code, action, args) 
+
+{Object} async getAccountInfo(account_name) // get account info of any user
+
+{Number} async getActionCount(account_name) // get a account's action count
+{Array} async getRecentActions(account_name) // get recent actions
+{Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
+
+{String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
+
+{Tx} async waitTx(txID, maxRound = 12, timeSpanMS = 1009) // check a transaction info, retry once per sec until success
+
+{Tx} async call(code, func, jsonData, ...authorization) // send action to a contract
+
+{Array} async getTable(code, tableName, scope, lower, upper, ...hint) // get all items in a table
+{Array} async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) // check a table
+{Array} async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) // check range in table
+{Object} async checkTableItem(code, tableName, scope, key = 0) // check a item in a table
+```   
 
 ## Usage of eosplayer (for broswer)
 
@@ -111,7 +111,7 @@ ERR_GET_IDENTITY_FAILED
 
 ### APIs
 
-``` js
+```js
 
 {void} eosplayer.switchNetwork(val) // switch network
 {void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime
@@ -128,7 +128,7 @@ async {void} eosplayer.logout() // return back the identity
 
 ## Imported libs
 
-``` js
+```js
 
 window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
 window.BigNumber = BigNumber; /** big number library @see {@url https://www.npmjs.com/package/bignumber.js} */
