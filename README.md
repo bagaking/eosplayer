@@ -98,6 +98,8 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 {Array} async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) // check a table
 {Array} async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) // check range in table
 {Object} async checkTableItem(code, tableName, scope, key = 0) // check a item in a table
+
+{Object} async updateAuth(account, permission, parent, threshold, keys, accounts, waits) // update auth
 ```   
 
 ## Usage of eosplayer (for broswer)

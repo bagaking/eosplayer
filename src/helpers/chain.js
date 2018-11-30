@@ -346,6 +346,31 @@ class ChainHelper {
         return rows[0];
     }
 
+    /**
+     * update auth
+     * @param account
+     * @param permission
+     * @param parent
+     * @param threshold
+     * @param keys
+     * @param accounts
+     * @param waits
+     * @returns {Promise<*>}
+     */
+    async updateAuth(account, permission, parent, threshold, keys, accounts, waits) {
+        return await this._eos.updateauth({
+            account,
+            permission,
+            parent,
+            "auth": {
+                threshold,
+                keys,
+                accounts,
+                waits
+            }
+        });
+    }
+
     get help() {
         return `
 ### Chain API
@@ -375,6 +400,8 @@ class ChainHelper {
 {Array} async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) // check a table
 {Array} async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) // check range in table
 {Object} async checkTableItem(code, tableName, scope, key = 0) // check a item in a table
+
+{Object} async updateAuth(account, permission, parent, threshold, keys, accounts, waits) // update auth
 \`\`\`   
 `
     }
