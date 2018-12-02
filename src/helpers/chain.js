@@ -411,6 +411,7 @@ class ChainHelper {
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
 
 {String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
+{Tx} async transfer(account, target, quantity, memo = "", cbError) // transfer
 
 {Tx} async waitTx(txID, maxRound = 12, timeSpanMS = 1009) // check a transaction info, retry once per sec until success
 

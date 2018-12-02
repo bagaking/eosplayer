@@ -25,10 +25,33 @@ class KhHelper {
      * @return {Promise<Object>} transactionData
      */
     async transcal(account, target, quantity, func, args, cbError) {
-        return await this._chain.transfer(account, target, quantity, `@[${func}:${args.join(',')}]`, cbError);
+        return await this._chain.transfer(
+            account,
+            target,
+            quantity,
+            `@[${func}:${args.join(',')}]`,
+            cbError);
     }
 
-
+    /**
+     * transcal with "0.0001 EOS" token
+     * @param {Object.<string, string>} account - {name, authority}
+     * @param {string} target - eos account, can be user or contract
+     * @param {string} symbol
+     * @param {string} func
+     * @param {Array} args - arguments of the transcal
+     * @param {Function} cbError - memo
+     * @return {Promise<Object>}
+     */
+    async transend(account, target, symbol, func, args, cbError) {
+        return await this.transcal(
+            account,
+            target,
+            `0.0001 ${symbol}`,
+            func,
+            args,
+            cbError);
+    }
 
 
 }

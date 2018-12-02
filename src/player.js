@@ -103,8 +103,9 @@ const Asset = require('./utils/asset');
  * @type {{ERR_TRANSCAL_FAILED: string}}
  */
 const EVENT_NAMES = {
+    ERR_TRANSFER_FAILED: "ERR_TRANSFER_FAILED",
     ERR_TRANSCAL_FAILED: "ERR_TRANSCAL_FAILED",
-    ERR_TRANSFER_FAILED: "ERR_TRANSFER_FAILED"
+    ERR_TRANSEND_FAILED: "ERR_TRANSEND_FAILED",
 }
 
 const EventHandler = require('./utils/eventHandler')
@@ -194,20 +195,40 @@ class Player extends EosProvider {
             await this.getIdentity(),
             target,
             quantity,
-            `@[${func}:${args.join(',')}]`,
+            func,
+            args,
             err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err));
     }
 
     /**
      * transcal with "0.0001 SYM" token
+     * @deprecated using transend instead
      * @param {string} target - eos account, can be user or contract
      * @param {string} symbol
      * @param {string} func
-     * @param args
-     * @return {Promise<*>}
+     * @param {Array} args
+     * @return {Promise<Object>}
      */
     async transget(target, symbol, func, ...args) {
-        return await this.transcal(target, `0.0001 ${symbol}`, func, ...args);
+        return await this.transend(target, symbol, func, ...args);
+    }
+
+    /**
+     * transend method - transcal with "0.0001 SYM" token
+     * @param {string} target - eos account, can be user or contract
+     * @param {string} symbol
+     * @param {string} func
+     * @param {Array} args
+     * @return {Promise<Object>}
+     */
+    async transend(target, symbol, func, ...args) {
+        return await this.kh.transend(
+            await this.getIdentity(),
+            target,
+            symbol,
+            func,
+            args,
+            err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSEND_FAILED, err));
     }
 
     /**
@@ -323,7 +344,7 @@ class Player extends EosProvider {
      *  get version
      */
     get version() {
-        return "0.1.2";
+        return "0.3.0";
     }
 
     /**
@@ -355,8 +376,9 @@ class Player extends EosProvider {
 
 ### Events
 
-\`ERR_TRANSCAL_FAILED\`
 \`ERR_TRANSFER_FAILED\`
+\`ERR_TRANSCAL_FAILED\`
+\`ERR_TRANSEND_FAILED\`
 
 ### APIs
 

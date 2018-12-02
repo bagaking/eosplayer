@@ -33,6 +33,7 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 
 `ERR_TRANSCAL_FAILED`
 `ERR_TRANSFER_FAILED`
+`ERR_TRANSEND_FAILED`
 
 ### APIs
 
@@ -177,6 +178,7 @@ window.eosplayer = new ScatterPlayer(networks);
 
 - Class: kh.js
 - Event: ERR_TRANSFER_FAILED
+- Event: ERR_TRANSEND_FAILED
 - Method: get eosplayer.kh
 - Method: chain.getTable
 - Method: chain.getActionCount
