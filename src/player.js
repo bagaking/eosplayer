@@ -108,6 +108,7 @@ const EVENT_NAMES = {
 
 const EventHandler = require('./utils/eventHandler')
 const ChainHelper = require('./helpers/chain')
+
 const EosProvider = require('./eosProvider')
 
 /**
@@ -166,19 +167,13 @@ class Player extends EosProvider {
      * @return {Promise<Object>} transactionData
      */
     async transfer(target, quantity, memo = "") {
-        const account = await this.getIdentity()
-
-        const transOptions = {authorization: [`${account.name}@${account.authority}`]}
-        let trx = await this.eosClient.transfer(account.name, target, quantity, memo, transOptions).catch(
-            err => {
-                this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err)
-                throw err;
-            }
-        );
-        if (!!trx) {
-            console.log(`Transaction ID: ${trx.transaction_id}`);
-        }
-        return trx;
+        return await this.chain.transfer(
+            await this.getIdentity(),
+            target,
+            quantity,
+            memo,
+            err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err)
+        )
     }
 
     /**
@@ -312,7 +307,6 @@ class Player extends EosProvider {
         })
         return result;
     }
-
 
 
     /**

@@ -160,6 +160,25 @@ class ChainHelper {
     }
 
     /**
+     * transfer
+     * @param {string} target - eos account, can be user or contract
+     * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
+     * @param {string} memo - memo
+     * @param {Function} cbError - memo
+     * @return {Promise<Object>} transactionData
+     */
+    async transfer(account, target, quantity, memo = "", cbError) {
+        const transOptions = {authorization: [`${account.name}@${account.authority}`]}
+        let trx = await this._eos.transfer(account.name, target, quantity, memo, transOptions).catch(
+            (!!cbError) ? cbError : console.log
+        );
+        if (!!trx) {
+            console.log(`Transaction ID: ${trx.transaction_id}`);
+        }
+        return trx;
+    }
+
+    /**
      * check a transaction info, retry once per sec until success
      * @param {string} txID
      * @param {number} maxRound
