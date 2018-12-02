@@ -103,12 +103,13 @@ const Asset = require('./utils/asset');
  * @type {{ERR_TRANSCAL_FAILED: string}}
  */
 const EVENT_NAMES = {
-    ERR_TRANSCAL_FAILED: "ERR_TRANSCAL_FAILED"
+    ERR_TRANSCAL_FAILED: "ERR_TRANSCAL_FAILED",
+    ERR_TRANSFER_FAILED: "ERR_TRANSFER_FAILED"
 }
 
 const EventHandler = require('./utils/eventHandler')
 const ChainHelper = require('./helpers/chain')
-
+const KhHelper = require('./helpers/kh')
 const EosProvider = require('./eosProvider')
 
 /**
@@ -127,6 +128,10 @@ class Player extends EosProvider {
 
     get chain() {
         return new ChainHelper(this.eosClient);
+    }
+
+    get kh() {
+        return new KhHelper(this.chain);
     }
 
     /**
@@ -177,15 +182,20 @@ class Player extends EosProvider {
     }
 
     /**
-     * call contract with transfer (match eoskit)
+     * call kh contract with transfer (match eoskit)
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
      * @param {string} func - function name
-     * @param args
+     * @param {Array} args
      * @return {Promise<Object>} transactionData
      */
     async transcal(target, quantity, func, ...args) {
-        return await this.transfer(target, quantity, `@[${func}:${args.join(',')}]`);
+        return await this.kh.transcal(
+            await this.getIdentity(),
+            target,
+            quantity,
+            `@[${func}:${args.join(',')}]`,
+            err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err));
     }
 
     /**
@@ -346,13 +356,15 @@ class Player extends EosProvider {
 ### Events
 
 \`ERR_TRANSCAL_FAILED\`
+\`ERR_TRANSFER_FAILED\`
 
 ### APIs
 
 \`\`\`js
 {String} get help // get help info of usage
 {String} get version // get the version info
-{Chain} get chain // get the chain
+{ChainHelper} get chain // get the chain helper
+{KhHelper} get kh // get the kh contract helper
 
 {Void} eosplayer.event.setEvent(event, fnCallback, context) //listen to a event
 

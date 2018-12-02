@@ -161,6 +161,7 @@ class ChainHelper {
 
     /**
      * transfer
+     * @param {Object} account - {name, authority}
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
      * @param {string} memo - memo
