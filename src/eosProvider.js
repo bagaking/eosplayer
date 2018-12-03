@@ -1,5 +1,10 @@
 'use strict'
 
+const EOS = require('eosjs')
+
+const symEosClient = Symbol('sym::EosClient')
+const symGetIdentity = Symbol('sym::GetIdentity')
+
 /**
  * EOSProvider - defined the MUST interfaces of a player
  * @author kinghand@foxmail.com
@@ -11,7 +16,11 @@ class EOSProvider {
      * @return {eosAPI}
      */
     get eosClient() {
-        throw new Error(`method not yet implemented: this interface should be implement by the specific class.`)
+        if(!!this[symEosClient]) {
+            return symEosClient();
+        }else {
+            throw new Error(`method not yet implemented: this interface should be implement by the specific class.`)
+        }
     }
 
     /**
@@ -19,10 +28,23 @@ class EOSProvider {
      * @return {Promise<{Identity}>}
      */
     async getIdentity() {
-        throw new Error(`method not yet implemented: this interface should be implement by the specific class.`)
+        if(!!this[symGetIdentity]) {
+            return symGetIdentity();
+        }else {
+            throw new Error(`method not yet implemented: this interface should be implement by the specific class.`)
+        }
         // it should be like that : '{ name: "nameofuser", authority: "active" }'
     }
 
+    initFromConf(conf, account) {
+        if(!!conf){
+            let eos = Eos(conf);
+            this[symEosClient] = ()=>eos;
+        }
+        if(!!account) {
+            this[symGetIdentity] = account;
+        }
+    }
 }
 
 module.exports = EOSProvider;
