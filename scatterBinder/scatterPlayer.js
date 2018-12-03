@@ -172,6 +172,7 @@ ERR_GET_IDENTITY_FAILED
 {void} eosplayer.setNetConf(network_name, conf) // add a network config at runtime    
 
 get {Scatter} eosplayer.scatter // get scatter instance
+get {Scatter} async getScatterAsync(maxTry = 100) // get scatter instance
 
 get {string} eosplayer.netName // get current network name
 get {string} eosplayer.netConf // get current network config
