@@ -10,15 +10,20 @@
 class EventHandler {
 
     constructor(supportedEvents) {
-        this._eventMap = {};
-        this._defaultCb = function (v) {
-            let strTrigger = `${JSON.stringify(this)} : ${JSON.stringify(v)}`;
-            if(!!alert) {
-                alert(strTrigger);
-            }else{
-                throw new Error(strTrigger);
-            }
+        this._defaultCb = function (... args) {
+            args.forEach(v => {
+                if(!!alert) {
+                    alert(v);
+                }else{
+                    if(typeof v instanceof Error){
+                        throw v;
+                    }else {
+                        throw new Error(strTrigger);
+                    }
+                }
+            });
         }
+        this._eventMap = {};
 
         if (!!supportedEvents) {
             this.enableEvents(supportedEvents);
