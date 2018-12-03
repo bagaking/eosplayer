@@ -418,7 +418,7 @@ class Player extends EosProvider {
     // send a action to contract
 \`\`\`
 
-${this.chain.help}`;
+${ChainHelper.help}`;
         return helpInfo;
     }
 

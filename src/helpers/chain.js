@@ -391,7 +391,7 @@ class ChainHelper {
         });
     }
 
-    get help() {
+    static get help() {
         return `
 ### Chain API
 
