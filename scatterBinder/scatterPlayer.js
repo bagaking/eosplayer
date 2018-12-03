@@ -2,6 +2,7 @@ const Eos = require('eosjs');
 
 const DB = require('./db');
 const Player = require('../src/player')
+const {forMs} = require("../src/utils/wait")
 
 /**
  * Event names supported in scatter player
@@ -86,7 +87,21 @@ class ScatterPlayer extends Player {
         if (!scatter) {
             let err = new Error('scatter cannot found');
             this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err);
-            throw err;
+            //throw err;
+        }
+        return scatter;
+    }
+
+    /**
+     * try get scatter async - if not find
+     * @see https://get-scatter.com/docs/examples-interaction-flow
+     * @return {Scatter}
+     */
+    async getScatterAsync(maxTry = 100) {
+        let scatter = window.scatter;
+        while (!scatter) {
+            await forMs(100);
+            scatter = window.scatter;
         }
         return scatter;
     }
@@ -104,7 +119,7 @@ class ScatterPlayer extends Player {
      * @return {Promise<void>}
      */
     async logout() {
-        return await this.scatter.forgetIdentity(this.netName);
+        return await (await this.getScatterAsync()).forgetIdentity(this.netName);
     }
 
     /**
@@ -129,7 +144,7 @@ class ScatterPlayer extends Player {
             await this.logout();
             console.log(`log out from ${originChainID}`);
         }
-        await this.scatter.getIdentity({
+        await (await this.getScatterAsync()).getIdentity({
             accounts: [this.netConf],
         }).catch((err) => {
             this.events.emitEvent(EVENT_NAMES.ERR_GET_IDENTITY_FAILED, err);
@@ -137,7 +152,7 @@ class ScatterPlayer extends Player {
         });
 
         this.storage.set("latest_chain_id", this.netConf.chainId);
-        return this.scatter.identity.accounts.find(acc => acc.blockchain === 'eos');
+        return (await this.getScatterAsync()).identity.accounts.find(acc => acc.blockchain === 'eos');
     }
 
     get help() {
