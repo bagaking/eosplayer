@@ -141,8 +141,8 @@ class ChainHelper {
 
             console.log('getActions find', acts[acts.length - 1]);
 
-            let maxActionInd = acts.length === 0 ? pos : acts[acts.length - 1].account_action_seq;
-            if (maxActionInd <= pos) {
+            let maxActionInd = acts.length === 0 ? pos - 1 : acts[acts.length - 1].account_action_seq;
+            if (maxActionInd < pos) {
                 break;
             }
 
