@@ -93,12 +93,21 @@ class ChainHelper {
      * @return {Promise<number>}
      */
     async getActionCount(account_name) {
+        return await this.getActionMaxSeq + 1;
+    }
+
+    /**
+     * get a account's max seq
+     * @param {string|number} account_name - string name or id
+     * @return {Promise<number>} - return -1 if there is no action
+     */
+    async getActionMaxSeq(account_name) {
         let recentActions = await this.getRecentActions(account_name);
         if (!recentActions || !recentActions.actions) {
             throw new Error(`getActionCount failed: cannot find recent actions of ${account_name})`);
         }
         let acts = recentActions.actions;
-        return acts.length === 0 ? 0 : acts[acts.length - 1].account_action_seq;
+        return acts.length === 0 ? -1 : acts[acts.length - 1].account_action_seq;
     }
 
     /**
@@ -407,6 +416,7 @@ class ChainHelper {
 {Object} async getAccountInfo(account_name) // get account info of any user
 
 {Number} async getActionCount(account_name) // get a account's action count
+{Number} async getActionMaxSeq(account_name) // get a account's max action seq
 {Array} async getRecentActions(account_name) // get recent actions
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
 

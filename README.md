@@ -75,7 +75,6 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 ### Chain API
 
 ```js
-
 {Object} async getInfo() // get info of the chain connected
 {Object} async getBlock(blockNumOrId) // get specific block of the chain
 
@@ -87,10 +86,12 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 {Object} async getAccountInfo(account_name) // get account info of any user
 
 {Number} async getActionCount(account_name) // get a account's action count
+{Number} async getActionMaxSeq(account_name) // get a account's max action seq
 {Array} async getRecentActions(account_name) // get recent actions
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
 
 {String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
+{Tx} async transfer(account, target, quantity, memo = "", cbError) // transfer
 
 {Tx} async waitTx(txID, maxRound = 12, timeSpanMS = 1009) // check a transaction info, retry once per sec until success
 
