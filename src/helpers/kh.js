@@ -59,11 +59,21 @@ class KhHelper {
      * check res of an user
      * @param code - contract name
      * @param userAccount - account of the user
-     * @param symbol - symbol like "EOS"
+     * @param symStr - symbol string like "EOS"
      * @return {Promise<Asset>} - returns null if it's not exist.
      */
-    async checkResOf(code, userAccount, symbol) {
-        return Asset.parse(await this._chain.checkTableItem(code, "res.accounts", userAccount, symbol));
+    async checkResOf(code, userAccount, symStr) {
+        return Asset.parse(await this._chain.checkTableItem(code, "res.accounts", userAccount, symStr));
+    }
+
+    /**
+     * check res of an user
+     * @param code - contract name
+     * @param symStr - symbol string like "EOS"
+     * @return {Promise<Asset>} - returns null if it's not exist.
+     */
+    async checkResInfo(code, symStr) {
+        return Asset.parse(await this._chain.checkTableItem(code, "res.info", code, symStr));
     }
 
 }
