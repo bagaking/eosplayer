@@ -1,6 +1,7 @@
 'use strict'
 
 const Asset = require("../utils/asset")
+const TranscalPayload = require("../utils/transcalPayload")
 
 /**
  * kh helper, supported kh contract operations
@@ -76,4 +77,13 @@ class KhHelper {
         return Asset.parse(await this._chain.checkTableItem(code, "res.info", code, symStr));
     }
 
+
+    /**
+     * parse transcall payload to data structure
+     * @param memo
+     * @return {Promise<TranscalPayload>}
+     */
+    parseTranscalPayload(memo) {
+        return TranscalPayload.parse(memo);
+    }
 }
