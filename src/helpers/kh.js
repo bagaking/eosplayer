@@ -87,3 +87,5 @@ class KhHelper {
         return TranscalPayload.parse(memo);
     }
 }
+
+module.exports = KhHelper;
