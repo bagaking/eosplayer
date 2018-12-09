@@ -20,7 +20,6 @@ class ResHelper {
         return _cont;
     }
 
-
     /**
      * check res of an user
      * @param userAccount - account of the user
@@ -40,21 +39,21 @@ class ResHelper {
 
     async issue(user, quantity, memo) {
         let contract = await this.resContract();
-        return await contract.resissue(user, quantity, memo);
+        return await contract.resissue({user, quantity, memo});
     }
 
     async burn(user, quantity, memo) {
         let contract = await this.resContract();
-        return await contract.resburn(user, quantity, memo);
+        return await contract.resburn({user, quantity, memo});
     }
 
     async take(from, to, quantity, memo) {
         let contract = await this.resContract();
-        return await contract.restake(from, to, quantity, memo);
+        return await contract.restake({from, to, quantity, memo});
     }
 
     async change(user, from, to, memo) {
         let contract = await this.resContract();
-        return await contract.change(user, from, to, memo);
+        return await contract.change({user, from, to, memo});
     }
 }
