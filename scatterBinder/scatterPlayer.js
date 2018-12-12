@@ -11,6 +11,7 @@ const {forMs} = require("../src/utils/wait")
 const EVENT_NAMES = {
     ERR_GET_SCATTER_FAILED: "ERR_GET_SCATTER_FAILED",
     ERR_GET_IDENTITY_FAILED: "ERR_GET_IDENTITY_FAILED",
+    ERR_LOGOUT_FAILED: "ERR_LOGOUT_FAILED"
 }
 
 /**
@@ -145,8 +146,8 @@ class ScatterPlayer extends Player {
             console.log(`a changing of chain_id detected: ${originChainID} -> ${chainID} `);
             try{
                 await this.logout();
-            }catch (e) {
-                console.log("error happened when logout", e.message);
+            }catch (err) {
+                this.events.emitEvent(EVENT_NAMES.ERR_LOGOUT_FAILED, err);
             }
             console.log(`log out from ${originChainID}`);
         }
@@ -170,6 +171,7 @@ class ScatterPlayer extends Player {
 
 ERR_GET_SCATTER_FAILED  
 ERR_GET_IDENTITY_FAILED  
+ERR_LOGOUT_FAILED  
 
 ### APIs
 

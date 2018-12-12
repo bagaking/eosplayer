@@ -112,6 +112,7 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 ```js
 ERR_GET_SCATTER_FAILED  
 ERR_GET_IDENTITY_FAILED
+ERR_LOGOUT_FAILED
 ```
 
 ### APIs
@@ -179,6 +180,7 @@ window.eosplayer = new ScatterPlayer(networks);
 - Class: kh.js
 - Event: ERR_TRANSFER_FAILED
 - Event: ERR_TRANSEND_FAILED
+- Event: ERR_LOGOUT_FAILED
 - Method: get eosplayer.kh
 - Method: chain.getTable
 - Method: chain.getActionCount
