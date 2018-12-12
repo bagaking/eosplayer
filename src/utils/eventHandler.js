@@ -45,12 +45,14 @@ class EventHandler {
      * @param {string} event - event name
      * @param {Function} fnCallback - if there is already a callback, then the new one will cover the previous one.
      * @param {any} instance - the instance of the callback.
+     * @return {EventHandler} - for pipeline
      */
     setEvent(event, fnCallback, instance) {
         if (!this._supportedEvents.find(name => name === event)) {
             throw new Error(`event handler : event ${event} are not supported.`);
         }
-        this._eventMap[event] = {cb: fnCallback, ctx: context}
+        this._eventMap[event] = {cb: fnCallback, ctx: instance};
+        return this;
     }
 
     /**
