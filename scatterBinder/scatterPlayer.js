@@ -120,7 +120,13 @@ class ScatterPlayer extends Player {
      * @return {Promise<void>}
      */
     async logout() {
-        return await (await this.getScatterAsync()).forgetIdentity();
+        try{
+            let ret = await (await this.getScatterAsync()).forgetIdentity();
+            console.log(`log out from ${this.storage.get("latest_chain_id")}`);
+            return ret;
+        }catch (err) {
+            this.events.emitEvent(EVENT_NAMES.ERR_LOGOUT_FAILED, err);
+        }
     }
 
     /**
@@ -144,12 +150,7 @@ class ScatterPlayer extends Player {
 
         if ((!!originChainID) && chainID !== originChainID) {
             console.log(`a changing of chain_id detected: ${originChainID} -> ${chainID} `);
-            try{
-                await this.logout();
-            }catch (err) {
-                this.events.emitEvent(EVENT_NAMES.ERR_LOGOUT_FAILED, err);
-            }
-            console.log(`log out from ${originChainID}`);
+            await this.logout();
         }
         await (await this.getScatterAsync()).getIdentity({
             accounts: [this.netConf],
