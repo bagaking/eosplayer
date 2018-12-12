@@ -10,15 +10,20 @@
 class EventHandler {
 
     constructor(supportedEvents) {
+
         this._defaultCb = function (... args) {
             args.forEach(v => {
                 if(!!alert) {
-                    alert(v);
+                    if(typeof v instanceof Error){
+                        alert(v.message);
+                    }else {
+                        alert(v);
+                    }
                 }else{
                     if(typeof v instanceof Error){
                         throw v;
                     }else {
-                        throw new Error(strTrigger);
+                        throw new Error(v);
                     }
                 }
             });
