@@ -166,21 +166,23 @@ class ScatterPlayer extends Player {
 
         // using message queue to del
         let identity = undefined;
-        this.identityReceiver.push((identity_)=>identity = identity_);
+        const receiveInstanceOrError = idty => identity = idty;
+        this.identityReceiver.push(receiveInstanceOrError);
 
         if(this.identityReceiver.length <= 1){
             scatter_.getIdentity({
                 accounts: [this.netConf], //need slot 'chainid' and 'blockchain'
             }).then(() => {
-                this.identityReceiver.forEach(v => v(scatter_.identity.accounts.find(acc => acc.blockchain === 'eos')));
+                this.identityReceiver.forEach(receiver => receiver(scatter_.identity.accounts.find(acc => acc.blockchain === 'eos')));
                 this.identityReceiver = [];
             }).catch(err => {
-                this.identityReceiver.forEach(v => v(err));
+                this.identityReceiver.forEach(receiver => receiver(err));
                 this.identityReceiver = [];
             });
         }
-        await forCondition(()=> undefined !== identity); // using undefined to block operation, useing null to handle error
-        if(identity instanceof Error){
+        await forCondition(()=> !! identity); // using undefined to block operation, using null to handle error
+
+        if(identity instanceof Error || (identity.isError)){
             this.events.emitEvent(EVENT_NAMES.ERR_GET_IDENTITY_FAILED, identity);
             throw identity;
         }
