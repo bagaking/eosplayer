@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>src/utils/eventHandler.js - Documentation</title>
+    <title>src/helpers/khRes.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -31,7 +31,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">src/utils/eventHandler.js</h1>
+    <h1 class="page-title">src/helpers/khRes.js</h1>
     
 
     
@@ -43,83 +43,63 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict'
 
-/**
- * Event Handler
- * @desc
- * - only enabled event can be emitted
- * - If the callback of an event is not set, alert will be called by default on the browser, and Error will be triggered in nodejs
- * @author kinghand@foxmail.com
- */
-class EventHandler {
+const Asset = require("../utils/asset")
 
-    constructor(supportedEvents) {
+class ResHelper {
+    constructor(chain, code, symStr, admin = {name : null, authority: null}) {
+        this._chain = chain;
+        this._code = code;
+        this._symStr = symStr;
+        this._admin = admin;
+    }
 
-        this._defaultCb = function (... args) {
-            args.forEach(v => {
-                if(!!alert) {
-                    if(typeof v instanceof Error){
-                        alert(v.message);
-                    }else {
-                        alert(v);
-                    }
-                }else{
-                    if(typeof v instanceof Error){
-                        throw v;
-                    }else {
-                        throw new Error(v);
-                    }
-                }
-            });
-        }
-        this._eventMap = {};
+    get admin() {
+        if(!this._admin || !this._admin.name || !this._admin.authority) return null;
+        return this._admin;
+    }
 
-        if (!!supportedEvents) {
-            this.enableEvents(supportedEvents);
-            this._eventMap = Array.isArray(supportedEvents) ? {} : supportedEvents;
-        }
+    async resContract() {
+        let _cont = await this._chain.getContract(this._code);
+        return _cont;
     }
 
     /**
-     * enable event names
-     * @param {Array | Object} supportedEvents - keys will be used when it's an object
+     * check res of an user
+     * @param userAccount - account of the user
+     * @return {Promise&lt;Asset>} - returns null if it's not exist.
      */
-    enableEvents(supportedEvents) {
-        let newEventKeys = Array.isArray(supportedEvents) ? supportedEvents : Object.keys(supportedEvents);
-        this._supportedEvents = (this._supportedEvents || []).concat(newEventKeys);
+    async checkBalance(userAccount) {
+        return Asset.parse(await this._chain.checkTableItem(this._code, "res.accounts", userAccount, this._symStr));
     }
 
     /**
-     * set callback of an event name
-     * @param {string} event - event name
-     * @param {Function} fnCallback - if there is already a callback, then the new one will cover the previous one.
-     * @param {any} instance - the instance of the callback.
-     * @return {EventHandler} - for pipeline
+     * check res's info
+     * @return {Promise&lt;Asset>} - returns null if it's not exist.
      */
-    setEvent(event, fnCallback, instance) {
-        if (!this._supportedEvents.find(name => name === event)) {
-            throw new Error(`event handler : event ${event} are not supported.`);
-        }
-        this._eventMap[event] = {cb: fnCallback, ctx: instance};
-        return this;
+    async checkInfo() {
+        return Asset.parse(await this._chain.checkTableItem(this._code, "res.info", this._code, this._symStr));
     }
 
-    /**
-     * trigger an event by name
-     * @param {string} event - event name
-     * @param {Array} args - arguments
-     */
-    emitEvent(event, ...args) {
-        if (!this._supportedEvents.find(name => name === event)) {
-            throw new Error(`event handler : event ${event} are not found.`);
-        }
-
-        let e = this._eventMap[event];
-        return e ? e.cb.call(e.ctx, ...args) : this._defaultCb.call(event, ...args);
+    async issue(user, quantity, memo) {
+        let contract = await this.resContract();
+        return await contract.resissue({user, quantity, memo});
     }
 
-}
+    async burn(user, quantity, memo) {
+        let contract = await this.resContract();
+        return await contract.resburn({user, quantity, memo});
+    }
 
-module.exports = EventHandler;</code></pre>
+    async take(from, to, quantity, memo) {
+        let contract = await this.resContract();
+        return await contract.restake({from, to, quantity, memo});
+    }
+
+    async change(user, from, to, memo) {
+        let contract = await this.resContract();
+        return await contract.change({user, from, to, memo});
+    }
+}</code></pre>
         </article>
     </section>
 

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>src/utils/eventHandler.js - Documentation</title>
+    <title>src/utils/transcalPayload.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -31,7 +31,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">src/utils/eventHandler.js</h1>
+    <h1 class="page-title">src/utils/transcalPayload.js</h1>
     
 
     
@@ -43,83 +43,64 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict'
 
-/**
- * Event Handler
- * @desc
- * - only enabled event can be emitted
- * - If the callback of an event is not set, alert will be called by default on the browser, and Error will be triggered in nodejs
- * @author kinghand@foxmail.com
- */
-class EventHandler {
+class TranscalPayload {
 
-    constructor(supportedEvents) {
-
-        this._defaultCb = function (... args) {
-            args.forEach(v => {
-                if(!!alert) {
-                    if(typeof v instanceof Error){
-                        alert(v.message);
-                    }else {
-                        alert(v);
-                    }
-                }else{
-                    if(typeof v instanceof Error){
-                        throw v;
-                    }else {
-                        throw new Error(v);
-                    }
-                }
-            });
-        }
-        this._eventMap = {};
-
-        if (!!supportedEvents) {
-            this.enableEvents(supportedEvents);
-            this._eventMap = Array.isArray(supportedEvents) ? {} : supportedEvents;
-        }
+    constructor(func, ...args) {
+        this.func = func;
+        this.args = args;
     }
 
     /**
-     * enable event names
-     * @param {Array | Object} supportedEvents - keys will be used when it's an object
+     * Get memo
+     * @return {string}
      */
-    enableEvents(supportedEvents) {
-        let newEventKeys = Array.isArray(supportedEvents) ? supportedEvents : Object.keys(supportedEvents);
-        this._supportedEvents = (this._supportedEvents || []).concat(newEventKeys);
+    memo() {
+        return `@[${this.func}:${this.args.join(',')}]`;
     }
 
     /**
-     * set callback of an event name
-     * @param {string} event - event name
-     * @param {Function} fnCallback - if there is already a callback, then the new one will cover the previous one.
-     * @param {any} instance - the instance of the callback.
-     * @return {EventHandler} - for pipeline
+     * Parse memo
      */
-    setEvent(event, fnCallback, instance) {
-        if (!this._supportedEvents.find(name => name === event)) {
-            throw new Error(`event handler : event ${event} are not supported.`);
+    parseMemo(memo) {
+        let callType = memo[0];
+        if (memo.length &lt; 4) throw new Error("parse transcal error: the memo is too short.");
+        if (memo[1] !== '[' || memo[2] === ']') throw new Error("parse transcal error: formation error.");
+        if (callType !== '@' &amp;&amp; callType !== '#') throw new Error("parse transcal error: type mark must be @ or #.");
+
+        let posCol = memo.indexOf(':');
+        let posEnd = memo.indexOf(']');
+        if (posEnd &lt; 0) throw new Error("parse transcal error: cannot find end mark ']'.");
+
+        if (posCol &lt; 0) { // if the col mark exist
+            this.func = memo.substr(2, posEnd - 2);
+            this.args = [];
+            return this;
         }
-        this._eventMap[event] = {cb: fnCallback, ctx: instance};
+
+        this.func = memo.substr(2, posCol - 2);
+
+        let pos = posCol + 1;
+        let posPrev = pos;
+        let args = [];
+        while (true) {
+            pos = memo.indexOf(',', pos);
+            if (pos >= posEnd || pos &lt; 0) {
+                args.push(memo.substr(posPrev, posEnd - posPrev));
+                break;
+            }
+            args.push(memo.substr(posPrev, pos - posPrev));
+            posPrev = ++pos;
+        }
+        this.args = args;
         return this;
     }
 
-    /**
-     * trigger an event by name
-     * @param {string} event - event name
-     * @param {Array} args - arguments
-     */
-    emitEvent(event, ...args) {
-        if (!this._supportedEvents.find(name => name === event)) {
-            throw new Error(`event handler : event ${event} are not found.`);
-        }
-
-        let e = this._eventMap[event];
-        return e ? e.cb.call(e.ctx, ...args) : this._defaultCb.call(event, ...args);
+    static parse(memo) {
+        return (new TranscalPayload('')).parseMemo(memo);
     }
-
 }
 
-module.exports = EventHandler;</code></pre>
+module.exports = TranscalPayload;</code></pre>
         </article>
     </section>
 
