@@ -14,6 +14,8 @@ const EVENT_NAMES = {
     ERR_LOGOUT_FAILED: "ERR_LOGOUT_FAILED"
 }
 
+
+
 /**
  * Player on browser (need scatter)
  * @author kinghand@foxmail.com
@@ -31,6 +33,8 @@ class ScatterPlayer extends Player {
         });
 
         console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
+
+        this.identityReceiver = [];
     }
 
     /**
@@ -145,6 +149,7 @@ class ScatterPlayer extends Player {
 
     /**
      * getIdentity of cur scatter user
+     * @attention When there are multiple concurrent getIdentity requests, scatter will only return the first one.
      * @return {Promise<{Identity}>}
      */
     async getIdentity() {
@@ -157,17 +162,30 @@ class ScatterPlayer extends Player {
             console.log(`a changing of chain_id detected: ${originChainID} -> ${chainID} `);
             await this.logout();
         }
-        console.log("get identity start", scatter_);
-        await (scatter_.getIdentity({
-            accounts: [this.netConf], //need slot 'chainid' and 'blockchain'
-        }).catch((err) => {
-            this.events.emitEvent(EVENT_NAMES.ERR_GET_IDENTITY_FAILED, err);
-            throw err;
-        }));
-        console.log("get identity done");
         this.storage.set("latest_chain_id", chainID);
 
-        return scatter_.identity.accounts.find(acc => acc.blockchain === 'eos');
+        // using message queue to del
+        let identity = undefined;
+        this.identityReceiver.push((identity_)=>identity = identity_);
+
+        if(this.identityReceiver.length <= 1){
+            scatter_.getIdentity({
+                accounts: [this.netConf], //need slot 'chainid' and 'blockchain'
+            }).then(() => {
+                this.identityReceiver.forEach(v => v(scatter_.identity.accounts.find(acc => acc.blockchain === 'eos')));
+                this.identityReceiver = [];
+            }).catch(err => {
+                this.identityReceiver.forEach(v => v(err));
+                this.identityReceiver = [];
+            });
+        }
+        await forCondition(()=> undefined !== identity); // using undefined to block operation, useing null to handle error
+        if(identity instanceof Error){
+            this.events.emitEvent(EVENT_NAMES.ERR_GET_IDENTITY_FAILED, identity);
+            throw identity;
+        }
+
+        return identity;
     }
 
     get help() {
