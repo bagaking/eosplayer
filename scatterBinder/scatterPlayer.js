@@ -2,7 +2,7 @@ const Eos = require('eosjs');
 
 const DB = require('./db');
 const Player = require('../src/player')
-const {forMs} = require("../src/utils/wait")
+const {forMs, forCondition} = require("../src/utils/wait");
 
 /**
  * Event names supported in scatter player
@@ -39,6 +39,14 @@ class ScatterPlayer extends Player {
      */
     get storage() {
         return this._db;
+    }
+
+    /**
+     * wait for scatter ready
+     * @return {Promise<*>}
+     */
+    async ready() {
+        return await forCondition(() => !!window.scatter);
     }
 
     /**
@@ -120,11 +128,11 @@ class ScatterPlayer extends Player {
      * @return {Promise<void>}
      */
     async logout() {
-        try{
+        try {
             let ret = await (await this.getScatterAsync()).forgetIdentity();
             console.log(`log out from ${this.storage.get("latest_chain_id")}`);
             return ret;
-        }catch (err) {
+        } catch (err) {
             this.events.emitEvent(EVENT_NAMES.ERR_LOGOUT_FAILED, err);
         }
     }
