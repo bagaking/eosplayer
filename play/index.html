@@ -1,37 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>EOS Playground</title>
-    <style type="text/css">
-        body{
-            background: #eeefee; color: #363636; line-height: 1.2;
-        }
-        a { color: #233333; text-decoration: none; }
-        h1, h2, h3{
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #440044;
-        }
-    </style>
+  <title>EOS Playeground</title>
 </head>
-<body >
-    <script src="./eosplayer.bundle.js"></script>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/googlecode.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <h1>
-        using eosplayer in the console of your web browser.
-    </h1>
-    <div id="help">
-        loading ...
-    </div>
-    <script type="text/javascript">
-        marked.setOptions({
-            highlight: code => hljs.highlightAuto(code).value,
-        });
-
-        document.getElementById("help").innerHTML = marked(eosplayer.help);
-    </script>
+<body>
+<div id="app"></div>
+<script src="/eosplayer.bundle.js"></script>
+<script src="/bundle.js"></script>
 </body>
 </html>
-
