@@ -42,14 +42,6 @@ class ScatterPlayer extends Player {
     }
 
     /**
-     * wait for scatter ready
-     * @return {Promise<*>}
-     */
-    async ready() {
-        return await forCondition(() => !!window.scatter);
-    }
-
-    /**
      * switch to an network with name
      * @param key
      */
@@ -107,12 +99,15 @@ class ScatterPlayer extends Player {
      * @return {Scatter}
      */
     async getScatterAsync(maxTry = 100) {
-        let scatter = window.scatter;
-        while (!scatter) {
+        while (!window.scatter && maxTry--) {
+            console.log("get scatter failed, retry :", maxTry);
             await forMs(100);
-            scatter = window.scatter;
         }
-        return scatter;
+        if (!window.scatter) {
+            let err = new Error('scatter cannot found');
+            this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err);
+        }
+        return window.scatter;
     }
 
     /**
@@ -153,6 +148,8 @@ class ScatterPlayer extends Player {
      * @return {Promise<{Identity}>}
      */
     async getIdentity() {
+        let scatter_ = await this.getScatterAsync();
+
         let originChainID = this.storage.get("latest_chain_id");
         let chainID = this.netConf.chainId;
 
@@ -160,15 +157,17 @@ class ScatterPlayer extends Player {
             console.log(`a changing of chain_id detected: ${originChainID} -> ${chainID} `);
             await this.logout();
         }
-        await (await this.getScatterAsync()).getIdentity({
-            accounts: [this.netConf],
+        console.log("get identity start", scatter_);
+        await (scatter_.getIdentity({
+            accounts: [this.netConf], //need slot 'chainid' and 'blockchain'
         }).catch((err) => {
             this.events.emitEvent(EVENT_NAMES.ERR_GET_IDENTITY_FAILED, err);
             throw err;
-        });
+        }));
+        console.log("get identity done");
         this.storage.set("latest_chain_id", chainID);
 
-        return (await this.getScatterAsync()).identity.accounts.find(acc => acc.blockchain === 'eos');
+        return scatter_.identity.accounts.find(acc => acc.blockchain === 'eos');
     }
 
     get help() {
