@@ -38,10 +38,17 @@ there are 4 levels of log
 
 in the initial situation, the level `verbose` is **closed**, and `info|warning|error` are **opened**.
 
+> if you would like to **disable all level**, set the level filter to `'-'`.  
+>
+> when enable called, origin setting will be override **(not append)**.
+>
+
 ### Enable/Disable Log Level in Browser
 
 - open specific level of log : `localStorage.debug = 'warning:*,info:*'`
 - open all : `localStorage.debug = '*'`
+
+then, refresh the broswer
 
 ### Enable/Disable Log Level in Prompt or program
 
@@ -57,14 +64,12 @@ in the initial situation, the level `verbose` is **closed**, and `info|warning|e
 
 - `$env:DEBUG = "error:*"`
 
-#### dynamically in code
+#### Enable/Disable Log Level in program dynamically
 
 ```js
 const debug = require('debug');
 debug.enable('error:*,warning:*,info:*');
 ```
-
-> when enable called, origin setting will be override **(not append)**.
 
 ## Usage of eosplayer (for browser)
 

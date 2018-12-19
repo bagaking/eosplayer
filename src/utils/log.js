@@ -6,4 +6,10 @@ module.exports = name => ({
   warning: debug(`warning:${name}`),
   error: debug(`error:${name}`)
 })
-debug.enable('info:*,warning:*,error:*')
+
+const namespaces = debug.disable();
+if (namespaces === '') {
+  debug.enable('info:*,warning:*,error:*')
+} else {
+  debug.enable(namespaces)
+}

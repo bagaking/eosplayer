@@ -24,10 +24,13 @@ class MyPlayer extends Player {
 
 let p = new MyPlayer();
 
+debug = require('debug')
 console.log('verbose:chain', debug.enabled('verbose:chain'))
 console.log('info:chain', debug.enabled('info:chain'))
 console.log('warning:chain', debug.enabled('warning:chain'))
 console.log('error:chain', debug.enabled('error:chain'))
+debug.enable('verbose:*')
+console.log('verbose:chain', debug.enabled('verbose:chain'))
 
 console.log("start", scatterConf, p);
 (async () => console.log(await p.chain.getActions('eosthrone123', 0, 100000)))()
