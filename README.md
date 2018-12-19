@@ -50,7 +50,7 @@ in the initial situation, the level `verbose` is **closed**, and `info|warning|e
 
 then, refresh the broswer
 
-### Enable/Disable Log Level in Prompt or program
+### Enable/Disable Log Level in Prompt
 
 #### Unix
 
@@ -64,12 +64,14 @@ then, refresh the broswer
 
 - `$env:DEBUG = "error:*"`
 
-#### Enable/Disable Log Level in program dynamically
+### Enable/Disable Log Level in program dynamically
 
 ```js
 const debug = require('debug');
 debug.enable('error:*,warning:*,info:*');
 ```
+
+> (temporary in beta.11) these code should be placed after the require operation of eosplayer.
 
 ## Usage of eosplayer (for browser)
 
