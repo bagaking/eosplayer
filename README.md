@@ -27,7 +27,48 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 
 > you can using `help` commond to show api documents on chrome console
 
-## Usage of eosplayer
+## log
+
+there are 4 levels of log  
+
+- verbose
+- info
+- warning
+- error
+
+in the initial situation, the level `verbose` is **closed**, and `info|warning|error` are **opened**.
+
+### Enable/Disable Log Level in Browser
+
+- open specific level of log : `localStorage.debug = 'warning:*,info:*'`
+- open all : `localStorage.debug = '*'`
+
+### Enable/Disable Log Level in Prompt or program
+
+#### Unix
+
+- `DEBUG=error:* node test.js`
+
+#### CMD
+
+- `set DEBUG=error:* & node app.js`
+
+#### PowerShell
+
+- `$env:DEBUG = "error:*"`
+
+#### dynamically in code
+
+```js
+const debug = require('debug');
+debug.enable('error:*,warning:*,info:*');
+```
+
+> when enable called, origin setting will be override **(not append)**.
+
+## Usage of eosplayer (for browser)
+
+### Log
 
 ### Events
 
@@ -247,4 +288,3 @@ in this version, scatter are split from the Player.
 
 email : [kinghand@tonarts.org](kinghand@tonarts.org)  
 issue : [https://github.com/bagaking/eosplayer/issues](https://github.com/bagaking/eosplayer/issues)
-

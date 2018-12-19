@@ -2,7 +2,9 @@ const Eos = require('eosjs');
 
 const DB = require('./db');
 const Player = require('../src/player')
-const {forMs, forCondition} = require("../src/utils/wait");
+const { forMs, forCondition } = require("../src/utils/wait");
+
+const log = require('../src/utils/log')('scatterPlayer');
 
 /**
  * Event names supported in scatter player
@@ -13,8 +15,6 @@ const EVENT_NAMES = {
     ERR_GET_IDENTITY_FAILED: "ERR_GET_IDENTITY_FAILED",
     ERR_LOGOUT_FAILED: "ERR_LOGOUT_FAILED"
 }
-
-
 
 /**
  * Player on browser (need scatter)
@@ -32,7 +32,7 @@ class ScatterPlayer extends Player {
             lang: 'ch',
         });
 
-        console.log(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`)
+        log.info(`eosplayer created: \n${this.netName} \n${JSON.stringify(this.netConf)}`);
 
         this.identityReceiver = [];
     }
@@ -53,9 +53,9 @@ class ScatterPlayer extends Player {
         if (key in this._networks) {
             this.storage.set("network_name", key);
             this._eosClient = null;
-            console.log(`network changed to ${this.netName}.`)
+            log.info(`network changed to ${this.netName}.`)
         } else {
-            console.log(`network ${key} cannot find.`)
+            log.warn(`network ${key} cannot find.`)
         }
     }
 
@@ -104,7 +104,7 @@ class ScatterPlayer extends Player {
      */
     async getScatterAsync(maxTry = 100) {
         while (!window.scatter && maxTry--) {
-            console.log("get scatter failed, retry :", maxTry);
+            log.verbose("get scatter failed, retry :", maxTry);
             await forMs(100);
         }
         if (!window.scatter) {
@@ -129,7 +129,7 @@ class ScatterPlayer extends Player {
     async logout() {
         try {
             let ret = await (await this.getScatterAsync()).forgetIdentity();
-            console.log(`log out from ${this.storage.get("latest_chain_id")}`);
+            log.info(`log out from ${this.storage.get("latest_chain_id")}`);
             return ret;
         } catch (err) {
             this.events.emitEvent(EVENT_NAMES.ERR_LOGOUT_FAILED, err);
@@ -159,7 +159,7 @@ class ScatterPlayer extends Player {
         let chainID = this.netConf.chainId;
 
         if ((!!originChainID) && chainID !== originChainID) {
-            console.log(`a changing of chain_id detected: ${originChainID} -> ${chainID} `);
+            log.info(`a changing of chain_id detected: ${originChainID} -> ${chainID} `);
             await this.logout();
         }
         this.storage.set("latest_chain_id", chainID);

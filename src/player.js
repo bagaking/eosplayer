@@ -1,4 +1,5 @@
 const Asset = require('./utils/asset');
+const log = require('./utils/log')('chain');
 
 /**
  * @interface eosAPI
@@ -245,7 +246,7 @@ class Player extends EosProvider {
             permission: account.authority
         });
         if (!!trx) {
-            console.log(`Transaction ID: ${trx.transaction_id}`);
+            log.info(`call operation dealed, txID: ${trx.transaction_id}`);
         }
         return trx;
     }
@@ -421,8 +422,6 @@ class Player extends EosProvider {
 ${ChainHelper.help}`;
         return helpInfo;
     }
-
 }
-
 
 module.exports = Player;

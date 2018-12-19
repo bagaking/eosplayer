@@ -3,6 +3,8 @@
 const {forMs} = require("../utils/wait")
 const BN = require('bignumber.js').BigNumber;
 
+const log = require('../utils/log')('chain');
+
 /**
  * chain helper, supported chain operations
  * @author kinghand@foxmail.com
@@ -131,7 +133,7 @@ class ChainHelper {
         let pos = startPos;
         let endPos = startPos + offset;
         let actions = [];
-
+        log.verbose('getActions start', startPos, endPos, "current:", actions.length);
         while (true) {
             let ret = await this._eos.getActions({account_name, pos, offset: endPos - pos});
             if (!ret || !ret.actions) {
@@ -139,7 +141,7 @@ class ChainHelper {
             }
             let acts = ret.actions;
 
-            console.log('getActions find', acts[acts.length - 1]);
+            log.verbose('getActions find', acts[acts.length - 1]);
 
             let maxActionInd = acts.length === 0 ? pos - 1 : acts[acts.length - 1].account_action_seq;
             if (maxActionInd < pos) {
@@ -180,10 +182,10 @@ class ChainHelper {
     async transfer(account, target, quantity, memo = "", cbError) {
         const transOptions = {authorization: [`${account.name}@${account.authority}`]}
         let trx = await this._eos.transfer(account.name, target, quantity, memo, transOptions).catch(
-            (!!cbError) ? cbError : console.log
+            (!!cbError) ? cbError : log.error
         );
         if (!!trx) {
-            console.log(`Transaction ID: ${trx.transaction_id}`);
+            log.info(`Transfer dealed, txID: ${trx.transaction_id}`);
         }
         return trx;
     }
@@ -202,10 +204,10 @@ class ChainHelper {
                 const tx = await this._eos.getTransaction(_txID);
                 if (tx) return tx;
             } catch (err) {
-                console.log(`wait tx ${_txID}, retry round: ${round}. ${err.message}`);
+                log.verbose(`wait tx ${_txID}, retry round: ${round}. ${err.message}`);
             }
             if (round >= maxRound) {
-                console.error(`wait tx failed, round out.`)
+                log.error(`wait tx failed, round out.`)
                 return null;
             }
             await waitForMs(timeSpanMS);
@@ -255,7 +257,7 @@ class ChainHelper {
         let ret = [];
         let pool = [];
         const Require = (_l, _u) => {
-            console.log('search ', Date.now(), _l.toFixed(0), _u.toFixed(0));
+            log.verbose('search ', Date.now(), _l.toFixed(0), _u.toFixed(0));
             if (_l.gte(_u)) return;
             let _promise = this._eos.getTableRows({
                 json: true,
@@ -300,7 +302,7 @@ class ChainHelper {
         while (pool.length > 0) {
             await forMs(50);
         }
-        console.log('done search ', Date.now(), lower.toFixed(0), upper.toFixed(0));
+        log.verbose('done search ', Date.now(), lower.toFixed(0), upper.toFixed(0));
 
         return ret;
     }
@@ -319,7 +321,7 @@ class ChainHelper {
      * @return {Promise<Array>}
      */
     async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
-        console.log('search ', Date.now(), lower_bound, upper_bound, limit);
+        log.verbose('search ', Date.now(), lower_bound, upper_bound, limit);
         let result = await this._eos.getTableRows({
             json: true,
             code: code,
