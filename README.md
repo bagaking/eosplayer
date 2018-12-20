@@ -101,6 +101,9 @@ debug.enable('error:*,warning:*,info:*');
 {String} async eosplayer.getBalance(account_name = undefined, code = "eosio.token", symbolName = undefined)  
     // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token,
 
+{String} async eosplayer.getBalances(account_name = undefined, code = "eosio.token")  
+    // get balances array of a account. ex. ["1.0000 CT"]
+
 {String} async eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 
     // get balance structure of a account. ex. {val:1, sym:"EOS", decimal:4}
 
@@ -236,7 +239,6 @@ window.eosplayer = new ScatterPlayer(networks);
 - Method: chain.getRecentActions
 - Method: chain.getActions
 - Method: chain.transfer
-
 
 #### modify
 
