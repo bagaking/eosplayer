@@ -16,9 +16,9 @@ class EOSProvider {
      * @return {eosAPI}
      */
     get eosClient() {
-        if(!!this[symEosClient]) {
+        if (!!this[symEosClient]) {
             return symEosClient();
-        }else {
+        } else {
             throw new Error(`method not yet implemented: this interface should be implement by the specific class.`)
         }
     }
@@ -28,20 +28,30 @@ class EOSProvider {
      * @return {Promise<{Identity}>}
      */
     async getIdentity() {
-        if(!!this[symGetIdentity]) {
+        if (!!this[symGetIdentity]) {
             return symGetIdentity();
-        }else {
+        } else {
             throw new Error(`method not yet implemented: this interface should be implement by the specific class.`)
         }
         // it should be like that : '{ name: "nameofuser", authority: "active" }'
     }
 
+    /**
+     * get auth structure from identity 
+     * @return {Object} - { authorization : [ 'name@authority' ] }
+     */
+    async getAuth() {
+        return {
+            authorization: [`${this._identity.name}@${this._identity.authority}`]
+        };
+    }
+
     initFromConf(conf, account) {
-        if(!!conf){
+        if (!!conf) {
             let eos = Eos(conf);
-            this[symEosClient] = ()=>eos;
+            this[symEosClient] = () => eos;
         }
-        if(!!account) {
+        if (!!account) {
             this[symGetIdentity] = account;
         }
     }
