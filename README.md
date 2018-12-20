@@ -139,7 +139,8 @@ debug.enable('error:*,warning:*,info:*');
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
 
 {String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
-{Tx} async transfer(account, target, quantity, memo = "", cbError) // transfer
+{Array.<String>} async getBalances(account_name, code = "eosio.token") // get all balance of specific account
+{Tx} async transfer(account, target, quantity, memo = "", cbError) // the format of account should be {name, authority}
 
 {Tx} async waitTx(txID, maxRound = 12, timeSpanMS = 1009) // check a transaction info, retry once per sec until success
 
@@ -151,7 +152,7 @@ debug.enable('error:*,warning:*,info:*');
 {Object} async checkTableItem(code, tableName, scope, key = 0) // check a item in a table
 
 {Object} async updateAuth(account, permission, parent, threshold, keys, accounts, waits) // update auth
-```   
+```
 
 ## Usage of eosplayer (for broswer)
 
@@ -163,7 +164,7 @@ ERR_GET_IDENTITY_FAILED
 ERR_LOGOUT_FAILED
 ```
 
-### APIs
+### APIs  
 
 ```js
 {void} eosplayer.switchNetwork(val) // switch network
@@ -174,7 +175,7 @@ get {Scatter} async getScatterAsync(maxTry = 100) // get scatter instance
 
 get {string} eosplayer.netName // get current network name
 get {string} eosplayer.netConf // get current network config
-        
+
 async {Identity} eosplayer.login() // let user allow you using identity
 async {void} eosplayer.logout() // return back the identity
 ```

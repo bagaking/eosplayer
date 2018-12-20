@@ -166,8 +166,17 @@ class ChainHelper {
      * @return {Promise<string|undefined>} asset format '1.0000 EOS'
      */
     async getBalance(account_name, code = "eosio.token") {
-        let result = await this._eos.getCurrencyBalance(code, account_name)
-        return result[0] ? result[0].trim() : null;
+        return (await this.getBalances(code, account_name))[0] || null;
+    }
+
+    /**
+     * get balance of specific account
+     * @param account_name - user's account name
+     * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
+     * @return {Promise<Array>} - list of asset, asset format is like '1.0000 EOS'
+     */
+    async getBalances(account_name, code = "eosio.token") {
+        return ((await this._eos.getCurrencyBalance(code, account_name)) || []).map(v => v.trim());
     }
 
     /**
@@ -423,6 +432,7 @@ class ChainHelper {
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
 
 {String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
+{Array.<String>} async getBalances(account_name, code = "eosio.token") // get all balance of specific account
 {Tx} async transfer(account, target, quantity, memo = "", cbError) // the format of account should be {name, authority}
 
 {Tx} async waitTx(txID, maxRound = 12, timeSpanMS = 1009) // check a transaction info, retry once per sec until success
