@@ -222,12 +222,18 @@ async {void} eosplayer.logout() // return back the identity
 \`\`\`js
 window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */  
 window.env = env; /** {isPc} */  
-window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */  
-window.eosplayer = new ScatterPlayer(networks);  
+window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */ 
 window.BigNumber = BigNumber; /** big number @see {@url https://www.npmjs.com/package/bignumber.js} */
+
+window.kh.eos.Player
+window.kh.eos.ScatterPlayer
+window.eosplayer = new ScatterPlayer(networks);  
 \`\`\`        
 `
     }
 }
 
-module.exports = ScatterPlayer;
+module.exports = {
+    Player,
+    ScatterPlayer
+}

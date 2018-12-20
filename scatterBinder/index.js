@@ -3,7 +3,10 @@ const Eos = require('eosjs');
 const {BigNumber} = require('bignumber.js');
 
 const netConf = require('./conf');
-const ScatterPlayer = require('./scatterPlayer');
+const {
+    Player,
+    ScatterPlayer
+} = require('./scatterPlayer');
 
 /**
  * env of browser
@@ -40,3 +43,10 @@ window.idb = idb;
  * @type {Player}
  */
 window.eosplayer = new ScatterPlayer(netConf);
+if (!window.kh) {
+    window.kh = {}
+}
+window.kh.eos = {
+    Player,
+    ScatterPlayer
+};
