@@ -149,10 +149,11 @@ class Player extends EosProvider {
      * get balance of specific account
      * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
      * @param account_name - user's account name, name of cur identity by default
+     * @param symbolName - the token's symbol name
      * @return {Promise<string|undefined>} asset format '1.0000 EOS'
      */
-    async getBalance(account_name = undefined, code = "eosio.token") {
-        return this.chain.getBalance(account_name || (await this.getIdentity()).name, code)
+    async getBalance(account_name = undefined, code = "eosio.token", symbolName = undefined) {
+        return this.chain.getBalance(account_name || (await this.getIdentity()).name, code, symbolName);
     }
 
     /**
@@ -397,7 +398,7 @@ class Player extends EosProvider {
 {AccountInfo} async eosplayer.getAccountInfo(account_name = identity.name) 
     // get account info for any user
 
-{String} async eosplayer.getBalance(account_name = undefined, code = "eosio.token")  
+{String} async eosplayer.getBalance(account_name = undefined, code = "eosio.token", symbolName = undefined)  
     // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token,
 
 {String} async eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 

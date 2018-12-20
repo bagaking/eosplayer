@@ -161,12 +161,21 @@ class ChainHelper {
 
     /**
      * get balance of specific account
-     * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
      * @param account_name - user's account name
+     * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
+     * @param symbolName - the token's symbol name
      * @return {Promise<string|undefined>} asset format '1.0000 EOS'
      */
-    async getBalance(account_name, code = "eosio.token") {
-        return (await this.getBalances(code, account_name))[0] || null;
+    async getBalance(account_name, code = "eosio.token", symbolName = undefined) {
+        let balances = await this.getBalances(account_name, code);
+        if (!symbolName) {
+            log.warning("Symbol of the token has not been specified, the first item will return. all:", balances);
+            return balances[0] || null;
+        } else if (typeof symbolName == 'string') {
+            return balances.find(v => v.endsWith(symbolName)) || null;
+        }
+        log.error("Symbol gave but error.");
+        return null;
     }
 
     /**
@@ -431,7 +440,7 @@ class ChainHelper {
 {Array} async getRecentActions(account_name) // get recent actions
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
 
-{String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
+{String} async getBalance(account_name, code = "eosio.token", symbolName = undefined) // get balance of specific account
 {Array.<String>} async getBalances(account_name, code = "eosio.token") // get all balance of specific account
 {Tx} async transfer(account, target, quantity, memo = "", cbError) // the format of account should be {name, authority}
 

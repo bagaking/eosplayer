@@ -98,7 +98,7 @@ debug.enable('error:*,warning:*,info:*');
 {AccountInfo} async eosplayer.getAccountInfo(account_name = identity.name) 
     // get account info for any user
 
-{String} async eosplayer.getBalance(account_name = undefined, code = "eosio.token")  
+{String} async eosplayer.getBalance(account_name = undefined, code = "eosio.token", symbolName = undefined)  
     // get balance string of a account. ex. "1.0000 EOS", null means that the account dosen't have any token,
 
 {String} async eosplayer.getBalanceAsset(account_name = undefined, code = "eosio.token") 
@@ -138,7 +138,7 @@ debug.enable('error:*,warning:*,info:*');
 {Array} async getRecentActions(account_name) // get recent actions
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
 
-{String} async getBalance(account_name, code = "eosio.token") // get balance of specific account
+{String} async getBalance(account_name, code = "eosio.token", symbolName = undefined) // get balance of specific account
 {Array.<String>} async getBalances(account_name, code = "eosio.token") // get all balance of specific account
 {Tx} async transfer(account, target, quantity, memo = "", cbError) // the format of account should be {name, authority}
 
