@@ -41,8 +41,9 @@ class EOSProvider {
      * @return {Object} - { authorization : [ 'name@authority' ] }
      */
     async getAuth() {
+        let identity = await this.getIdentity();
         return {
-            authorization: [`${this._identity.name}@${this._identity.authority}`]
+            authorization: [`${identity.name}@${identity.authority}`]
         };
     }
 
