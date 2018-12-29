@@ -89,6 +89,21 @@ class ChainHelper {
         return await this._eos.getAccount({account_name})
     }
 
+
+    /**
+     * get public key of an account
+     * @param name - account_name
+     * @param authority - default is 'active'
+     * @return {Promise<*>}
+     * @constructor
+     */
+    async getPubKey(account_name, authority = "active"){
+        let accountInfo = await this.getAccountInfo(account_name);
+        let permission = accountInfo.permissions.find(v => v.perm_name == authority);
+        if(!permission) throw new Error(`cannot find the permission of ${account_name}`)
+        return permission.required_auth.keys[0].key;
+    }
+
     /**
      * get a account's action count
      * @param {string|number} account_name - string name or id
@@ -427,6 +442,7 @@ class ChainHelper {
 \`\`\`js
 {Object} async getInfo() // get info of the chain connected
 {Object} async getBlock(blockNumOrId) // get specific block of the chain
+    
 
 {Contract} async getContract(code) // get contract
 {Object} async getAbi(code) // get abi of contract
@@ -434,6 +450,7 @@ class ChainHelper {
 {Object} async abiJsonToBin(code, action, args) 
 
 {Object} async getAccountInfo(account_name) // get account info of any user
+{string} async getPubKey(account_name, authority = "active") // get public key of an account
 
 {Number} async getActionCount(account_name) // get a account's action count
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq

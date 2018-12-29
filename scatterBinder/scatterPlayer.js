@@ -190,17 +190,16 @@ class ScatterPlayer extends Player {
         return identity;
     }
 
-    async GetPubKey(name, authority){
-        let accountInfo = await this.getAccountInfo(name);
-        let permission = accountInfo.permissions.find(v => v.perm_name == authority);
-        if(!permission) throw new Error(`cannot find the permission of ${identity.name}`)
-        return permission.required_auth.keys[0].key;
-    }
-
-    async Sign(value) {
+    /**
+     * sign a message with current identity
+     * @param message
+     * @return {Promise<void>} - signed data
+     * @constructor
+     */
+    async Sign(message) {
         let identity = await this.getIdentity();
-        let pubkey = await this.GetPubKey(identity.name, identity.authority);
-        return await this.scatter.getArbitrarySignature(pubkey, value);
+        let pubkey = await this.chain.getPubKey(identity.name, identity.authority);
+        return await this.scatter.getArbitrarySignature(pubkey, message);
     }
 
     get help() {
@@ -228,6 +227,8 @@ get {string} eosplayer.netConf // get current network config
         
 async {Identity} eosplayer.login() // let user allow you using identity
 async {void} eosplayer.logout() // return back the identity
+
+async Sign(message) // sign a message with current identity
 \`\`\`
 
 ## Imported libs
