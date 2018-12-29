@@ -1,5 +1,6 @@
 const idb = require('idb');
 const Eos = require('eosjs');
+const Ecc = require('eosjs-ecc')
 const {BigNumber} = require('bignumber.js');
 
 const netConf = require('./conf');
@@ -25,6 +26,13 @@ window.env = class env {
  * @type {Eos}
  */
 window.eosjs = Eos;
+
+/**
+ * eosjs_ecc
+ * @see {@url https://www.npmjs.com/package/eosjs-ecc}
+ * @type {Ecc}
+ */
+window.eosjs_ecc = Ecc;
 
 /**
  * big number

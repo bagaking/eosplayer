@@ -193,6 +193,7 @@ async Sign(message) // sign a message with current identity
 ```js
 
 window.eosjs = Eos; /** the eosjs lib @see {@url https://www.npmjs.com/package/eosjs} */
+window.eosjs_ecc = Ecc; /** the eosjs-ecc lib @see {@url https://www.npmjs.com/package/eosjs-ecc} */
 window.BigNumber = BigNumber; /** big number library @see {@url https://www.npmjs.com/package/bignumber.js} */
 window.env = env; /** {isPc} */
 window.idb = idb; /** idb lib for browser storage @see {@url https://www.npmjs.com/package/idb } */
