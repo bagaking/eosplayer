@@ -19,9 +19,19 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 1. open the test site in your chrome : `http://localhost:3000` by default 
 1. test it in your chrome console
 
+or using the online play ground:
+[https://play.eosplayer.pro](https://doc.eosplayer.pro)
+
+- [transfer tool](https://play.eosplayer.pro/#/1)
+- [sign tool](https://play.eosplayer.pro/#/2)
+- [docs](https://play.eosplayer.pro/#/3)
+
 ## api documents : 
 
-[http://doc.eosplayer.pro](https://doc.eosplayer.pro)
+Doc site:
+[doc.eosplayer.pro](https://doc.eosplayer.pro)   
+or
+[Docs in playground](https://play.eosplayer.pro/#/3)
 
 ---
 
