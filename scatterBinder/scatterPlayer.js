@@ -199,6 +199,7 @@ class ScatterPlayer extends Player {
     async Sign(message) {
         let identity = await this.getIdentity();
         let pubkey = await this.chain.getPubKey(identity.name, identity.authority);
+        log.info(`sign (${pubkey}) : ${message}`)
         return await this.scatter.getArbitrarySignature(pubkey, message);
     }
 

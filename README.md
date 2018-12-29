@@ -137,6 +137,8 @@ debug.enable('error:*,warning:*,info:*');
 {Object} async getAccountInfo(account_name) // get account info of any user
 {string} async getPubKey(account_name, authority = "active") // get public key of an account
 
+{string} async recoverSign(signature, message) // recover sign and to the public key
+
 {Number} async getActionCount(account_name) // get a account's action count
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq
 {Array} async getRecentActions(account_name) // get recent actions

@@ -4,7 +4,7 @@ const {forMs} = require("../utils/wait")
 const BN = require('bignumber.js').BigNumber;
 
 const log = require('../utils/log')('chain');
-
+const ecc = require('eosjs-ecc');
 /**
  * chain helper, supported chain operations
  * @author kinghand@foxmail.com
@@ -102,6 +102,16 @@ class ChainHelper {
         let permission = accountInfo.permissions.find(v => v.perm_name == authority);
         if(!permission) throw new Error(`cannot find the permission of ${account_name}`)
         return permission.required_auth.keys[0].key;
+    }
+
+    /**
+     * recover public key from signature
+     * @param signature - signed data
+     * @param message
+     * @return {string|pubkey|PublicKey}
+     */
+    recoverSign(signature, message) {
+        return ecc.recover(signature, message)
     }
 
     /**
@@ -435,6 +445,7 @@ class ChainHelper {
         });
     }
 
+
     static get help() {
         return `
 ### Chain API
@@ -451,6 +462,7 @@ class ChainHelper {
 
 {Object} async getAccountInfo(account_name) // get account info of any user
 {string} async getPubKey(account_name, authority = "active") // get public key of an account
+{string} async recoverSign(signature, message) // recover sign and to the public key
 
 {Number} async getActionCount(account_name) // get a account's action count
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq
