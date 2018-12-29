@@ -185,7 +185,7 @@ get {string} eosplayer.netConf // get current network config
 async {Identity} eosplayer.login() // let user allow you using identity
 async {void} eosplayer.logout() // return back the identity
 
-async Sign(message) // sign a message with current identity
+async sign(message) // sign a message with current identity
 ```
 
 ## Imported libs

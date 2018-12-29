@@ -196,7 +196,7 @@ class ScatterPlayer extends Player {
      * @return {Promise<void>} - signed data
      * @constructor
      */
-    async Sign(message) {
+    async sign(message) {
         let identity = await this.getIdentity();
         let pubkey = await this.chain.getPubKey(identity.name, identity.authority);
         log.info(`sign (${pubkey}) : ${message}`)
@@ -229,7 +229,7 @@ get {string} eosplayer.netConf // get current network config
 async {Identity} eosplayer.login() // let user allow you using identity
 async {void} eosplayer.logout() // return back the identity
 
-async Sign(message) // sign a message with current identity
+async {string} sign(message) // sign a message with current identity
 \`\`\`
 
 ## Imported libs
