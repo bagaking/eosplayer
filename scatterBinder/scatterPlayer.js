@@ -190,6 +190,19 @@ class ScatterPlayer extends Player {
         return identity;
     }
 
+    async GetPubKey(name, authority){
+        let accountInfo = await this.getAccountInfo(name);
+        let permission = accountInfo.permissions.find(v => v.perm_name == authority);
+        if(!permission) throw new Error(`cannot find the permission of ${identity.name}`)
+        return permission.required_auth.keys[0].key;
+    }
+
+    async Sign(value) {
+        let identity = await this.getIdentity();
+        let pubkey = await this.GetPubKey(identity.name, identity.authority);
+        return await this.scatter.getArbitrarySignature(pubkey, value);
+    }
+
     get help() {
         return super.help + `
   

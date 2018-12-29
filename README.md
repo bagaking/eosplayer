@@ -229,7 +229,8 @@ window.eosplayer = new ScatterPlayer(networks);
 
 #### add
 
-- Class: kh.js
+- Class: helper/kh.js
+- Class: utils/log.js
 - Event: ERR_TRANSFER_FAILED
 - Event: ERR_TRANSEND_FAILED
 - Event: ERR_LOGOUT_FAILED
@@ -237,12 +238,16 @@ window.eosplayer = new ScatterPlayer(networks);
 - Method: chain.getTable
 - Method: chain.getActionCount
 - Method: chain.getRecentActions
+- Method: chain.getBalances
 - Method: chain.getActions
 - Method: chain.transfer
+- Method: player.getBalances
+- Method: player.getAuth
 
 #### modify
 
 - Method: the checkTableRange methods deals with 'more' now
+- Method: chain.getBalance add param symbolName
 
 #### Export
 
