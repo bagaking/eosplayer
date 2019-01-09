@@ -164,6 +164,7 @@ debug.enable('error:*,warning:*,info:*');
 
 {Array} async getTable(code, tableName, scope, lower, upper, ...hint) // get all items in a table
 {Array} async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) // check a table
+{Array} async checkTableMore(code, tableName, scope, primaryKey, limit = 9999999, lower_bound = 0, upper_bound = -1, index_position = 1)
 {Array} async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) // check range in table
 {Object} async checkTableItem(code, tableName, scope, key = 0) // check a item in a table
 
@@ -256,6 +257,7 @@ window.eosplayer = new ScatterPlayer(networks);
 - Method: chain.getRecentActions
 - Method: chain.getBalances
 - Method: chain.getActions
+- Method: chain.checkTableMore
 - Method: chain.transfer
 - Method: player.getBalances
 - Method: player.getAuth
