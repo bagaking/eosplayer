@@ -353,7 +353,7 @@ class ChainHelper {
 
     /**
      * check a table
-     * @desc the tag 'more' are handled. it means that the result would not be truncated.
+     * @desc the tag 'more' are not handled.
      * @param {string} code - the contract
      * @param {string} tableName - name of the table
      * @param {string} scope
@@ -377,10 +377,49 @@ class ChainHelper {
         });
         let ret = result && result.rows ? result.rows : [];
         if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // deal with 'more'
-            let abi = await this.getTableAbi(code, tableName);
-            let key = abi.key_names[0];
-            let largestIndVal = ret[ret.length - 1][key]; // the new start from where the last search end.
-            return ret.concat(await this.checkTable(code, tableName, scope, limit - ret.length, BN(largestIndVal).plus(1).toFixed(0), upper_bound, index_position));
+            log.warning(`'more' detected, and this method didn't deal with the tag 'more'. if you want to get all results, using checkTableMore and provide the primary key. `)
+        }
+        return ret;
+    }
+
+    /**
+     * check a table
+     * @desc the tag 'more' are handled. it means that the result would not be truncated.
+     * @param {string} code - the contract
+     * @param {string} tableName - name of the table
+     * @param {string} scope
+     * @param {string} primaryKey - the key for indexing
+     * @param {number} limit
+     * @param {number | string} lower_bound
+     * @param {number | string} upper_bound
+     * @param {number} index_position
+     * @return {Promise<Array>}
+     */
+    async checkTableMore(code, tableName, scope, primaryKey, limit = 9999999, lower_bound = 0, upper_bound = -1, index_position = 1) {
+        log.verbose('search ',code, tableName, Date.now());
+        let result = await this._eos.getTableRows({
+            json: true,
+            code: code,
+            scope: scope,
+            table: tableName,
+            limit,
+            lower_bound,
+            upper_bound,
+            index_position
+        });
+        let ret = result && result.rows ? result.rows : [];
+        log.verbose(`part size ${ret.length}.`);
+        if (result.more && (limit <= 0 || (result.rows && result.rows.length < limit))) { // deal with 'more'
+            let from = ret[0][primaryKey];
+            let to = ret[ret.length - 1][primaryKey];
+            if(!from || !to){
+                let abi = await this.getAbi(code);
+                log.error(`searching more error with primary key : ${primaryKey}. please check\nlast data: ${ret[ret.length - 1]} \nabi ${JSON.stringify(abi)}`);
+                throw new Error(`check more error with primary key : ${primaryKey}`)
+            }
+            log.info(`'more' detected: start searching results from ${to}.`);
+            let partResult = await this.checkTableMore(code, tableName, scope, primaryKey, limit - ret.length + 1, to, upper_bound, index_position);
+            return ret.concat(partResult.splice(1));
             //todo: the meaning of 'limit', should be considered
         }
         return ret;
@@ -479,6 +518,7 @@ class ChainHelper {
 
 {Array} async getTable(code, tableName, scope, lower, upper, ...hint) // get all items in a table
 {Array} async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) // check a table
+{Array} async checkTableMore(code, tableName, scope, primaryKey, limit = 9999999, lower_bound = 0, upper_bound = -1, index_position = 1)
 {Array} async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) // check range in table
 {Object} async checkTableItem(code, tableName, scope, key = 0) // check a item in a table
 
