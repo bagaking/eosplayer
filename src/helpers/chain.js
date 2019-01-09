@@ -441,7 +441,7 @@ class ChainHelper {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
-        let rows = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : -1, index_position);
+        let rows = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : ( length === 1 ? from : -1), index_position);
         return rows;
     }
 
