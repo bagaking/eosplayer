@@ -4,6 +4,8 @@ const {forMs} = require("../utils/wait")
 const BN = require('bignumber.js').BigNumber;
 
 const log = require('../utils/log')('chain');
+
+const EOS = require('eosjs');
 const ecc = require('eosjs-ecc');
 /**
  * chain helper, supported chain operations
@@ -441,7 +443,7 @@ class ChainHelper {
         if (length < 0) {
             throw new Error(`range error: length(${length}) must larger than 0 `);
         }
-        let rows = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : ( length === 1 ? from : -1), index_position);
+        let rows = await this.checkTable(code, tableName, scope, length, from, (typeof from === "number") ? from + length : new BN(EOS.modules.format.encodeName(from, false)).plus(length).toString(), index_position);
         return rows;
     }
 
