@@ -198,9 +198,20 @@ class ScatterPlayer extends Player {
      */
     async sign(message) {
         let identity = await this.getIdentity();
-        let pubkey = await this.chain.getPubKey(identity.name, identity.authority);
-        log.info(`sign (${pubkey}) : ${message}`)
-        return await this.scatter.getArbitrarySignature(pubkey, message);
+        let pubkeys = await this.chain.getPubKeys(identity.name, identity.authority);
+
+
+        let ret = "";
+        for(let i = 0; i < pubkeys.length; i ++){
+            try {
+                log.info(`try sign (${JSON.stringify(pubkeys[i])}) : ${message}`)
+                ret = await this.scatter.getArbitrarySignature(pubkeys[i].key, message);
+                break;
+            }catch(ex) {
+                log.warn(`try pub key failed ${pubkeys[i]}`);
+            }
+        }
+        return ret;
     }
 
     get help() {

@@ -145,8 +145,8 @@ debug.enable('error:*,warning:*,info:*');
 {Object} async abiJsonToBin(code, action, args) 
 
 {Object} async getAccountInfo(account_name) // get account info of any user
-{string} async getPubKey(account_name, authority = "active") // get public key of an account
-
+{string} async getPubKey(account_name, authority = "active") // get the first public key of an account
+{Array} async getPubKeys(account_name, authority = "active") // get public keys of an account
 {string} async recoverSign(signature, message) // recover sign and to the public key
 
 {Number} async getActionCount(account_name) // get a account's action count
@@ -259,6 +259,8 @@ window.eosplayer = new ScatterPlayer(networks);
 - Method: chain.getActions
 - Method: chain.checkTableMore
 - Method: chain.transfer
+- Method: chain.getPubKey
+- Method: chain.getPubKeys
 - Method: player.getBalances
 - Method: player.getAuth
 
