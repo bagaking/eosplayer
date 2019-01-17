@@ -93,17 +93,28 @@ class ChainHelper {
 
 
     /**
-     * get public key of an account
+     * get first public key of an account
      * @param name - account_name
      * @param authority - default is 'active'
      * @return {Promise<*>}
      * @constructor
      */
     async getPubKey(account_name, authority = "active"){
+        return (await getPubKeys(account_name, authority))[0].key;
+    }
+
+    /**
+     * get public keys of an account
+     * @param name - account_name
+     * @param authority - default is 'active'
+     * @return {Promise<*>}
+     * @constructor
+     */
+    async getPubKeys(account_name, authority = "active"){
         let accountInfo = await this.getAccountInfo(account_name);
         let permission = accountInfo.permissions.find(v => v.perm_name == authority);
         if(!permission) throw new Error(`cannot find the permission of ${account_name}`)
-        return permission.required_auth.keys[0].key;
+        return permission.required_auth.keys;
     }
 
     /**
@@ -502,7 +513,8 @@ class ChainHelper {
 {Object} async abiJsonToBin(code, action, args) 
 
 {Object} async getAccountInfo(account_name) // get account info of any user
-{string} async getPubKey(account_name, authority = "active") // get public key of an account
+{string} async getPubKey(account_name, authority = "active") // get the first public key of an account
+{Array} async getPubKeys(account_name, authority = "active") // get public keys of an account
 {string} async recoverSign(signature, message) // recover sign and to the public key
 
 {Number} async getActionCount(account_name) // get a account's action count
