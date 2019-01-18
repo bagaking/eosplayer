@@ -1,6 +1,5 @@
 const Eos = require('eosjs')
-const ScatterJS = require('scatterjs-core')
-const ScatterEOS = require('scatterjs-plugin-eosjs')
+const { ScatterJS } = require('./scatterjs')
 
 const DB = require('./db')
 
@@ -90,10 +89,11 @@ class ScatterPlayer extends Player {
      * @return {Scatter}
      */
   get scatter () {
-    let scatter = window.scatter
-    if (!scatter) {
+    let scatter = ScatterJS.scatter
+    if (!scatter['getIdentity']) {
       let err = new Error('scatter cannot found')
       this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err)
+      ScatterJS.scatter.connect('eosplayer')
       // throw err;
     }
     return scatter
@@ -104,16 +104,13 @@ class ScatterPlayer extends Player {
      * @see https://get-scatter.com/docs/examples-interaction-flow
      * @return {Scatter}
      */
-  async getScatterAsync (maxTry = 100) {
-    while (!window.scatter && maxTry--) {
-      log.verbose('get scatter failed, retry :', maxTry)
-      await forMs(100)
-    }
-    if (!window.scatter) {
+  async getScatterAsync () {
+    var connected = await ScatterJS.scatter.connect('eosplayer')
+    if (!connected) {
       let err = new Error('scatter cannot found')
       this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err)
     }
-    return window.scatter
+    return ScatterJS.scatter
   }
 
   /**
