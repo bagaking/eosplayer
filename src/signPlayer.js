@@ -1,12 +1,12 @@
-const Player = require('./player');
-const Eos = require('eosjs');
+const Player = require('./player')
+const Eos = require('eosjs')
 const defaultConfig = {
   account: {
     name: 'eosio',
-    authority: "active"
+    authority: 'active'
   },
   node: {
-    keyProvider: ["5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"],
+    keyProvider: ['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'],
     chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
     httpEndpoint: 'http://dev.toneos.pro:7777',
     mockTransactions: () => null,
@@ -19,9 +19,8 @@ const defaultConfig = {
 }
 
 class SignPlayer extends Player {
-
-  constructor(nodeConfig = defaultConfig.node, signAccount = defaultConfig.account) {
-    super();
+  constructor (nodeConfig = defaultConfig.node, signAccount = defaultConfig.account) {
+    super()
     this._conf = { ...defaultConfig.node,
       ...nodeConfig
     }
@@ -30,17 +29,16 @@ class SignPlayer extends Player {
     }
   }
 
-  get eosClient() {
+  get eosClient () {
     if (!this._eosClient) {
-      this._eosClient = new Eos(this._conf);
+      this._eosClient = new Eos(this._conf)
     }
-    return this._eosClient;
+    return this._eosClient
   }
 
-  async getIdentity() {
-    return this._identity;
+  async getIdentity () {
+    return this._identity
   }
-
 }
 
-module.exports = SignPlayer;
+module.exports = SignPlayer

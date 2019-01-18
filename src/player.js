@@ -1,5 +1,5 @@
-const Asset = require('./utils/asset');
-const log = require('./utils/log')('chain');
+const Asset = require('./utils/asset')
+const log = require('./utils/log')('chain')
 
 /**
  * @interface eosAPI
@@ -104,9 +104,9 @@ const log = require('./utils/log')('chain');
  * @type {{ERR_TRANSCAL_FAILED: string}}
  */
 const EVENT_NAMES = {
-    ERR_TRANSFER_FAILED: "ERR_TRANSFER_FAILED",
-    ERR_TRANSCAL_FAILED: "ERR_TRANSCAL_FAILED",
-    ERR_TRANSEND_FAILED: "ERR_TRANSEND_FAILED",
+  ERR_TRANSFER_FAILED: 'ERR_TRANSFER_FAILED',
+  ERR_TRANSCAL_FAILED: 'ERR_TRANSCAL_FAILED',
+  ERR_TRANSEND_FAILED: 'ERR_TRANSEND_FAILED'
 }
 
 const EventHandler = require('./utils/eventHandler')
@@ -118,83 +118,82 @@ const EosProvider = require('./eosProvider')
  * Player
  */
 class Player extends EosProvider {
+  constructor () {
+    super()
+    this.events.enableEvents(EVENT_NAMES)
+  }
 
-    constructor() {
-        super();
-        this.events.enableEvents(EVENT_NAMES);
-    }
+  get events () {
+    return this._events || (this._events = new EventHandler())
+  }
 
-    get events() {
-        return this._events || (this._events = new EventHandler());
-    }
+  get chain () {
+    return new ChainHelper(this.eosClient)
+  }
 
-    get chain() {
-        return new ChainHelper(this.eosClient);
-    }
+  get kh () {
+    return new KhHelper(this.chain)
+  }
 
-    get kh() {
-        return new KhHelper(this.chain);
-    }
-
-    /**
+  /**
      * get account info of any user, if the account name not given, account info of current identity will return
      * @param account_name
      * @return {Promise<{AccountInfo}>}
      */
-    async getAccountInfo(account_name = undefined) {
-        return await this.chain.getAccountInfo(account_name || (await this.getIdentity()).name);
-    }
+  async getAccountInfo (account_name = undefined) {
+    return await this.chain.getAccountInfo(account_name || (await this.getIdentity()).name)
+  }
 
-    /**
+  /**
      * get balance of specific account
      * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
      * @param account_name - user's account name, name of cur identity by default
      * @param symbolName - the token's symbol name
      * @return {Promise<string|undefined>} asset format '1.0000 EOS'
      */
-    async getBalance(account_name = undefined, code = "eosio.token", symbolName = undefined) {
-        return this.chain.getBalance(account_name || (await this.getIdentity()).name, code, symbolName);
-    }
+  async getBalance (account_name = undefined, code = 'eosio.token', symbolName = undefined) {
+    return this.chain.getBalance(account_name || (await this.getIdentity()).name, code, symbolName)
+  }
 
-    /**
+  /**
      * get balances list of specific account
      * @param code - Account of the currency contract. The default code is "eosio.token"
      * @param account_name - user's account name, name of cur identity by default
      * @return {Promise<Array.<string>>} asset format '1.0000 EOS'
      */
-    async getBalances(account_name = undefined, code = "eosio.token") {
-        return this.chain.getBalances(account_name || (await this.getIdentity()).name, code);
-    }
+  async getBalances (account_name = undefined, code = 'eosio.token') {
+    return this.chain.getBalances(account_name || (await this.getIdentity()).name, code)
+  }
 
-    /**
+  /**
      * get balance value of specific account
      * @param code - Account of the currency contract. The default code is "eosio.token", which is the currency code of eos
      * @param account_name - user's account name, name of cur identity by default
      * @return {Promise<Asset>}
      */
-    async getBalanceAsset(account_name = undefined, code = "eosio.token") {
-        let strAsset = await this.getBalance(account_name, code);
-        return Asset.parse(strAsset)
-    }
+  async getBalanceAsset (account_name = undefined, code = 'eosio.token') {
+    let strAsset = await this.getBalance(account_name, code)
+    return Asset.parse(strAsset)
+  }
 
-    /**
+  /**
      * transfer
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
      * @param {string} memo - memo
      * @return {Promise<Object>} transactionData
      */
-    async transfer(target, quantity, memo = "") {
-        return await this.chain.transfer(
-            await this.getIdentity(),
-            target,
-            quantity,
-            memo,
-            err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err)
-        )
-    }
+  async transfer (target, quantity, memo = '') {
+    return await this.chain.transfer(
+      await this.getIdentity(),
+      target,
+      quantity,
+      memo,
+      err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err)
+    )
+  }
 
-    /**
+  /**
      * call kh contract with transfer (match eoskit)
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
@@ -202,17 +201,17 @@ class Player extends EosProvider {
      * @param {Array} args
      * @return {Promise<Object>} transactionData
      */
-    async transcal(target, quantity, func, ...args) {
-        return await this.kh.transcal(
-            await this.getIdentity(),
-            target,
-            quantity,
-            func,
-            args,
-            err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err));
-    }
+  async transcal (target, quantity, func, ...args) {
+    return await this.kh.transcal(
+      await this.getIdentity(),
+      target,
+      quantity,
+      func,
+      args,
+      err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err))
+  }
 
-    /**
+  /**
      * transcal with "0.0001 SYM" token
      * @deprecated using transend instead
      * @param {string} target - eos account, can be user or contract
@@ -221,11 +220,11 @@ class Player extends EosProvider {
      * @param {Array} args
      * @return {Promise<Object>}
      */
-    async transget(target, symbol, func, ...args) {
-        return await this.transend(target, symbol, func, ...args);
-    }
+  async transget (target, symbol, func, ...args) {
+    return await this.transend(target, symbol, func, ...args)
+  }
 
-    /**
+  /**
      * transend method - transcal with "0.0001 SYM" token
      * @param {string} target - eos account, can be user or contract
      * @param {string} symbol
@@ -233,36 +232,36 @@ class Player extends EosProvider {
      * @param {Array} args
      * @return {Promise<Object>}
      */
-    async transend(target, symbol, func, ...args) {
-        return await this.kh.transend(
-            await this.getIdentity(),
-            target,
-            symbol,
-            func,
-            args,
-            err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSEND_FAILED, err));
-    }
+  async transend (target, symbol, func, ...args) {
+    return await this.kh.transend(
+      await this.getIdentity(),
+      target,
+      symbol,
+      func,
+      args,
+      err => this.events.emitEvent(EVENT_NAMES.ERR_TRANSEND_FAILED, err))
+  }
 
-    /**
+  /**
      * send action to a contract
      * @param {string} code - account of contract
      * @param {string} func - function name
      * @param {Object} jsonData - data
      * @return {Promise<*>} - transaction
      */
-    async call(code, func, jsonData) {
-        const account = await this.getIdentity();
-        let trx = await this.chain.call(code, func, jsonData, {
-            actor: account.name,
-            permission: account.authority
-        });
-        if (!!trx) {
-            log.info(`call operation dealed, txID: ${trx.transaction_id}`);
-        }
-        return trx;
+  async call (code, func, jsonData) {
+    const account = await this.getIdentity()
+    let trx = await this.chain.call(code, func, jsonData, {
+      actor: account.name,
+      permission: account.authority
+    })
+    if (trx) {
+      log.info(`call operation dealed, txID: ${trx.transaction_id}`)
     }
+    return trx
+  }
 
-    /**
+  /**
      * check a transaction info, retry once per sec until success
      * @deprecated - use eosplayer.chain.waitTx instead
      * @param {string} txID
@@ -270,11 +269,11 @@ class Player extends EosProvider {
      * @param {number} timeSpanMS
      * @return {Promise<Object>} transaction
      */
-    async waitTx(txID, maxRound = 12, timeSpanMS = 1009) {
-        return await this.chain.waitTx(txID, maxRound, timeSpanMS);
-    }
+  async waitTx (txID, maxRound = 12, timeSpanMS = 1009) {
+    return await this.chain.waitTx(txID, maxRound, timeSpanMS)
+  }
 
-    /**
+  /**
      * check a table
      * @deprecated - use eosplayer.chain.checkTable instead
      * @param {string} code - the contract
@@ -286,11 +285,11 @@ class Player extends EosProvider {
      * @param {number} index_position
      * @return {Promise<Object>}
      */
-    async checkTable(code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
-        return await this.chain.checkTable(code, tableName, scope, limit, lower_bound, upper_bound, index_position);
-    }
+  async checkTable (code, tableName, scope, limit = 10, lower_bound = 0, upper_bound = -1, index_position = 1) {
+    return await this.chain.checkTable(code, tableName, scope, limit, lower_bound, upper_bound, index_position)
+  }
 
-    /**
+  /**
      * check range in table
      * @deprecated - use eosplayer.chain.checkTableRange instead
      * @param {string} code - the contract
@@ -301,11 +300,11 @@ class Player extends EosProvider {
      * @param {number} index_position
      * @return {Promise<Array>}
      */
-    async checkTableRange(code, tableName, scope, from, length = 1, index_position = 1) {
-        return await this.chain.checkTableRange(code, tableName, scope, from, length, index_position);
-    }
+  async checkTableRange (code, tableName, scope, from, length = 1, index_position = 1) {
+    return await this.chain.checkTableRange(code, tableName, scope, from, length, index_position)
+  }
 
-    /**
+  /**
      * check a item in a table
      * @deprecated - use eosplayer.chain.checkTableItem instead
      * @param {string} code - the contract
@@ -315,55 +314,54 @@ class Player extends EosProvider {
      * @param {number} index_position
      * @return {Promise<*>}
      */
-    async checkTableItem(code, tableName, scope, key = 0, index_position = 1) {
-        return await this.chain.checkTableItem(code, tableName, scope, key, index_position);
-    }
+  async checkTableItem (code, tableName, scope, key = 0, index_position = 1) {
+    return await this.chain.checkTableItem(code, tableName, scope, key, index_position)
+  }
 
-    /**
+  /**
      * create a name using the public key
      * @param name
      * @param pubKey
      * @return {Promise<void>}
      */
-    async newAccount(name, pubKey) {
-        let result = await this.eosClient.newaccount({
-            creator: (await this.getIdentity()).name,
-            name: name,
-            owner: {
-                threshold: 1,
-                keys: [{
-                    key: pubKey,
-                    weight: 1
-                }],
-                accounts: [],
-                waits: []
-            },
-            active: {
-                threshold: 1,
-                keys: [{
-                    key: pubKey,
-                    weight: 1
-                }],
-                accounts: [],
-                waits: []
-            }
-        })
-        return result;
-    }
+  async newAccount (name, pubKey) {
+    let result = await this.eosClient.newaccount({
+      creator: (await this.getIdentity()).name,
+      name: name,
+      owner: {
+        threshold: 1,
+        keys: [{
+          key: pubKey,
+          weight: 1
+        }],
+        accounts: [],
+        waits: []
+      },
+      active: {
+        threshold: 1,
+        keys: [{
+          key: pubKey,
+          weight: 1
+        }],
+        accounts: [],
+        waits: []
+      }
+    })
+    return result
+  }
 
-
-    /**
+  /**
      *  get version
      */
-    get version() {
-        return "0.3.0";
-    }
+  get version () {
+    return '0.3.0'
+  }
 
-    /**
+  /**
      *  get help info
      */
-    get help() {
-        let helpInfo = `
+  get help () {
+    let helpInfo = `
 \`\`\`js
       =============================================================
         
@@ -433,9 +431,9 @@ class Player extends EosProvider {
     // send a action to contract
 \`\`\`
 
-${ChainHelper.help}`;
-        return helpInfo;
-    }
+${ChainHelper.help}`
+    return helpInfo
+  }
 }
 
-module.exports = Player;
+module.exports = Player
