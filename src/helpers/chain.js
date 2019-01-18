@@ -98,7 +98,7 @@ class ChainHelper {
      * @constructor
      */
   async getPubKey (account_name, authority = 'active') {
-    return (await getPubKeys(account_name, authority))[0].key
+    return (await this.getPubKeys(account_name, authority))[0].key
   }
 
   /**
