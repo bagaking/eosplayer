@@ -209,7 +209,7 @@ class ScatterPlayer extends Player {
         ret = await this.scatter.getArbitrarySignature(pubkeys[i].key, message)
         break
       } catch (ex) {
-        log.warn(`try pub key failed ${pubkeys[i]}`)
+        log.warning(`try pub key failed ${pubkeys[i]}`)
       }
     }
     return ret
