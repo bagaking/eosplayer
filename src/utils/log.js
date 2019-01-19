@@ -1,6 +1,6 @@
-const debug = require('debug')
+import debug from 'debug'
 
-module.exports = name => ({
+export default name => ({
   verbose: debug(`verbose:${name}`),
   info: debug(`info:${name}`),
   warning: debug(`warning:${name}`),

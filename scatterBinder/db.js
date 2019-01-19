@@ -3,7 +3,7 @@
 /**
  * Storage
  */
-class DB {
+export default class DB {
   /**
      * the storage lib interact with localStorage now
      * @param defaultValues - define what will you get when you require an key not exist
@@ -41,5 +41,3 @@ class DB {
     localStorage.setItem(pkey, val)
   }
 }
-
-module.exports = DB

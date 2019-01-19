@@ -1,13 +1,13 @@
 'use strict'
 
-const ResHelper = require('./khRes')
-const TranscalPayload = require('../utils/transcalPayload')
+import ResHelper from './khRes'
+import TranscalPayload from '../utils/transcalPayload'
 
 /**
  * kh helper, supported kh contract operations
  * @author kinghand@foxmail.com
  */
-class KhHelper {
+export default class KhHelper {
   /**
      * initiate with the chain helper
      * @param {ChainHelper} chain
@@ -107,5 +107,3 @@ class KhHelper {
     return (new TranscalPayload(func, ...args)).memo()
   }
 }
-
-module.exports = KhHelper

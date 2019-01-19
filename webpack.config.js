@@ -8,9 +8,19 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/env'
+            ],
+            plugins: [
+              '@babel/plugin-transform-runtime'
+            ]
+          }
+        }
       }
     ]
   },

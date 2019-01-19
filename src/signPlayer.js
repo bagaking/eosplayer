@@ -1,5 +1,6 @@
-const Player = require('./player')
-const Eos = require('eosjs')
+import Player from './player'
+import Eos from 'eosjs'
+
 const defaultConfig = {
   account: {
     name: 'eosio',
@@ -18,7 +19,7 @@ const defaultConfig = {
   }
 }
 
-class SignPlayer extends Player {
+export default class SignPlayer extends Player {
   constructor (nodeConfig = defaultConfig.node, signAccount = defaultConfig.account) {
     super()
     this._conf = { ...defaultConfig.node,
@@ -40,5 +41,3 @@ class SignPlayer extends Player {
     return this._identity
   }
 }
-
-module.exports = SignPlayer

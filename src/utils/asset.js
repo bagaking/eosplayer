@@ -4,7 +4,7 @@
  * Asset - asset type of eos
  * @author kinghand@foxmail.com
  */
-class Asset {
+export default class Asset {
   constructor (val, sym, decimal = 4) {
     this._val = val
     this._sym = sym
@@ -73,5 +73,3 @@ class Asset {
     return new Asset(val, strSym, decimal)
   }
 }
-
-module.exports = Asset

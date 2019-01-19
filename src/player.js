@@ -1,6 +1,12 @@
-const Asset = require('./utils/asset')
-const log = require('./utils/log')('chain')
+import Asset from './utils/asset'
+import Log_ from './utils/log'
 
+import EventHandler from './utils/eventHandler'
+import ChainHelper from './helpers/chain'
+import KhHelper from './helpers/kh'
+import EosProvider from './eosProvider'
+
+const log = Log_('chain')
 /**
  * @interface eosAPI
  * @property {Function} abiBinToJson
@@ -109,15 +115,10 @@ const EVENT_NAMES = {
   ERR_TRANSEND_FAILED: 'ERR_TRANSEND_FAILED'
 }
 
-const EventHandler = require('./utils/eventHandler')
-const ChainHelper = require('./helpers/chain')
-const KhHelper = require('./helpers/kh')
-const EosProvider = require('./eosProvider')
-
 /**
  * Player
  */
-class Player extends EosProvider {
+export default class Player extends EosProvider {
   constructor () {
     super()
     this.events.enableEvents(EVENT_NAMES)
@@ -435,5 +436,3 @@ ${ChainHelper.help}`
     return helpInfo
   }
 }
-
-module.exports = Player

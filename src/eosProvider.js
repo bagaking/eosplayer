@@ -1,6 +1,6 @@
 'use strict'
 
-const EOS = require('eosjs')
+import Eos from 'eosjs'
 
 const symEosClient = Symbol('sym::EosClient')
 const symGetIdentity = Symbol('sym::GetIdentity')
@@ -9,7 +9,7 @@ const symGetIdentity = Symbol('sym::GetIdentity')
  * EOSProvider - defined the MUST interfaces of a player
  * @author kinghand@foxmail.com
  */
-class EOSProvider {
+export default class EOSProvider {
   /**
      * get or create scatter
      * @return {eosAPI}
@@ -56,5 +56,3 @@ class EOSProvider {
     }
   }
 }
-
-module.exports = EOSProvider

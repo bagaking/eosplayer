@@ -7,7 +7,7 @@
  * - If the callback of an event is not set, alert will be called by default on the browser, and Error will be triggered in nodejs
  * @author kinghand@foxmail.com
  */
-class EventHandler {
+export default class EventHandler {
   constructor (supportedEvents) {
     this._defaultCb = function (...args) {
       args.forEach(v => {
@@ -72,5 +72,3 @@ class EventHandler {
     return e ? e.cb.call(e.ctx, ...args) : this._defaultCb.call(event, ...args)
   }
 }
-
-module.exports = EventHandler
