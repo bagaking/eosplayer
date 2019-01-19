@@ -8,7 +8,7 @@ const {
   Player,
   ScatterPlayer
 } = require('./scatterPlayer')
-const SignPlayer = require('../src/signPlayer')
+// const SignPlayer = require('../src/signPlayer')
 
 /**
  * env of browser
@@ -57,6 +57,6 @@ if (!window.kh) {
 }
 window.kh.eos = {
   Player,
-  ScatterPlayer,
-  SignPlayer
+  ScatterPlayer
+  // SignPlayer
 }
