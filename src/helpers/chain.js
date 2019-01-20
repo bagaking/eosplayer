@@ -1,17 +1,19 @@
 'use strict'
 
-const { forMs } = require('../utils/wait')
-const BN = require('bignumber.js').BigNumber
+import { forMs } from '../utils/wait'
+import { BigNumber as BN } from 'bignumber.js'
 
-const log = require('../utils/log')('chain')
+import Log_ from '../utils/log'
 
-const EOS = require('eosjs')
-const ecc = require('eosjs-ecc')
+import EOS from 'eosjs'
+import ecc from 'eosjs-ecc'
+
+const log = Log_('chain')
 /**
  * chain helper, supported chain operations
  * @author kinghand@foxmail.com
  */
-class ChainHelper {
+export default class ChainHelper {
   constructor (eosClient) {
     this._eos = eosClient
   }
@@ -536,5 +538,3 @@ class ChainHelper {
 `
   }
 }
-
-module.exports = ChainHelper

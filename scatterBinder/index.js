@@ -1,14 +1,13 @@
-const idb = require('idb')
-const Eos = require('eosjs')
-const Ecc = require('eosjs-ecc')
-const { BigNumber } = require('bignumber.js')
+import idb from 'idb'
+import Eos from 'eosjs'
+import Ecc from 'eosjs-ecc'
+import BigNumber from 'bignumber.js'
 
-const netConf = require('./conf')
-const {
-  Player,
-  ScatterPlayer
-} = require('./scatterPlayer')
-const SignPlayer = require('../src/signPlayer')
+import netConf from './conf'
+
+import ScatterPlayer from './scatterPlayer'
+import Player from '../src/player'
+import SignPlayer from '../src/signPlayer'
 
 /**
  * env of browser
@@ -55,6 +54,7 @@ window.eosplayer = new ScatterPlayer(netConf)
 if (!window.kh) {
   window.kh = {}
 }
+
 window.kh.eos = {
   Player,
   ScatterPlayer,

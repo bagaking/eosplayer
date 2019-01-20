@@ -1,8 +1,8 @@
 'use strict'
 
-const Asset = require('../utils/asset')
+import Asset from '../utils/asset'
 
-class ResHelper {
+export default class ResHelper {
   constructor (chain, code, symStr, admin = { name: null, authority: null }) {
     this._chain = chain
     this._code = code

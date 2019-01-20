@@ -1,12 +1,14 @@
-const Eos = require('eosjs')
-const { ScatterJS } = require('./scatterjs')
 
-const DB = require('./db')
+import ScatterJS from './scatterjs'
+import Eos from 'eosjs'
 
-const Player = require('../src/player')
-const { forMs, forCondition } = require('../src/utils/wait')
+import DB from './db'
 
-const log = require('../src/utils/log')('scatterPlayer')
+import Player from '../src/player'
+import { forMs, forCondition } from '../src/utils/wait'
+
+import Log_ from '../src/utils/log'
+const log = Log_('scatterPlayer')
 
 /**
  * Event names supported in scatter player
@@ -22,7 +24,7 @@ const EVENT_NAMES = {
  * Player on browser (need scatter)
  * @author kinghand@foxmail.com
  */
-class ScatterPlayer extends Player {
+export default class ScatterPlayer extends Player {
   constructor (netConf) {
     super()
     this.events.enableEvents(EVENT_NAMES)
@@ -255,9 +257,4 @@ window.eosplayer = new ScatterPlayer(networks);
 \`\`\`        
 `
   }
-}
-
-module.exports = {
-  Player,
-  ScatterPlayer
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-class TranscalPayload {
+export default class TranscalPayload {
   constructor (func, ...args) {
     this.func = func
     this.args = args
@@ -55,5 +55,3 @@ class TranscalPayload {
     return (new TranscalPayload('')).parseMemo(memo)
   }
 }
-
-module.exports = TranscalPayload
