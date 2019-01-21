@@ -133,7 +133,7 @@ export default class ChainHelper {
      * @return {Promise<number>}
      */
   async getActionCount (account_name) {
-    return await this.getActionMaxSeq + 1
+    return await this.getActionMaxSeq(account_name) + 1
   }
 
   /**
