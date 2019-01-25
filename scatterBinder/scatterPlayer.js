@@ -15,7 +15,8 @@ const log = Log_('scatterPlayer')
 const EVENT_NAMES = {
   ERR_GET_SCATTER_FAILED: 'ERR_GET_SCATTER_FAILED',
   ERR_GET_IDENTITY_FAILED: 'ERR_GET_IDENTITY_FAILED',
-  ERR_LOGOUT_FAILED: 'ERR_LOGOUT_FAILED'
+  ERR_LOGOUT_FAILED: 'ERR_LOGOUT_FAILED',
+  ERR_CONF_NOT_FOUND: 'ERR_CONF_NOT_FOUND'
 }
 
 /**
@@ -56,7 +57,7 @@ export default class ScatterPlayer extends Player {
       this._eosClient = null
       log.info(`network changed to ${this.netName}.`)
     } else {
-      log.warn(`network ${key} cannot find.`)
+      log.warning(`network ${key} cannot find.`)
     }
   }
 
@@ -80,7 +81,11 @@ export default class ScatterPlayer extends Player {
      * get network config of cur netName
      */
   get netConf () {
-    return this._networks[this.netName]
+    let conf = this._networks[this.netName]
+    if (!conf) {
+      this.events.emitEvent(EVENT_NAMES.ERR_CONF_NOT_FOUND, new Error(`cannot find config of ${this.netName}`))
+    }
+    return conf
   }
 
   /**
