@@ -18,7 +18,8 @@
     "build": "webpack -p -o ./play/[name].bundle.js --devtool eval-source-map && npm run build-web",
     "build-web": "webpack -p --mode production --display-error-details",
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
-    "doc": "jsdoc -c .jsdocrc"
+    "doc": "jsdoc -c .jsdocrc",
+    "dev": "npm run build && hserve ./play"
   },
   "homepage": "https://github.com/bagaking/eosglue#readme",
   "dependencies": {
@@ -47,6 +48,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "hserve": "^0.0.1-beta.14",
     "uglifyjs-webpack-plugin": "^2.1.1",
     "webpack": "^4.19.0",
     "webpack-cli": "^3.1.0"
