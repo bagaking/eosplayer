@@ -148,6 +148,7 @@ debug.enable('error:*,warning:*,info:*');
 {string} async getPubKey(account_name, authority = "active") // get the first public key of an account
 {Array} async getPubKeys(account_name, authority = "active") // get public keys of an account
 {string} async recoverSign(signature, message) // recover sign and to the public key
+{string} async validateSign (signature, message, account, authority = 'active') // validate if signed data is signed by a account. it returns the matched public key 
 
 {Number} async getActionCount(account_name) // get a account's action count
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq
@@ -261,6 +262,8 @@ window.eosplayer = new ScatterPlayer(networks);
 - Method: chain.transfer
 - Method: chain.getPubKey
 - Method: chain.getPubKeys
+- Method: chain.recoverSign
+- Method: chain.validateSign
 - Method: player.getBalances
 - Method: player.getAuth
 

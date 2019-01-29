@@ -128,6 +128,21 @@ export default class ChainHelper {
   }
 
   /**
+     * validate if signed data is signed by a account
+     * @param signature - signed data
+     * @param message
+     * @param account
+     * @param authority - default is 'active'
+     * @return {string|pubkey|PublicKey}
+     */
+  async validateSign (signature, message, account, authority = 'active') {
+    let pubKey = this.recoverSign(signature, message)
+    let pubKeys = await this.getPubKeys(account, authority)
+    let keyObj = pubKeys.find(v => v.key === pubKey)
+    return keyObj ? keyObj.key : undefined;
+  }
+
+  /**
      * get a account's action count
      * @param {string|number} account_name - string name or id
      * @return {Promise<number>}
@@ -513,6 +528,7 @@ export default class ChainHelper {
 {string} async getPubKey(account_name, authority = "active") // get the first public key of an account
 {Array} async getPubKeys(account_name, authority = "active") // get public keys of an account
 {string} async recoverSign(signature, message) // recover sign and to the public key
+{string} async validateSign (signature, message, account, authority = 'active') // validate if signed data is signed by a account. it returns the matched public key 
 
 {Number} async getActionCount(account_name) // get a account's action count
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq
