@@ -320,34 +320,43 @@ export default class Player extends EosProvider {
   }
 
   /**
-     * create a name using the public key
+     * create a account with public key
      * @param name
-     * @param pubKey
+     * @param activeKey
+     * @param ownerKey
      * @return {Promise<void>}
      */
-  async newAccount (name, pubKey) {
-    let result = await this.eosClient.newaccount({
-      creator: (await this.getIdentity()).name,
-      name: name,
-      owner: {
-        threshold: 1,
-        keys: [{
-          key: pubKey,
-          weight: 1
-        }],
-        accounts: [],
-        waits: []
-      },
-      active: {
-        threshold: 1,
-        keys: [{
-          key: pubKey,
-          weight: 1
-        }],
-        accounts: [],
-        waits: []
-      }
+  async newAccount (name, activeKey, ownerKey) {
+    if (!activeKey) {
+      throw new Error('newAccount : active key error ')
+    }
+    if (!ownerKey) {
+      ownerKey = activeKey
+    }
+    let creator = await this.getIdentity()
+    let result = this.eosClient.transaction(tr => {
+      tr.newaccount({
+        creator: creator.name,
+        name: name,
+        owner: ownerKey,
+        active: activeKey
+      })
+
+      tr.buyrambytes({
+        payer: creator.name,
+        receiver: name,
+        bytes: 8192
+      })
+
+      tr.delegatebw({
+        from: creator.name,
+        receiver: name,
+        stake_net_quantity: '1.0000 EOS',
+        stake_cpu_quantity: '1.0000 EOS',
+        transfer: 0
+      })
     })
+
     return result
   }
 
@@ -430,6 +439,9 @@ export default class Player extends EosProvider {
 
 {Tx} async eosplayer.call(code, func, jsonData)
     // send a action to contract
+    
+{Tx} async eosplayer.newAccount(name, activeKey, ownerKey)
+    // create a account with public key
 \`\`\`
 
 ${ChainHelper.help}`

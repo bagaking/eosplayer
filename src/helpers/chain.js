@@ -139,7 +139,7 @@ export default class ChainHelper {
     let pubKey = this.recoverSign(signature, message)
     let pubKeys = await this.getPubKeys(account, authority)
     let keyObj = pubKeys.find(v => v.key === pubKey)
-    return keyObj ? keyObj.key : undefined;
+    return keyObj ? keyObj.key : undefined
   }
 
   /**
@@ -508,6 +508,34 @@ export default class ChainHelper {
         waits
       }
     })
+  }
+
+  static async getTableByScope (host, code, table, lower_bound, upper_bound, limit = 1000) {
+    const url = `${host}/v1/chain/get_table_by_scope`
+    const params = {
+      'code': code,
+      'table': table,
+      'lower_bound': lower_bound,
+      'upper_bound': upper_bound,
+      'limit': limit // 表示每次获取6条记录
+    }
+
+    while (true) {
+      let ret = await fetch(url, {
+        method: 'POST', // or 'PUT'
+        body: JSON.stringify(params), // data can be `string` or {object}!
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      })
+
+      let rep = await ret.json()
+
+      if (rep.more === '') {
+        return rep.rows
+      }
+      limit += 1000
+    }
   }
 
   static get help () {

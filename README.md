@@ -131,6 +131,9 @@ debug.enable('error:*,warning:*,info:*');
 
 {Tx} async eosplayer.call(code, func, jsonData)
     // send a action to contract
+    
+{Tx} async eosplayer.newAccount (name, activeKey, ownerKey)
+    // create a account with public key
 ```
 
 ### Chain API
@@ -266,6 +269,7 @@ window.eosplayer = new ScatterPlayer(networks);
 - Method: chain.validateSign
 - Method: player.getBalances
 - Method: player.getAuth
+- Method: player.newAccount
 
 #### modify
 
