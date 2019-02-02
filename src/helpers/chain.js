@@ -179,7 +179,7 @@ export default class ChainHelper {
      * @desc to avoid searching in huge amount actions, the application layer should check the getActionCount before calling thi method
      * @param {string|number} account_name - string name or id
      * @param {number} startPos - start from 0
-     * @param {number} offset - when offset is 0, one object returned
+     * @param {number} offset - when offset is 0, one object returned, offset ==(should be) count - 1
      * @return {Promise<Array>} - [startPos, ..., startPos + offset]
      */
   async getActions (account_name, startPos = 0, offset = 0) {
@@ -188,7 +188,13 @@ export default class ChainHelper {
     let actions = []
     log.verbose('getActions start', startPos, endPos, 'current:', actions.length)
     while (true) {
-      let ret = await this._eos.getActions({ account_name, pos, offset: endPos - pos })
+      let ret
+      try {
+        ret = await this._eos.getActions({ account_name, pos, offset: endPos - pos })
+      } catch (ex) {
+        log.warning(ex)
+        continue
+      }
       if (!ret || !ret.actions) {
         throw new Error(`getActions failed: cannot find actions of ${account_name} (pos:${pos}, offset:${offset})`)
       }
@@ -210,6 +216,59 @@ export default class ChainHelper {
     }
 
     return actions
+  }
+
+  /**
+     * Get all the actions in bulk
+     * @param account_name
+     * @param cbReceive - using this callback to receive list of actions
+     * @param startPos
+     * @param count
+     * @param concurrent
+     * @return {Promise<void>}
+     */
+  async getAllActionsBatch (account_name, cbReceive, startPos = 0, count = 100, concurrent = 10) {
+    const offset = count - 1
+    const req = async (pos) => {
+      while (true) {
+        try {
+          return await this.getActions(account_name, pos, offset)
+        } catch (ex) {
+          log.error('error : ', ex)
+        }
+      }
+    }
+
+    let ret = []
+    let ranges = []
+    log.info(`===> start search actions of ${account_name} from ${startPos}, concurrent : ${concurrent}, count : ${count}, once : ${concurrent * count}`)
+    let tStart = Date.now()
+    for (let i = 0; ; i++) {
+      ranges.push(startPos + i * count)
+      if (i % concurrent === 0) {
+        let tRound = Date.now()
+        log.verbose(`===> deal batch ${i} : ${ranges} at ${tStart}`)
+        let results = await Promise.all(
+          ranges.map(req)
+        )
+        if (!results.find(acts => acts.length > 0)) {
+          break
+        }
+        log.verbose(`===> deal batch ${i} done (${Date.now() - tRound})`)
+        results.forEach(acts => {
+          if (acts.length <= 0) {
+            return
+          }
+          if (cbReceive != null) {
+            cbReceive(acts)
+          }
+          ret.push(...acts)
+        })
+        log.verbose(`===> send batch ${i} done (${Date.now() - tRound})`)
+        ranges = []
+      }
+    }
+    log.info(`getAllActions : all scaned (${Date.now() - tStart})`)
   }
 
   /**
@@ -562,6 +621,7 @@ export default class ChainHelper {
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq
 {Array} async getRecentActions(account_name) // get recent actions
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
+{Array} async getAllActionsBatch (account_name, cbReceive, startPos = 0, count = 100, concurrent = 10) // get all actions in bulk
 
 {String} async getBalance(account_name, code = "eosio.token", symbolName = undefined) // get balance of specific account
 {Array.<String>} async getBalances(account_name, code = "eosio.token") // get all balance of specific account

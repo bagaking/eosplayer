@@ -157,6 +157,7 @@ debug.enable('error:*,warning:*,info:*');
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq
 {Array} async getRecentActions(account_name) // get recent actions
 {Array} async getActions(account_name, startPos = 0, offset = 0) // get all actions of an account
+{Array} async getAllActionsBatch (account_name, cbReceive, startPos = 0, count = 100, concurrent = 10) // get all actions in bulk
 
 {String} async getBalance(account_name, code = "eosio.token", symbolName = undefined) // get balance of specific account
 {Array.<String>} async getBalances(account_name, code = "eosio.token") // get all balance of specific account
@@ -261,6 +262,7 @@ window.eosplayer = new ScatterPlayer(networks);
 - Method: chain.getRecentActions
 - Method: chain.getBalances
 - Method: chain.getActions
+- Method: chain.getAllActionsBatch
 - Method: chain.checkTableMore
 - Method: chain.transfer
 - Method: chain.getPubKey
