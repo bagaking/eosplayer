@@ -1,6 +1,5 @@
 import Player from './player'
 import Eos from 'eosjs'
-import
 import { forMs, forCondition } from './utils/wait'
 
 const defaultConfig = {
