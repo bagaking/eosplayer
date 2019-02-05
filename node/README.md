@@ -226,8 +226,8 @@ window.eosplayer = new ScatterPlayer(networks);
 3. extend Player to create the glue layer, implement methods : eosClient and getIdentity
     see [scatterPlayer](https://github.com/bagaking/eosplayer/blob/master/scatterBinder/scatterPlayer.js)
     ```js
-    const Player = require('eosplayer')
-    const Eos = require('eosjs')
+    import Player from 'eosplayer'
+    import Eos from 'eosjs'
     class MyPlayer extends Player {
             get eosClient() {
                 if (!this._eosClient) {
@@ -241,11 +241,27 @@ window.eosplayer = new ScatterPlayer(networks);
             }
     }
     ```
-4. have fun
+4. there some out-of-box implementation of player
+   1. if you wanna reading data of the chain or signing and sending messages to the chain.
+   ```js
+   import { signPlayer } from 'eosplayer'
+   ```
+   2. if you need the player automatic fuse and switch node, readingPlayer is a good choice
+   ```js
+   import { readingPlayer } from 'eosplayer'
+   ``` 
+5. have fun
 
 ---  
 
 ## Updates
+
+### 0.4.0
+
+#### add
+
+- Class: src/signPlayer
+- Class: src/readingPlayer
 
 ### 0.3.0
 

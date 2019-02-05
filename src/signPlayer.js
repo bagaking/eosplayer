@@ -1,4 +1,4 @@
-import Player from './player'
+import { Player } from './player'
 import Eos from 'eosjs'
 
 const defaultConfig = {
@@ -19,7 +19,7 @@ const defaultConfig = {
   }
 }
 
-export default class SignPlayer extends Player {
+export class SignPlayer extends Player {
   constructor (nodeConfig = defaultConfig.node, signAccount = defaultConfig.account) {
     super()
     this._conf = { ...defaultConfig.node,

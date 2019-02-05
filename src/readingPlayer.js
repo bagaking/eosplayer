@@ -1,4 +1,4 @@
-import Player from './player'
+import { Player } from './player'
 import Eos from 'eosjs'
 import { forMs, forCondition } from './utils/wait'
 
@@ -26,7 +26,7 @@ const defaultConfig = {
   ]
 }
 
-export default class readingPlayer extends Player {
+export class readingPlayer extends Player {
   get eosClient () {
     if (!this._eosNodes || this._eosNodes.length <= 0) {
       throw new Error('EosUtil : No Avaliable Nodes.')

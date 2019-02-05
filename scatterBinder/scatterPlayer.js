@@ -2,7 +2,7 @@ import Eos from 'eosjs'
 
 import DB from './db'
 
-import Player from '../src/player'
+import { Player } from '../src/player'
 import { forMs, forCondition } from '../src/utils/wait'
 
 import Log_ from '../src/utils/log'

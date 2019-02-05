@@ -6,8 +6,7 @@ import BigNumber from 'bignumber.js'
 import netConf from './conf'
 
 import ScatterPlayer from './scatterPlayer'
-import Player from '../src/player'
-import SignPlayer from '../src/signPlayer'
+import { Player, SignPlayer } from '../src'
 
 /**
  * env of browser

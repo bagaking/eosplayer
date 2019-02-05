@@ -118,7 +118,7 @@ const EVENT_NAMES = {
 /**
  * Player
  */
-export default class Player extends EosProvider {
+export class Player extends EosProvider {
   constructor () {
     super()
     this.events.enableEvents(EVENT_NAMES)
