@@ -45,14 +45,12 @@ export class readingPlayer extends Player {
     }
   }
 
-  constructor (nodeConfig = defaultConfig.node, signAccount = defaultConfig.account, urls = defaultConfig.urls) {
+  constructor ({ nodeConfig, urls }) {
     super()
     this._conf = { ...defaultConfig.node,
       ...nodeConfig
     }
-    this._identity = { ...defaultConfig.account,
-      ...signAccount
-    }
+    this._identity = defaultConfig.account
     this._urls = [
       ...urls
     ]
