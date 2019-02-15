@@ -33,7 +33,7 @@ const execute = async () => {
     'npm run build',
     'git add -A .',
     `git commit -m "publish: version ${pack.version}"`,
-    'npm publish'
+    'git push origin master'
   ]
   console.log('Publish new version :', newVersionNum)
 
