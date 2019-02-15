@@ -1,6 +1,6 @@
 'use strict'
 
-import { forMs } from '../utils/wait'
+import { forMs, TimeoutPromise } from '../utils/wait'
 import { BigNumber as BN } from 'bignumber.js'
 
 import Log_ from '../utils/log'
@@ -190,7 +190,7 @@ export default class ChainHelper {
     while (true) {
       let ret
       try {
-        ret = await this._eos.getActions({ account_name, pos, offset: endPos - pos })
+        ret = await TimeoutPromise(10000, this._eos.getActions({ account_name, pos, offset: endPos - pos }))
       } catch (ex) {
         log.warning(ex)
         continue
