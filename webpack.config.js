@@ -1,5 +1,6 @@
 const path = require('path')
 const CompressionPlugin = require('compression-webpack-plugin')
+const webpack = require('webpack')
 
 module.exports = {
   entry: {
@@ -31,5 +32,13 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js'
-  }
+  },
+  devServer: {
+    contentBase: './play',
+    hot: true
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
+
 }
