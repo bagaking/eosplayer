@@ -31,15 +31,17 @@ const execute = async () => {
   let cmds = [
     'git status',
     'npm run build',
-    'git commit -m "publish: ver',
+    'git add -A .',
+    `git commit -m "publish: version ${pack.version}"`,
     'npm publish'
   ]
   console.log('Publish new version :', newVersionNum)
 
   for (let i = 0; i < cmds.length; i++) {
+      console.log(`==> Execute ${i}: ${cmds[i]}`)
     let ret = await run(cmds[i]).catch(err => console.log(` - !! ERROR !! ${cmds[i]} ${err}`))
     console.log(`
-==> Execute ${i}: ${cmds[i]}
+==> Result ${i}
  - INFO: ${ret[0]}
  - WARNING: ${ret[1]}
     `)

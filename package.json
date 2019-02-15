@@ -21,7 +21,7 @@
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
     "doc": "jsdoc -c .jsdocrc",
     "dev": "npm run build && hserve ./play",
-    "publish": "node ./scripts/publish.js"
+    "publish_version": "node ./scripts/publish.js"
   },
   "homepage": "https://github.com/bagaking/eosglue#readme",
   "dependencies": {
