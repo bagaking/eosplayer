@@ -7,7 +7,7 @@ const pack = fs.readJsonSync(PACKAGE_PATH)
 const v = pack.version
 const numStr = v.match(/([0-9]+)$/g)
 
-const newVersionNum = parseInt(numStr).toString().padStart(2, '0')
+const newVersionNum = (parseInt(numStr) + 1).toString().padStart(2, '0')
 
 const run = cmd => {
   let bashExecutor = new Promise((resolve, reject) => {
@@ -38,10 +38,9 @@ const execute = async () => {
   console.log('Publish new version :', newVersionNum)
 
   for (let i = 0; i < cmds.length; i++) {
-      console.log(`==> Execute ${i}: ${cmds[i]}`)
+    console.log(`==> Execute ${i}: ${cmds[i]}`)
     let ret = await run(cmds[i]).catch(err => console.log(` - !! ERROR !! ${cmds[i]} ${err}`))
-    console.log(`
-==> Result ${i}
+    console.log(`==> Result ${i}: ${cmds[i]}
  - INFO: ${ret[0]}
  - WARNING: ${ret[1]}
     `)
