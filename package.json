@@ -20,7 +20,8 @@
     "build-node": "rimraf ./node/ && babel ./src --experimental --source-maps-inline -d ./node --copy-files LICENSE README.md",
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
     "doc": "jsdoc -c .jsdocrc",
-    "dev": "npm run build && hserve ./play"
+    "dev": "npm run build && hserve ./play",
+    "publish": "node ./scripts/publish.js"
   },
   "homepage": "https://github.com/bagaking/eosglue#readme",
   "dependencies": {
@@ -49,6 +50,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "fs-extra": "^7.0.1",
     "hserve": "^0.0.1-beta.14",
     "rimraf": "^2.6.3",
     "uglifyjs-webpack-plugin": "^2.1.1",
