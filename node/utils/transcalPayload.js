@@ -1,6 +1,89 @@
-"use strict";var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var _classCallCheck2=_interopRequireDefault(require("@babel/runtime/helpers/classCallCheck")),_createClass2=_interopRequireDefault(require("@babel/runtime/helpers/createClass")),TranscalPayload=/*#__PURE__*/function(){function a(b){(0,_classCallCheck2.default)(this,a),this.func=b;for(var c=arguments.length,d=Array(1<c?c-1:0),e=1;e<c;e++)d[e-1]=arguments[e];this.args=d}/**
+'use strict';
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+
+var TranscalPayload =
+/*#__PURE__*/
+function () {
+  function TranscalPayload(func) {
+    (0, _classCallCheck2.default)(this, TranscalPayload);
+    this.func = func;
+
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    this.args = args;
+  }
+  /**
      * Get memo
      * @return {string}
-     */return(0,_createClass2.default)(a,[{key:"memo",value:function a(){return"@[".concat(this.func,":").concat(this.args.join(","),"]")}/**
-     * Parse memo
-     */},{key:"parseMemo",value:function h(a){var b=a[0];if(4>a.length)throw new Error("parse transcal error: the memo is too short.");if("["!==a[1]||"]"===a[2])throw new Error("parse transcal error: formation error.");if("@"!==b&&"#"!==b)throw new Error("parse transcal error: type mark must be @ or #.");var c=a.indexOf(":"),d=a.indexOf("]");if(0>d)throw new Error("parse transcal error: cannot find end mark ']'.");if(0>c)return this.func=a.substr(2,d-2),this.args=[],this;this.func=a.substr(2,c-2);for(var e=c+1,f=e,g=[];;){if(e=a.indexOf(",",e),e>=d||0>e){g.push(a.substr(f,d-f));break}g.push(a.substr(f,e-f)),f=++e}return this.args=g,this}}],[{key:"parse",value:function c(b){return new a("").parseMemo(b)}}]),a}();exports.default=TranscalPayload;
+     */
+
+
+  (0, _createClass2.default)(TranscalPayload, [{
+    key: "memo",
+    value: function memo() {
+      return "@[".concat(this.func, ":").concat(this.args.join(','), "]");
+    }
+    /**
+       * Parse memo
+       */
+
+  }, {
+    key: "parseMemo",
+    value: function parseMemo(memo) {
+      var callType = memo[0];
+      if (memo.length < 4) throw new Error('parse transcal error: the memo is too short.');
+      if (memo[1] !== '[' || memo[2] === ']') throw new Error('parse transcal error: formation error.');
+      if (callType !== '@' && callType !== '#') throw new Error('parse transcal error: type mark must be @ or #.');
+      var posCol = memo.indexOf(':');
+      var posEnd = memo.indexOf(']');
+      if (posEnd < 0) throw new Error("parse transcal error: cannot find end mark ']'.");
+
+      if (posCol < 0) {
+        // if the col mark exist
+        this.func = memo.substr(2, posEnd - 2);
+        this.args = [];
+        return this;
+      }
+
+      this.func = memo.substr(2, posCol - 2);
+      var pos = posCol + 1;
+      var posPrev = pos;
+      var args = [];
+
+      while (true) {
+        pos = memo.indexOf(',', pos);
+
+        if (pos >= posEnd || pos < 0) {
+          args.push(memo.substr(posPrev, posEnd - posPrev));
+          break;
+        }
+
+        args.push(memo.substr(posPrev, pos - posPrev));
+        posPrev = ++pos;
+      }
+
+      this.args = args;
+      return this;
+    }
+  }], [{
+    key: "parse",
+    value: function parse(memo) {
+      return new TranscalPayload('').parseMemo(memo);
+    }
+  }]);
+  return TranscalPayload;
+}();
+
+exports.default = TranscalPayload;

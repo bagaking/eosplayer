@@ -232,6 +232,7 @@ export default class ChainHelper {
     const req = async (pos) => {
       while (true) {
         try {
+          log.verbose(`search Start : at:${Date.now()} pos:${pos} offset:${offset}`)
           return await this.getActions(account_name, pos, offset)
         } catch (ex) {
           log.error('error : ', ex)
@@ -269,6 +270,7 @@ export default class ChainHelper {
       }
     }
     log.info(`getAllActions : all scaned (${Date.now() - tStart})`)
+    return ret
   }
 
   /**

@@ -1,1 +1,41 @@
-"use strict";var _player=require("./player");var _readingPlayer=require("./readingPlayer");var _signPlayer=require("./signPlayer");Object.defineProperty(exports,"__esModule",{value:!0});Object.keys(_player).forEach(function(a){"default"===a||"__esModule"===a||Object.defineProperty(exports,a,{enumerable:!0,get:function b(){return _player[a]}})});Object.keys(_readingPlayer).forEach(function(a){"default"===a||"__esModule"===a||Object.defineProperty(exports,a,{enumerable:!0,get:function b(){return _readingPlayer[a]}})});Object.keys(_signPlayer).forEach(function(a){"default"===a||"__esModule"===a||Object.defineProperty(exports,a,{enumerable:!0,get:function b(){return _signPlayer[a]}})});
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _player = require("./player");
+
+Object.keys(_player).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _player[key];
+    }
+  });
+});
+
+var _readingPlayer = require("./readingPlayer");
+
+Object.keys(_readingPlayer).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _readingPlayer[key];
+    }
+  });
+});
+
+var _signPlayer = require("./signPlayer");
+
+Object.keys(_signPlayer).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _signPlayer[key];
+    }
+  });
+});
