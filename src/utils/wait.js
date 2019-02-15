@@ -1,6 +1,6 @@
 export function forMs (ms) {
   return new Promise(resolve => {
-    setTimeout(resolve, time)
+    setTimeout(resolve, ms)
   })
 }
 export async function forCondition (fnPredict, spanMs = 100) {
