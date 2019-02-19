@@ -326,6 +326,7 @@ function () {
       /*#__PURE__*/
       _regenerator.default.mark(function _callee8(account_name) {
         var authority,
+            pubkeys,
             _args8 = arguments;
         return _regenerator.default.wrap(function _callee8$(_context8) {
           while (1) {
@@ -336,9 +337,24 @@ function () {
                 return this.getPubKeys(account_name, authority);
 
               case 3:
+                pubkeys = _context8.sent;
+
+                if (!(!pubkeys || pubkeys.length <= 0)) {
+                  _context8.next = 7;
+                  break;
+                }
+
+                log.warning("cannot find public key for ".concat(account_name, "@").concat(authority));
+                return _context8.abrupt("return");
+
+              case 7:
+                _context8.next = 9;
+                return this.getPubKeys(account_name, authority);
+
+              case 9:
                 return _context8.abrupt("return", _context8.sent[0].key);
 
-              case 4:
+              case 10:
               case "end":
                 return _context8.stop();
             }
@@ -426,6 +442,9 @@ function () {
        * @param message
        * @param account
        * @param authority - default is 'active'
+       * @param {Object.<string,function>} plugins - plugin should be object
+       * @example
+       * validateSign(SIG, MSG, ACC, 'active', { ['pretonarts11@eosio.code'] : async (account, recoverKey) => validate rpc ... }
        * @return {string|pubkey|PublicKey}
        */
 
@@ -436,27 +455,117 @@ function () {
       /*#__PURE__*/
       _regenerator.default.mark(function _callee10(signature, message, account) {
         var authority,
-            pubKey,
-            pubKeys,
+            accountsPermisionPlugins,
+            recoverKey,
+            _ref,
+            permissions,
+            perm,
+            _perm$required_auth,
+            accounts,
+            keys,
             keyObj,
+            accountsStrs,
+            i,
+            plugin,
             _args10 = arguments;
+
         return _regenerator.default.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
                 authority = _args10.length > 3 && _args10[3] !== undefined ? _args10[3] : 'active';
-                pubKey = this.recoverSign(signature, message);
-                _context10.next = 4;
-                return this.getPubKeys(account, authority);
+                accountsPermisionPlugins = _args10.length > 4 ? _args10[4] : undefined;
+                recoverKey = this.recoverSign(signature, message);
+                _context10.next = 5;
+                return this.getAccountInfo(account);
 
-              case 4:
-                pubKeys = _context10.sent;
-                keyObj = pubKeys.find(function (v) {
-                  return v.key === pubKey;
+              case 5:
+                _ref = _context10.sent;
+                permissions = _ref.permissions;
+
+                if (permissions) {
+                  _context10.next = 10;
+                  break;
+                }
+
+                log.warning("permissions of account ".concat(account, " are not found."));
+                return _context10.abrupt("return");
+
+              case 10:
+                perm = permissions.find(function (p) {
+                  return p.perm_name === authority;
                 });
-                return _context10.abrupt("return", keyObj ? keyObj.key : undefined);
 
-              case 7:
+                if (permissions) {
+                  _context10.next = 14;
+                  break;
+                }
+
+                log.warning("permission ".concat(authority, " account ").concat(account, " are not found."));
+                return _context10.abrupt("return");
+
+              case 14:
+                _perm$required_auth = perm.required_auth, accounts = _perm$required_auth.accounts, keys = _perm$required_auth.keys;
+                keyObj = keys.find(function (v) {
+                  return v.key === recoverKey;
+                });
+
+                if (!keyObj) {
+                  _context10.next = 18;
+                  break;
+                }
+
+                return _context10.abrupt("return", keyObj.key);
+
+              case 18:
+                if (accountsPermisionPlugins) {
+                  _context10.next = 20;
+                  break;
+                }
+
+                return _context10.abrupt("return");
+
+              case 20:
+                accountsStrs = accounts.map(function (acc) {
+                  return "".concat(acc.permission.actor, "@").concat(acc.permission.permission);
+                });
+                log.verbose('try match', accounts, accountsStrs, accountsPermisionPlugins);
+                _context10.t0 = _regenerator.default.keys(accountsStrs);
+
+              case 23:
+                if ((_context10.t1 = _context10.t0()).done) {
+                  _context10.next = 35;
+                  break;
+                }
+
+                i = _context10.t1.value;
+                plugin = accountsPermisionPlugins[accountsStrs[i]];
+
+                if (plugin) {
+                  _context10.next = 28;
+                  break;
+                }
+
+                return _context10.abrupt("continue", 23);
+
+              case 28:
+                log.warning(plugin);
+                _context10.next = 31;
+                return Promise.resolve(plugin(account, recoverKey));
+
+              case 31:
+                if (!_context10.sent) {
+                  _context10.next = 33;
+                  break;
+                }
+
+                return _context10.abrupt("return", recoverKey);
+
+              case 33:
+                _context10.next = 23;
+                break;
+
+              case 35:
               case "end":
                 return _context10.stop();
             }
@@ -748,7 +857,7 @@ function () {
                 req =
                 /*#__PURE__*/
                 function () {
-                  var _ref = (0, _asyncToGenerator2.default)(
+                  var _ref2 = (0, _asyncToGenerator2.default)(
                   /*#__PURE__*/
                   _regenerator.default.mark(function _callee15(pos) {
                     return _regenerator.default.wrap(function _callee15$(_context15) {
@@ -786,7 +895,7 @@ function () {
                   }));
 
                   return function req(_x21) {
-                    return _ref.apply(this, arguments);
+                    return _ref2.apply(this, arguments);
                   };
                 }();
 
@@ -1074,7 +1183,7 @@ function () {
                 checkTx =
                 /*#__PURE__*/
                 function () {
-                  var _ref2 = (0, _asyncToGenerator2.default)(
+                  var _ref3 = (0, _asyncToGenerator2.default)(
                   /*#__PURE__*/
                   _regenerator.default.mark(function _callee20(_txID) {
                     var round,
@@ -1133,7 +1242,7 @@ function () {
                   }));
 
                   return function checkTx(_x28) {
-                    return _ref2.apply(this, arguments);
+                    return _ref3.apply(this, arguments);
                   };
                 }();
 

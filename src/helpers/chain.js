@@ -100,6 +100,12 @@ export default class ChainHelper {
      * @constructor
      */
   async getPubKey (account_name, authority = 'active') {
+    const pubkeys = (await this.getPubKeys(account_name, authority))
+    if (!pubkeys || pubkeys.length <= 0) {
+      log.warning(`cannot find public key for ${account_name}@${authority}`)
+      return
+    }
+
     return (await this.getPubKeys(account_name, authority))[0].key
   }
 
@@ -133,13 +139,41 @@ export default class ChainHelper {
      * @param message
      * @param account
      * @param authority - default is 'active'
+     * @param {Object.<string,function>} plugins - plugin should be object
+     * @example
+     * validateSign(SIG, MSG, ACC, 'active', { ['pretonarts11@eosio.code'] : async (account, recoverKey) => validate rpc ... }
      * @return {string|pubkey|PublicKey}
      */
-  async validateSign (signature, message, account, authority = 'active') {
-    let pubKey = this.recoverSign(signature, message)
-    let pubKeys = await this.getPubKeys(account, authority)
-    let keyObj = pubKeys.find(v => v.key === pubKey)
-    return keyObj ? keyObj.key : undefined
+  async validateSign (signature, message, account, authority = 'active', accountsPermisionPlugins) {
+    const recoverKey = this.recoverSign(signature, message)
+    const { permissions } = await this.getAccountInfo(account)
+    if (!permissions) {
+      log.warning(`permissions of account ${account} are not found.`)
+      return
+    }
+    const perm = permissions.find(p => p.perm_name === authority)
+    if (!permissions) {
+      log.warning(`permission ${authority} account ${account} are not found.`)
+      return
+    }
+
+    const { accounts, keys } = perm.required_auth
+    let keyObj = keys.find(v => v.key === recoverKey)
+    if (keyObj) {
+      return keyObj.key
+    }
+    if (!accountsPermisionPlugins) {
+      return
+    }
+    const accountsStrs = accounts.map(acc => `${acc.permission.actor}@${acc.permission.permission}`)
+    log.verbose('try match', accounts, accountsStrs, accountsPermisionPlugins)
+    for (let i in accountsStrs) {
+      const plugin = accountsPermisionPlugins[accountsStrs[i]]
+      if (!plugin) {
+        continue
+      }
+      if (await Promise.resolve(plugin(account, recoverKey))) return recoverKey
+    }
   }
 
   /**
@@ -617,7 +651,8 @@ export default class ChainHelper {
 {string} async getPubKey(account_name, authority = "active") // get the first public key of an account
 {Array} async getPubKeys(account_name, authority = "active") // get public keys of an account
 {string} async recoverSign(signature, message) // recover sign and to the public key
-{string} async validateSign (signature, message, account, authority = 'active') // validate if signed data is signed by a account. it returns the matched public key 
+{string} async validateSign (signature, message, account, authority = 'active', accountsPermisionPlugins) 
+// validate if signed data is signed by a account. it returns the matched public key 
 
 {Number} async getActionCount(account_name) // get a account's action count
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq

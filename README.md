@@ -20,7 +20,7 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 1. test it in your chrome console
 
 or using the online play ground:
-[https://play.eosplayer.pro](https://doc.eosplayer.pro)
+[https://play.eosplayer.pro](https://play.eosplayer.pro)
 
 - [transfer tool](https://play.eosplayer.pro/#/1)
 - [sign tool](https://play.eosplayer.pro/#/2)
@@ -151,7 +151,8 @@ debug.enable('error:*,warning:*,info:*');
 {string} async getPubKey(account_name, authority = "active") // get the first public key of an account
 {Array} async getPubKeys(account_name, authority = "active") // get public keys of an account
 {string} async recoverSign(signature, message) // recover sign and to the public key
-{string} async validateSign (signature, message, account, authority = 'active') // validate if signed data is signed by a account. it returns the matched public key 
+{string} async validateSign (signature, message, account, authority = 'active', accountsPermisionPlugins) 
+// validate if signed data is signed by a account. it returns the matched public key 
 
 {Number} async getActionCount(account_name) // get a account's action count
 {Number} async getActionMaxSeq(account_name) // get a account's max action seq
