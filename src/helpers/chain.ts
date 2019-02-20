@@ -690,7 +690,7 @@ export default class ChainHelper {
         return ret
     }
 
-    static get help() {
+    static help() {
         return `
 ### Chain API
 

@@ -183,7 +183,7 @@ export class Player extends EosProvider {
      *  get version
      */
     public version() {
-        return '0.4.0' + packageJson.version
+        return `${packageJson.name} # ${packageJson.version}`
     }
 
     /**
@@ -257,6 +257,6 @@ export class Player extends EosProvider {
     // create a account with public key
 \`\`\`
 
-${ChainHelper.help}`
+${ChainHelper.help()}`
     }
 }
