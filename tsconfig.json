@@ -2,16 +2,20 @@
   "compilerOptions": {
     "target": "es5",
     "module": "CommonJS",
-    "outDir": "node",
+    "outDir": "lib",
     "sourceMap": true,
     "alwaysStrict": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "lib": [ "es6", "dom" ]
+    "skipLibCheck": true,
+    "allowJs": true,
+    "lib": [
+      "es6",
+      "dom"
+    ]
   },
   "include": [
-    "src_ts/**/*.ts",
-    "node_modules/typescript/lib/lib.dom.d.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
