@@ -2,14 +2,15 @@
   "compilerOptions": {
     "target": "es5",
     "module": "CommonJS",
-    "outDir": "lib",
+    "outDir": "build/lib",
     "sourceMap": true,
     "alwaysStrict": true,
-    "noImplicitAny": true,
+//  "noImplicitAny": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-//    "declaration": true, // `--declaration` are not allowed with `--allowJs` @discussion https://github.com/Microsoft/TypeScript/issues/7546
-    "allowJs": true,
+//    "allowSyntheticDefaultImports": true,
+    "declaration": true, // `--declaration` are not allowed with `--allowJs` @discussion https://github.com/Microsoft/TypeScript/issues/7546
+    //"allowJs": true,
     "lib": [
       "es6",
       "dom"

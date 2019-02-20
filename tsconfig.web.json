@@ -2,13 +2,14 @@
   "compilerOptions": {
     "target": "es5",
     "module": "CommonJS",
-    "outDir": "lib",
+    "outDir": "build/web_tsc",
     "sourceMap": true,
     "alwaysStrict": true,
-    "noImplicitAny": true,
+//    "noImplicitAny": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "allowJs": true,
+//    "allowSyntheticDefaultImports": true,
+//    "allowJs": true,
     "lib": [
       "es6",
       "dom"

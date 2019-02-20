@@ -38,7 +38,7 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
   output: {
-    path: path.resolve(__dirname, 'web'),
+    path: path.resolve(__dirname, 'build/web'),
     filename: '[name].bundle.js'
   }
 

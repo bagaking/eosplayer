@@ -4,8 +4,7 @@
 **/.vscode
 
 # Build
-web
-lib
+build
 yarn.lock
 _*/
 
