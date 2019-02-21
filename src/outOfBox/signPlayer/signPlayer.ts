@@ -1,5 +1,5 @@
 import {Eos} from '../../types/libs'
-import {IEosClient, IIdentity} from "../../types/eos";
+import {IAuthorization, IEosClient, IIdentity} from "../../types/eos";
 import {TimeoutPromise} from "../../utils/wait";
 import {IMultiSourcePlayerConfig, MultiSourcePlayer} from "../../multiSourcePlayer";
 import {ISignPlayerOptions, NodeStatMgr} from "./nodeStat";
@@ -18,8 +18,8 @@ const defaultConfig = {
         maxFailureRate: 0.499,
         failureRateThreshold: 0.1,
         maxContinuousFailure: 3,
-        DECLINE_ERROR_COUNTER_TIME_INTERVAL: 120000, // 2 * 60 * 1000;
-        RETRY_TIME_INTERVAL: 600000, //10 * 60 * 1000;
+        cleaningTimeInterval: 120000, // 2 * 60 * 1000;
+        revivalTimeInterval: 600000, //10 * 60 * 1000;
         responseIntervalThreshold: 1000,
         responseIntervalDecline: 100,
         maxCallPromiseExceedTime: 180000 // 经测试 1分钟时间仍然太短, 可能导致大量重发, 提高到5分钟
@@ -43,13 +43,18 @@ export class SignPlayer extends MultiSourcePlayer {
             ...defaultConfig.account,
             ...account
         }
-        this._options = options
+        this._options = {
+            ...defaultConfig.options,
+            ...options
+        }
         this._nodeStates = new NodeStatMgr(this._nodeConfigs, this._options);
     }
 
     public get eosClient(): IEosClient {
         this._nodeStates.setTheBestNodeToCurrent()
-        return new Eos(this._nodeStates.getCurNodeConf());
+        let conf = this._nodeStates.getCurNodeConf();
+        console.log("currentNode", this._nodeStates._currentNodeIndex, conf, this._nodeStates.getCurNodeStat());
+        return new Eos(conf);
     }
 
     public async getIdentity(): Promise<IIdentity> {
@@ -59,11 +64,11 @@ export class SignPlayer extends MultiSourcePlayer {
         return this._identity
     }
 
-    setIdentity(account: IIdentity) {
+    public setIdentity(account: IIdentity) {
         this._identity = account
     }
 
-    async callChain(code: string, func: string, jsonData: any) {
+    public async callChain(code: string, func: string, jsonData: any, authorization?: IAuthorization) {
         this._concurrentCount += 1;
 
         let chain = this.chain; // using eosClient here
@@ -78,9 +83,9 @@ export class SignPlayer extends MultiSourcePlayer {
         try {
             let ret = await TimeoutPromise(
                 this._options.maxCallPromiseExceedTime,
-                chain.call(code, func, jsonData, {
-                    "actor": code,
-                    "permission": "active"
+                chain.call(code, func, jsonData, authorization || {
+                    actor: code,
+                    permission: "active"
                 })
             ).catch(ex => {
                 throw ex;
@@ -101,7 +106,8 @@ export class SignPlayer extends MultiSourcePlayer {
         console.log(
             `[eos_call_util] Call chain [[ ${endPointUrl} ]] ${code}.${func} [[[${mark}]]] :
 Data => ${JSON.stringify(jsonData)}
-Node status => ${JSON.stringify(node)}`,
+Node status => ${JSON.stringify(node)}
+`,
             ...args);
     }
 
