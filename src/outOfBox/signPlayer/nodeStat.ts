@@ -1,4 +1,7 @@
 import {IEosNodeConfig} from "../../configs";
+import {createLogger} from "../../utils/log";
+
+const log = createLogger("signPlayer:nodeStat")
 
 export interface ISignPlayerOptions {
     maxFailureRate?: number;
@@ -29,7 +32,7 @@ export class NodeStat {
 export class NodeStatMgr {
 
     protected _nodeStatus: NodeStat[] = [];
-    public _currentNodeIndex: number;
+    public _currentNodeIndex: number = 0;
 
     constructor(
         public readonly _nodeConfigs: IEosNodeConfig[],
@@ -42,7 +45,7 @@ export class NodeStatMgr {
         for (let i = 0; i < this._nodeConfigs.length; i++) {
             this._nodeStatus.push(new NodeStat());
         }
-        console.log("initiated", this._nodeStatus)
+        log.verbose("initiated", this._nodeStatus)
         this.setTheBestNodeToCurrent();
     }
 
@@ -55,16 +58,16 @@ export class NodeStatMgr {
             let revival = timestamp >= node.revival_time;
 
             if (node.enabled &&
-                (error_rate >= this._options.maxFailureRate ||
-                    node.continuous_failure >= this._options.maxContinuousFailure)
+                (error_rate >= (this._options.maxFailureRate || 0.5) ||
+                    node.continuous_failure >= (this._options.maxContinuousFailure || 5))
             ) {
                 node.enabled = false;
-                node.revival_time = timestamp + this._options.revivalTimeInterval;
+                node.revival_time = timestamp + (this._options.revivalTimeInterval || 600000);
                 node.error_counts = 0;
                 node.total_counts = 1;
                 node.continuous_failure = 0;
-                node.record_total_fuse += 1;
-                console.log(`[eos_call_util] fuse ${this._nodeConfigs[i].httpEndpoint}`);
+                node.record_total_fuse = (node.record_total_fuse || 0) + 1;
+                log.info(`[eos_call_util] fuse ${this._nodeConfigs[i].httpEndpoint}`);
             }
 
             if (!node.enabled && !revival) {
@@ -74,8 +77,8 @@ export class NodeStatMgr {
             let min_node = this._nodeStatus[min_node_idx];
             let min_error_rate = min_node.error_counts / min_node.total_counts;
             if (min_node.continuous_failure > node.continuous_failure // 选出节点的连续失败次数更小
-                || min_error_rate > error_rate + this._options.failureRateThreshold // 选出节点的失败率更低
-                || min_node.response_interval > node.response_interval + this._options.responseIntervalThreshold// 选出节点的相应时间权值更快
+                || min_error_rate > error_rate + (this._options.failureRateThreshold || 0.1) // 选出节点的失败率更低
+                || min_node.response_interval > node.response_interval + (this._options.responseIntervalThreshold || 1000)// 选出节点的相应时间权值更快
             ) {
                 min_node_idx = i;
             }
@@ -84,7 +87,7 @@ export class NodeStatMgr {
         this._currentNodeIndex = min_node_idx;
     };
 
-    public getNodeConf(index: number) {
+    public getNodeConf(index: number) : IEosNodeConfig{
         return this._nodeConfigs[index];
     }
 
@@ -96,12 +99,12 @@ export class NodeStatMgr {
         let node = this.getNodeStat(index)
         let timestamp = (new Date()).getTime();
         if (node.cleaning_time > timestamp) return node;
-        console.log("execute clean ", node)
+        log.verbose("execute clean ", node)
         node.error_counts = Math.max(0, node.error_counts - 1);
         node.total_counts = Math.max(1, node.total_counts - 1);
         node.continuous_failure = Math.max(0, node.continuous_failure - 1);
-        node.response_interval = Math.max(0, node.response_interval - this._options.responseIntervalDecline);
-        node.cleaning_time = timestamp + this._options.cleaningTimeInterval;
+        node.response_interval = Math.max(0, node.response_interval - (this._options.responseIntervalDecline || 1000));
+        node.cleaning_time = timestamp + (this._options.cleaningTimeInterval || 60000);
         return node;
     }
 
@@ -120,24 +123,23 @@ export class NodeStatMgr {
         node.response_interval = (node.response_interval + timeDelta) / 2; // 相应时间公式: a[i] = (t[i] + a[i-1]) / 2
         node.continuous_failure = 0;
         node.enabled = true;
-        node.cleaning_time = now + this._options.cleaningTimeInterval;
+        node.cleaning_time = now + (this._options.cleaningTimeInterval || 180000);
         node.total_counts += 1;
-        node.record_total_success += 1;
-        node.record_total_counts += 1;
-        console.log("send succeed")
+        node.record_total_success = (node.record_total_success || 0) + 1;
+        node.record_total_counts = (node.record_total_counts || 0) +  1;
+        log.verbose("send succeed > ", node.continuous_failure, node.error_counts, node.total_counts)
         return node
     }
 
     public markSendFailed(startTimestamp: number) {
         let node = this.getCurNodeStat();
-        console.log("send failed ==> ", node.continuous_failure, node.error_counts, node.total_counts)
         node.error_counts += 1;
         node.continuous_failure += 1;
-        node.revival_time = startTimestamp + this._options.revivalTimeInterval;
+        node.revival_time = startTimestamp + (this._options.revivalTimeInterval || 180000);
         node.total_counts += 1;
-        node.record_total_failed += 1;
-        node.record_total_counts += 1;
-        console.log("send failed <== ", node.continuous_failure, node.error_counts, node.total_counts)
+        node.record_total_failed = (node.record_total_failed || 0) + 1;
+        node.record_total_counts = (node.record_total_counts || 0) + 1;
+        log.verbose("send failed > ", node.continuous_failure, node.error_counts, node.total_counts)
         return node
     }
 

@@ -39,7 +39,7 @@ export class MultiSourcePlayer extends Player {
         };
         this._urls = urls;
         this._nodeConfigs = this._urls.map(url => {
-            let ret: IEosNodeConfig = {
+            let ret: any = {
                 chainId: ''
             };
             for (let key in this._conf) {
@@ -47,7 +47,7 @@ export class MultiSourcePlayer extends Player {
                 ret[key] = this._conf[key]
             }
             ret.httpEndpoint = url;
-            return ret
+            return ret as IEosNodeConfig
         });
     }
 

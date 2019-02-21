@@ -33,7 +33,7 @@ export class ScatterPlayer extends Player {
         network_name: 'dev',
         lang: 'ch'
     })
-    protected _eosClient: IEosClient = null;
+    protected _eosClient?: IEosClient;
 
     constructor(public _networks: any) {
         super()
@@ -49,7 +49,7 @@ export class ScatterPlayer extends Player {
     public switchNetwork(key: string) {
         if (key in this._networks) {
             this.storage.set('network_name', key)
-            this._eosClient = null
+            this._eosClient = undefined
             log.info(`network changed to ${this.netName}.`)
         } else {
             log.warning(`network ${key} cannot find.`)
@@ -148,6 +148,9 @@ export class ScatterPlayer extends Player {
             console.log('Eos', Eos)
             this._eosClient = this.scatter.eos(this.netConf, Eos, {}, this.netConf.protocol)
         }
+        if(!this._eosClient){
+            throw new Error("cannot create _eosClient");
+        }
         return this._eosClient
     }
 
@@ -182,8 +185,10 @@ export class ScatterPlayer extends Player {
                 accounts: [this.netConf] // need slot 'chainid' and 'blockchain'
             }).then(() => {
                 this.identityReceiver.forEach(
-                    receiver => receiver(scatter_.identity.accounts.find(
-                        (acc: any) => acc.blockchain === 'eos')));
+                    receiver => receiver(scatter_.identity ?
+                        scatter_.identity.accounts.find((acc: any) => acc.blockchain === 'eos') :
+                        undefined
+                    ));
                 this.identityReceiver = []
             }).catch((err: Error) => {
                 this.identityReceiver.forEach(receiver => receiver(err));

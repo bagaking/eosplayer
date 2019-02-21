@@ -2,7 +2,10 @@ import {Eos} from '../../types/libs'
 import {IAuthorization, IEosClient, IIdentity} from "../../types/eos";
 import {TimeoutPromise} from "../../utils/wait";
 import {IMultiSourcePlayerConfig, MultiSourcePlayer} from "../../multiSourcePlayer";
-import {ISignPlayerOptions, NodeStatMgr} from "./nodeStat";
+import {ISignPlayerOptions, NodeStat, NodeStatMgr} from "./nodeStat";
+import {createLogger} from "../../utils/log";
+
+const log = createLogger("signPlayer")
 
 export interface ISignPlayerConfig extends IMultiSourcePlayerConfig {
     account: IIdentity,
@@ -33,8 +36,7 @@ export class SignPlayer extends MultiSourcePlayer {
 
     protected _nodeStates: NodeStatMgr;
 
-    protected _currentNodeIndex: number;
-    protected _concurrentCount: number;
+    protected _concurrentCount: number = 0;
 
     constructor(conf: ISignPlayerConfig) {
         super(conf)
@@ -53,7 +55,7 @@ export class SignPlayer extends MultiSourcePlayer {
     public get eosClient(): IEosClient {
         this._nodeStates.setTheBestNodeToCurrent()
         let conf = this._nodeStates.getCurNodeConf();
-        console.log("currentNode", this._nodeStates._currentNodeIndex, conf, this._nodeStates.getCurNodeStat());
+        // log.verbose("currentNode", this._nodeStates._currentNodeIndex, conf, this._nodeStates.getCurNodeStat());
         return new Eos(conf);
     }
 
@@ -74,7 +76,7 @@ export class SignPlayer extends MultiSourcePlayer {
         let chain = this.chain; // using eosClient here
 
         let startTimeStamp = (new Date()).getTime();
-        let _endpointUrl = this._nodeStates.getCurNodeConf().httpEndpoint;
+        let _endpointUrl= this._nodeStates.getCurNodeConf().httpEndpoint || '';
 
         this.log('START', _endpointUrl, code, func, jsonData,
             this._nodeStates.getCurNodeStat(),
@@ -82,7 +84,7 @@ export class SignPlayer extends MultiSourcePlayer {
         );
         try {
             let ret = await TimeoutPromise(
-                this._options.maxCallPromiseExceedTime,
+                this._options.maxCallPromiseExceedTime || 50000,
                 chain.call(code, func, jsonData, authorization || {
                     actor: code,
                     permission: "active"
@@ -102,8 +104,8 @@ export class SignPlayer extends MultiSourcePlayer {
         }
     }
 
-    protected log(mark, endPointUrl, code, func, jsonData, node, ...args: any[]) {
-        console.log(
+    protected log(mark: string, endPointUrl: string, code: string, func: string, jsonData: any, node: NodeStat, ...args: any[]) {
+        log.info(
             `[eos_call_util] Call chain [[ ${endPointUrl} ]] ${code}.${func} [[[${mark}]]] :
 Data => ${JSON.stringify(jsonData)}
 Node status => ${JSON.stringify(node)}

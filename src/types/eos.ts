@@ -124,7 +124,7 @@ export interface IEosClient {
 
     getCurrencyStats?: Function;
 
-    getInfo?: Function;
+    getInfo: Function;
 
     getKeyAccounts?: Function;
 
@@ -186,7 +186,7 @@ export interface IEosClient {
 
     setram?: Function;
 
-    transaction?: Function;
+    transaction: Function;
 
     transfer?: Function;
 

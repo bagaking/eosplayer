@@ -155,6 +155,10 @@ export class Player extends EosProvider {
             ownerKey = activeKey
         }
         let creator = await this.getIdentity();
+        const eosClient = this.eosClient;
+        if(!eosClient){
+            throw new Error("eosClient is not exist")
+        }
         return await this.eosClient.transaction((tr : any) => {
             tr.newaccount({
                 creator: creator.name,

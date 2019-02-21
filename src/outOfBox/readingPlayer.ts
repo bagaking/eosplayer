@@ -39,7 +39,7 @@ export class ReadingPlayer extends MultiSourcePlayer {
         })
     }
 
-    get eosClient() {
+    get eosClient() : IEosClient {
         if (!this._eosNodes || this._eosNodes.length <= 0) {
             throw new Error('EosUtil : No Avaliable Nodes.')
         }
@@ -56,7 +56,7 @@ export class ReadingPlayer extends MultiSourcePlayer {
             console.log('[EosReading] ==> Start Checking Nodes ', this.eosClient.__conf.httpEndpoint, 'AT', Date.now())
             while (true) {
                 try {
-                    let chainInfo = await this._eosNodes[0].getInfo({})
+                    let chainInfo: any = await this.eosClient.getInfo({})
                     this._head_retry_count = 0
                     if (chainInfo.head_block_num > this._head_block_num) {
                         this._head_block_num = chainInfo.head_block_num

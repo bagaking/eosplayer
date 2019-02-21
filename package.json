@@ -19,7 +19,7 @@
     "dev": "webpack-dev-server --config webpack.debug.js --open",
     "build:web": "rimraf ./build/web/ &&webpack --config webpack.prod.js -p --display-error-details",
     "build:play": "webpack --config webpack.debug.js -p --display-error-details",
-    "build:lib": "rimraf ./build/lib/ && npx tsc && cp LICENSE ./build/lib && cp README.md ./build/lib",
+    "build:lib": "rimraf ./build/lib/ && npx tsc && cp LICENSE ./build/lib && cp README.md ./build/lib && cp package.json ./build",
     "build": "npm run build:web && npm run build:lib && npm run build:play",
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
     "doc": "jsdoc -c .jsdocrc",
