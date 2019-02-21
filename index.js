@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 import { eosNodeConfigs } from './src/configs'
 
 import { ScatterPlayer } from './src/outOfBox/scatterPlayer/scatterPlayer'
-import { Player, SignPlayer } from './src'
+import { Player, SignPlayer, ReadingPlayer } from './src'
 
 /**
  * env of browser
@@ -57,5 +57,6 @@ if (!window.kh) {
 window.kh.eos = {
   Player,
   ScatterPlayer,
-  SignPlayer
+  SignPlayer,
+  ReadingPlayer
 }

@@ -1,6 +1,6 @@
 import * as EosLib from 'eosjs'
-import * as ecc from 'eosjs-ecc'
 import * as debug from 'debug'
+const { ecc } = EosLib.modules
 
 export const Eos = EosLib
 export const Ecc = ecc

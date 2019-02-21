@@ -1,73 +1,42 @@
-import {Player} from '../player'
-import { Eos } from '../types/libs'
+import {Eos} from '../types/libs'
 
-import {forMs, forCondition} from '../utils/wait'
+import {forMs} from '../utils/wait'
 import {IEosClient, IIdentity} from "../types/eos";
 import {createLogger} from "../utils/log";
+import {IMultiSourcePlayerConfig, MultiSourcePlayer} from "../multiSourcePlayer";
 
 const log = createLogger("readingPlayer");
+
+export interface IReadingPlayerConfig extends IMultiSourcePlayerConfig{
+    account?: IIdentity
+}
 
 const defaultConfig = {
     account: {
         name: 'eosio',
         authority: 'active'
-    },
-    node: {
-        keyProvider: ['5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79sample'],
-        chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
-        mockTransactions: (): null => null,
-        expireInSeconds: 60,
-        broadcast: true,
-        debug: false,
-        sign: true,
-    },
-    urls: [
-        'https://mars.fn.eosbixin.com',
-        'https://eos.eoscafeblock.com',
-        'https://api.eosdublin.io',
-        'https://api.eosfengwo.com',
-        'https://eos.genesis-mining.com'
-    ]
+    }
 }
 
-export class readingPlayer extends Player {
+export class ReadingPlayer extends MultiSourcePlayer {
 
-    protected _conf: any;
     protected _identity: IIdentity;
-    protected _eosNodes: IEosClient[] = [];
-    protected _urls: string[] = [];
-    protected _nodeConfigs: any[] = [];
     protected _head_block_num: number = 0;
     protected _head_retry_count: number = 0;
 
-    constructor(conf: any) {
-        super()
-        const {nodeConfig, urls} = conf
-        this._conf = {
-            ...defaultConfig.node,
-            ...nodeConfig
-        }
+    protected _eosNodes: IEosClient[] = [];
+
+    constructor(conf: IReadingPlayerConfig) {
+        super(conf)
         this._identity = defaultConfig.account
-        this._urls = urls
-
-        this._nodeConfigs = this._urls.map(url => {
-            let ret: any = {}
-            for (let key in this._conf) {
-                if (!this._conf.hasOwnProperty(key)) continue
-                ret[key] = this._conf[key]
-            }
-            ret.httpEndpoint = url
-            return ret
-        })
-
-        log.info('[EosReading] ==> Create reading nodes \nCONFIGS:', JSON.stringify(this._nodeConfigs))
-        this._eosNodes = this._nodeConfigs.map(cfg => {
-            let eos = Eos(cfg)
-            eos.__conf = cfg
-            return eos
-        })
         this._head_block_num = 0
         this._head_retry_count = 0
+        log.info('[EosReading] ==> Create reading nodes \nCONFIGS:', JSON.stringify(this._nodeConfigs))
+        this._eosNodes = this._nodeConfigs.map(cfg => {
+            let eos = Eos(cfg);
+            eos.__conf = cfg;
+            return eos
+        })
     }
 
     get eosClient() {
@@ -79,13 +48,6 @@ export class readingPlayer extends Player {
 
     public async getIdentity() {
         return this._identity
-    }
-
-    public setIdentity(name: string, authority: string) {
-        this._identity = {
-            name: name,
-            authority: authority
-        }
     }
 
     public async checkNodes(checkSpanMs = 15000, retry_max = 4, blockHeightTolerance = 1000) { // 默认20秒查询一次节点
