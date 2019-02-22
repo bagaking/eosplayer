@@ -70,17 +70,22 @@ export class SignPlayer extends MultiSourcePlayer {
         this._identity = account
     }
 
-    public async callChain(code: string, func: string, jsonData: any, authorization?: IAuthorization) {
+    public lockChain() {
+        const chain = this.chain; // using eosClient here
+        return chain;
+    }
+
+    public async dynamicCall(code: string, func: string, jsonData: any, authorization?: IAuthorization) {
         this._concurrentCount += 1;
 
-        let chain = this.chain; // using eosClient here
+        let chain = this.lockChain(); // using eosClient here
 
         let startTimeStamp = (new Date()).getTime();
         let _endpointUrl = this._nodeStates.getCurNodeConf().httpEndpoint || '';
 
         const auth = authorization || {
-            actor: code,
-            permission: "active"
+            actor: this._identity.name,
+            permission: this._identity.authority,
         }
 
         this.log('START', _endpointUrl, code, func, jsonData, auth,

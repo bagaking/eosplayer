@@ -1,6 +1,6 @@
 {
   "name": "eosplayer",
-  "version": "0.5.1-beta1",
+  "version": "0.5.1-beta2",
   "description": "eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provides better usability for the application layer. It can be used on browsers already installed scatter or in Dapp wallets.",
   "main": "build/lib/index.js",
   "types": "build/lib/index.d.js",
