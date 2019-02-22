@@ -1,4 +1,4 @@
-import { Eos } from '../../types/libs'
+import {Eos} from '../../types/libs'
 
 import DB from './db'
 
@@ -8,8 +8,9 @@ import {forMs, forCondition} from '../../utils/wait'
 import {createLogger} from '../../utils/log'
 import {IEosClient, IIdentity} from "../../types/eos";
 import {IScatter} from "../../types/scatter";
+import {IEosNodeConfig, IEosNodeConfigTable} from "../../configs";
 
-const log = createLogger('scatterPlayer')
+const log = createLogger('scatterPlayer');
 
 /**
  * Event names supported in scatter player
@@ -28,16 +29,16 @@ const EVENT_NAMES = {
  */
 export class ScatterPlayer extends Player {
 
-    protected identityReceiver: Function[] = []
+    protected identityReceiver: Function[] = [];
     public readonly storage: DB = new DB({
         network_name: 'dev',
         lang: 'ch'
     })
     protected _eosClient?: IEosClient;
 
-    constructor(public _networks: any) {
-        super()
-        this.events.enableEvents(EVENT_NAMES)
+    constructor(public _networks: IEosNodeConfigTable) {
+        super();
+        this.events.enableEvents(EVENT_NAMES);
         log.info(`eos player created: \n${this.netName} \n${JSON.stringify(this.netConf, null, 2)}`)
     }
 
@@ -48,9 +49,9 @@ export class ScatterPlayer extends Player {
      */
     public switchNetwork(key: string) {
         if (key in this._networks) {
-            this.storage.set('network_name', key)
-            this._eosClient = undefined
-            log.info(`network changed to ${this.netName}.`)
+            this.storage.set('network_name', key);
+            this._eosClient = undefined;
+            log.info(`network changed to ${this.netName} ${this.netConf}.`)
         } else {
             log.warning(`network ${key} cannot find.`)
         }
@@ -68,19 +69,19 @@ export class ScatterPlayer extends Player {
     /**
      * get network name in use
      */
-    public get netName() {
+    public get netName(): string {
         return this.storage.get('network_name')
     }
 
     /**
      * get network config of cur netName
      */
-    public get netConf() {
-        let conf = this._networks[this.netName]
+    public get netConf(): IEosNodeConfig {
+        let conf = this._networks[this.netName];
         if (!conf) {
-            this.events.emitEvent(EVENT_NAMES.ERR_CONF_NOT_FOUND, new Error(`cannot find config of ${this.netName}`))
+            this.events.emitEvent(EVENT_NAMES.ERR_CONF_NOT_FOUND, new Error(`cannot find config of ${this.netName}`));
         }
-        return conf
+        return conf;
     }
 
     /**
@@ -88,11 +89,11 @@ export class ScatterPlayer extends Player {
      * @see https://get-scatter.com/docs/examples-interaction-flow
      * @return {Scatter}
      */
-    public get scatter() : IScatter {
-        let scatter = (window as any).scatter
+    public get scatter(): IScatter {
+        let scatter = (window as any).scatter;
         if (!scatter) {
-            let err = new Error('scatter cannot found')
-            this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err)
+            let err = new Error('scatter cannot found');
+            this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err);
             // throw err;
         }
         return scatter
@@ -103,7 +104,7 @@ export class ScatterPlayer extends Player {
      * @see https://get-scatter.com/docs/examples-interaction-flow
      * @return {Scatter}
      */
-    public async getScatterAsync(maxTry = 100) : Promise<IScatter> {
+    public async getScatterAsync(maxTry = 100): Promise<IScatter> {
         while (!(window as any).scatter && maxTry--) {
             log.verbose('get scatter failed, retry :', maxTry)
             await forMs(100)
@@ -143,12 +144,26 @@ export class ScatterPlayer extends Player {
      */
     public get eosClient() {
         if (!this._eosClient) {
-            console.log('this.scatter', this.scatter)
-            console.log('this.netConf', this.netConf)
-            console.log('Eos', Eos)
-            this._eosClient = this.scatter.eos(this.netConf, Eos, {}, this.netConf.protocol)
+            const conf = this.netConf as any;
+            console.log('this.scatter', this.scatter);
+            console.log('this.scatter.eos', this.scatter.eos);
+            // console.log('Eos', Eos)
+            const firstColon = conf.httpEndpoint.indexOf(':');
+            const nextColon = conf.httpEndpoint.indexOf(':', firstColon + 1)
+            const protocol = conf.httpEndpoint.substr(0, firstColon)
+            const host = nextColon < 0 ?
+                conf.httpEndpoint.substr(firstColon + 3) :
+                conf.httpEndpoint.substr(firstColon + 3, nextColon - firstColon - 3);
+            const port = nextColon < 0 ? (protocol === 'https' ? '443' : '80') : conf.httpEndpoint.substr(nextColon + 1);
+
+            console.log('protocol', protocol, host, port);
+
+            conf.host = host;
+            conf.port = port;
+            console.log('conf', conf)
+            this._eosClient = this.scatter.eos(conf, Eos, {}, protocol)
         }
-        if(!this._eosClient){
+        if (!this._eosClient) {
             throw new Error("cannot create _eosClient");
         }
         return this._eosClient
@@ -211,7 +226,7 @@ export class ScatterPlayer extends Player {
      * @return {Promise<void>} - signed data
      * @constructor
      */
-    public async sign(message : string) {
+    public async sign(message: string) {
         let identity = await this.getIdentity()
         let pubkeys = await this.chain.getPubKeys(identity.name, identity.authority)
 
@@ -228,7 +243,7 @@ export class ScatterPlayer extends Player {
         return ret
     }
 
-    public help() : string {
+    public help(): string {
         return super.help() + `
   
 ## Usage of eosplayer (for broswer)

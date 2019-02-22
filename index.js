@@ -7,6 +7,7 @@ import { eosNodeConfigs } from './src/configs'
 
 import { ScatterPlayer } from './src/outOfBox/scatterPlayer/scatterPlayer'
 import { Player, SignPlayer, ReadingPlayer } from './src'
+console.log('eosNodeConfigs', eosNodeConfigs)
 
 /**
  * env of browser

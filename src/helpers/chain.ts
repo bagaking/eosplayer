@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import {createLogger} from '../utils/log'
 
-import { Eos, Ecc } from '../types/libs'
+import {Eos, Ecc} from '../types/libs'
 
 import {IAccountInfo, IAuthorization, IEosClient, IIdentity} from "../types/eos";
 
@@ -90,7 +90,7 @@ export default class ChainHelper {
      * @param {string|number} account_name - string name or id
      * @return {Promise<{AccountInfo}>}
      */
-    async getAccountInfo(account_name: string) : Promise<IAccountInfo> {
+    async getAccountInfo(account_name: string): Promise<IAccountInfo> {
         return await this._eos.getAccount({account_name})
     }
 
@@ -396,16 +396,16 @@ export default class ChainHelper {
      * @return {Promise<*>} - transaction
      */
     async call(code: string, func: string, jsonData: any, ...authorization: IAuthorization[]) {
-        return await this._eos.transaction({
-            actions: [
-                {
-                    account: code,
-                    name: func,
-                    authorization: authorization,
-                    data: jsonData
-                }
-            ]
-        })
+        const data = {
+            actions: [{
+                account: code,
+                name: func,
+                authorization: authorization,
+                data: jsonData
+            }]
+        }
+        log.info(JSON.stringify(data, null, 2))
+        return await this._eos.transaction(data)
     }
 
     /**
@@ -678,7 +678,7 @@ export default class ChainHelper {
                 }
             }
         });
-        let ret : any[] = []
+        let ret: any[] = []
         while (true) {
             let rsp = await req.post(api, params)
             let table = rsp.data

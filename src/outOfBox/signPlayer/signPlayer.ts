@@ -76,38 +76,48 @@ export class SignPlayer extends MultiSourcePlayer {
         let chain = this.chain; // using eosClient here
 
         let startTimeStamp = (new Date()).getTime();
-        let _endpointUrl= this._nodeStates.getCurNodeConf().httpEndpoint || '';
+        let _endpointUrl = this._nodeStates.getCurNodeConf().httpEndpoint || '';
 
-        this.log('START', _endpointUrl, code, func, jsonData,
+        const auth = authorization || {
+            actor: code,
+            permission: "active"
+        }
+
+        this.log('START', _endpointUrl, code, func, jsonData, auth,
             this._nodeStates.getCurNodeStat(),
             `Concurrent count => ${this._concurrentCount} `
         );
         try {
             let ret = await TimeoutPromise(
                 this._options.maxCallPromiseExceedTime || 50000,
-                chain.call(code, func, jsonData, authorization || {
-                    actor: code,
-                    permission: "active"
-                })
+                chain.call(code, func, jsonData, auth)
             ).catch(ex => {
                 throw ex;
             });
             let node = this._nodeStates.markSendSuccess(startTimeStamp);
-            this.log('SUCCESS', _endpointUrl, code, func, jsonData, node);
+            this.log('SUCCESS', _endpointUrl, code, func, jsonData, auth, node);
             this._concurrentCount -= 1;
             return ret;
         } catch (e) {
             let node = this._nodeStates.markSendFailed(startTimeStamp);
-            this.log('FAILED', _endpointUrl, code, func, jsonData, node, `ERROR => ${(e && e.message) ? e.message : e}`);
+            this.log('FAILED', _endpointUrl, code, func, jsonData, auth, node, `ERROR => ${(e && e.message) ? e.message : e}`);
             this._concurrentCount -= 1;
             throw e;
         }
     }
 
-    protected log(mark: string, endPointUrl: string, code: string, func: string, jsonData: any, node: NodeStat, ...args: any[]) {
+    protected log(
+        mark: string,
+        endPointUrl: string,
+        code: string,
+        func: string,
+        jsonData: any,
+        auth: IAuthorization,
+        node: NodeStat,
+        ...args: any[]
+    ){
         log.info(
-            `[eos_call_util] Call chain [[ ${endPointUrl} ]] ${code}.${func} [[[${mark}]]] :
-Data => ${JSON.stringify(jsonData)}
+            `[signPlayer] Call chain [[ ${endPointUrl} ]] ${code}.${func}(${JSON.stringify(jsonData)}) by ${auth.actor}@${auth.permission} [[[${mark}]]] :
 Node status => ${JSON.stringify(node)}
 `,
             ...args);
