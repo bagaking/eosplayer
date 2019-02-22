@@ -45,7 +45,7 @@ export class NodeStatMgr {
         for (let i = 0; i < this._nodeConfigs.length; i++) {
             this._nodeStatus.push(new NodeStat());
         }
-        log.verbose("initiated", this._nodeStatus)
+        // log.info("initiated", this._nodeStatus, this._nodeConfigs)
         this.setTheBestNodeToCurrent();
     }
 

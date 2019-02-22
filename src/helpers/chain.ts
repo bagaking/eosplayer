@@ -391,8 +391,8 @@ export default class ChainHelper {
      * send action to a contract
      * @param {string} code - account of contract
      * @param {string} func - function name
-     * @param {Object} jsonData - data
-     * @param {Array.<Object>} authorization - should be an object who has keys {actor, permission}
+     * @param {*} jsonData - data
+     * @param {Array<IAuthorization>} authorization - should be an object who has keys {actor, permission}
      * @return {Promise<*>} - transaction
      */
     async call(code: string, func: string, jsonData: any, ...authorization: IAuthorization[]) {
@@ -400,11 +400,12 @@ export default class ChainHelper {
             actions: [{
                 account: code,
                 name: func,
-                authorization: authorization,
-                data: jsonData
-            }]
-        }
-        log.info(JSON.stringify(data, null, 2))
+                data: jsonData,
+                authorization: authorization
+            }],
+        };
+        log.info("CALL", "code", code, "func", func, "jsonData", jsonData, "authorization", jsonData);
+        // log.info(JSON.stringify(data, null, 2))
         return await this._eos.transaction(data)
     }
 
