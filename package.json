@@ -1,6 +1,6 @@
 {
   "name": "eosplayer",
-  "version": "0.5.1-beta2",
+  "version": "0.5.1",
   "description": "eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provides better usability for the application layer. It can be used on browsers already installed scatter or in Dapp wallets.",
   "main": "build/lib/index.js",
   "types": "build/lib/index.d.js",
@@ -25,7 +25,7 @@
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
     "doc": "jsdoc -c .jsdocrc",
     "update_version": "node ./scripts/prepublish.js",
-    "prepublishOnly": "npm run update_version && npm run build"
+    "prepublishOnly": "npm run build"
   },
   "homepage": "https://github.com/bagaking/eosglue#readme",
   "dependencies": {

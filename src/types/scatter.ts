@@ -16,21 +16,21 @@ export interface IScatter {
 
     authenticate: Promise<any>;
 
-    forgetIdentity: () => any;
+    forgetIdentity: (...args: any[]) => any;
 
-    getArbitrarySignature: () => any;
+    getArbitrarySignature: (...args: any[]) => any;
 
-    getIdentity: () => any;
+    getIdentity: (...args: any[]) => any;
 
-    requireVersion: () => any;
+    requireVersion: (...args: any[]) => any;
 
-    suggestNetwork: () => any;
+    suggestNetwork: (...args: any[]) => any;
 
-    useIdentity: () => any;
+    useIdentity: (...args: any[]) => any;
 
-    eos: () => any;
+    eos: (...args: any[]) => any;
 
-    eth: () => any;
+    eth: (...args: any[]) => any;
 
     identity?: { accounts: IIdentity[] };
 

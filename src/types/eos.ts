@@ -80,127 +80,136 @@ export interface IIdentity {
  */
 export interface IEosClient {
 
-    abiBinToJson?: () => any;
+    abiBinToJson?: (...args: any[]) => any;
 
-    abiJsonToBin?: () => any;
+    abiJsonToBin?: (...args: any[]) => any;
 
-    bidname?: () => any;
+    bidname?: (...args: any[]) => any;
 
-    buyram?: () => any;
+    buyram?: (...args: any[]) => any;
 
-    buyrambytes?: () => any;
+    buyrambytes?: (...args: any[]) => any;
 
-    canceldelay?: () => any;
+    canceldelay?: (...args: any[]) => any;
 
-    claimrewards?: () => any;
+    claimrewards?: (...args: any[]) => any;
 
-    contract?: () => any;
+    contract?: (...args: any[]) => any;
 
-    create?: () => any;
+    create?: (...args: any[]) => any;
 
-    createTransaction?: () => any;
+    createTransaction?: (...args: any[]) => any;
 
-    delegatebw?: () => any;
+    delegatebw?: (...args: any[]) => any;
 
-    deleteauth?: () => any;
+    deleteauth?: (...args: any[]) => any;
 
-    getAbi?: () => any;
+    getAbi?: (...args: any[]) => any;
 
-    getAccount?: () => any;
+    getAccount?: (...args: any[]) => any;
 
-    getActions?: () => any;
+    getActions?: (...args: any[]) => any;
 
-    getBlock?: () => any;
+    getBlock?: (...args: any[]) => any;
 
-    getBlockHeaderState?: () => any;
+    getBlockHeaderState?: (...args: any[]) => any;
 
-    getCode?: () => any;
+    getCode?: (...args: any[]) => any;
 
-    getCodeHash?: () => any;
+    getCodeHash?: (...args: any[]) => any;
 
-    getControlledAccounts?: () => any;
+    getControlledAccounts?: (...args: any[]) => any;
 
-    getCurrencyBalance?: () => any;
+    getCurrencyBalance?: (...args: any[]) => any;
 
-    getCurrencyStats?: () => any;
+    getCurrencyStats?: (...args: any[]) => any;
 
-    getInfo: () => any;
+    getInfo: (...args: any[]) => any;
 
-    getKeyAccounts?: () => any;
+    getKeyAccounts?: (...args: any[]) => any;
 
-    getProducerSchedule?: () => any;
+    getProducerSchedule?: (...args: any[]) => any;
 
-    getProducers?: () => any;
+    getProducers?: (...args: any[]) => any;
 
-    getRawCodeAndAbi?: () => any;
+    getRawCodeAndAbi?: (...args: any[]) => any;
 
-    getRequiredKeys?: () => any;
+    getRequiredKeys?: (...args: any[]) => any;
 
-    getScheduledTransactions?: () => any;
+    getScheduledTransactions?: (...args: any[]) => any;
 
-    getTableRows?: () => any;
+    getTableRows?: (...args: any[]) => any;
 
-    getTransaction?: () => any;
+    getTransaction?: (...args: any[]) => any;
 
-    issue?: () => any;
+    issue?: (...args: any[]) => any;
 
-    linkauth?: () => any;
+    linkauth?: (...args: any[]) => any;
 
-    newaccount?: () => any;
+    newaccount?: (...args: any[]) => any;
 
-    nonce?: () => any;
+    nonce?: (...args: any[]) => any;
 
-    onerror?: () => any;
+    onerror?: (...args: any[]) => any;
 
-    pushBlock?: () => any;
+    pushBlock?: (...args: any[]) => any;
 
-    pushTransaction?: () => any;
+    pushTransaction?: (...args: any[]) => any;
 
-    pushTransactions?: () => any;
+    pushTransactions?: (...args: any[]) => any;
 
-    refund?: () => any;
+    refund?: (...args: any[]) => any;
 
-    regproducer?: () => any;
+    regproducer?: (...args: any[]) => any;
 
-    regproxy?: () => any;
+    regproxy?: (...args: any[]) => any;
 
-    reqauth?: () => any;
+    reqauth?: (...args: any[]) => any;
 
-    rmvproducer?: () => any;
+    rmvproducer?: (...args: any[]) => any;
 
-    sellram?: () => any;
+    sellram?: (...args: any[]) => any;
 
-    setabi?: () => any;
+    setabi?: (...args: any[]) => any;
 
-    setalimits?: () => any;
+    setalimits?: (...args: any[]) => any;
 
-    setcode?: () => any;
+    setcode?: (...args: any[]) => any;
 
-    setglimits?: () => any;
+    setglimits?: (...args: any[]) => any;
 
-    setparams?: () => any;
+    setparams?: (...args: any[]) => any;
 
-    setpriv?: () => any;
+    setpriv?: (...args: any[]) => any;
 
-    setprods?: () => any;
+    setprods?: (...args: any[]) => any;
 
-    setram?: () => any;
+    setram?: (...args: any[]) => any;
 
-    transaction: () => any;
+    transaction: (...args: any[]) => any;
 
-    transfer?: () => any;
+    transfer?: (...args: any[]) => any;
 
-    undelegatebw?: () => any;
+    undelegatebw?: (...args: any[]) => any;
 
-    unlinkauth?: () => any;
+    unlinkauth?: (...args: any[]) => any;
 
-    unregprod?: () => any;
+    unregprod?: (...args: any[]) => any;
 
-    updateauth?: () => any;
+    updateauth?: (...args: any[]) => any;
 
-    voteproducer?: () => any;
+    voteproducer?: (...args: any[]) => any;
 
     __conf?: any;
+}
+
+export interface IEosTransactionData {
+    actions: {
+        account: string,
+        name: string,
+        data: any,
+        authorization: IAuthorization[],
+    }[];
 }
 
 /**

@@ -8,7 +8,7 @@ import {createLogger} from '../utils/log';
 
 import {Ecc, Eos} from '../types/libs';
 
-import {IAccountInfo, IAuthorization, IEosClient, IIdentity} from '../types/eos';
+import {IAccountInfo, IAuthorization, IEosClient, IEosTransactionData, IIdentity} from '../types/eos';
 
 const log = createLogger('chain');
 /**
@@ -399,7 +399,7 @@ export default class ChainHelper {
      * @return {Promise<*>} - transaction
      */
     public async call(code: string, func: string, jsonData: any, ...authorization: IAuthorization[]) {
-        const data = {
+        const data: IEosTransactionData = {
             actions: [{
                 account: code,
                 name: func,
