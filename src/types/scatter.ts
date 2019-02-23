@@ -10,27 +10,27 @@
  * @property {Function} eos - create eosApi object : f eos({blockchain, host, port, chainID}, Eos, option={}, protocol="http")
  * @property {Function} eth - ummmmm ...
  */
-import {IIdentity} from "./eos";
+import {IIdentity} from './eos';
 
 export interface IScatter {
 
     authenticate: Promise<any>;
 
-    forgetIdentity: Function;
+    forgetIdentity: () => any;
 
-    getArbitrarySignature: Function;
+    getArbitrarySignature: () => any;
 
-    getIdentity: Function;
+    getIdentity: () => any;
 
-    requireVersion: Function;
+    requireVersion: () => any;
 
-    suggestNetwork: Function;
+    suggestNetwork: () => any;
 
-    useIdentity: Function;
+    useIdentity: () => any;
 
-    eos: Function;
+    eos: () => any;
 
-    eth: Function;
+    eth: () => any;
 
     identity?: { accounts: IIdentity[] };
 

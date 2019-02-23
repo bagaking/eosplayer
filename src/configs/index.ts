@@ -1,1 +1,1 @@
-export * from './eosNodes'
+export * from './eosNodes';

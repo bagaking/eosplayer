@@ -1,10 +1,10 @@
-'use strict'
+'use strict';
 
-import ResHelper from './khRes'
-import TranscalPayload from '../model/transcalPayload'
-import ChainHelper from "./chain";
-import {IIdentity} from "../types/eos";
-import Asset from "../model/asset";
+import Asset from '../model/asset';
+import TranscalPayload from '../model/transcalPayload';
+import {IIdentity} from '../types/eos';
+import ChainHelper from './chain';
+import ResHelper from './khRes';
 
 /**
  * kh helper, supported kh contract operations
@@ -28,13 +28,13 @@ export default class KhHelper {
      * @param {Function} cbError - memo
      * @return {Promise<*>} transactionData
      */
-    async transcal(account: IIdentity, target: string, quantity: string, func: string, args: any[], cbError: Function): Promise<any> {
+    public async transcal(account: IIdentity, target: string, quantity: string, func: string, args: any[], cbError: (err: any) => any): Promise<any> {
         return await this._chain.transfer(
             account,
             target,
             quantity,
             `@[${func}:${args.join(',')}]`,
-            cbError)
+            cbError);
     }
 
     /**
@@ -47,14 +47,14 @@ export default class KhHelper {
      * @param {Function} cbError - memo
      * @return {Promise<*>}
      */
-    async transend(account: IIdentity, target: string, symbolStr: string, func: string, args: any[], cbError: Function) {
+    public async transend(account: IIdentity, target: string, symbolStr: string, func: string, args: any[], cbError: (err: any) => any) {
         return await this.transcal(
             account,
             target,
             `0.0001 ${symbolStr}`,
             func,
             args,
-            cbError)
+            cbError);
     }
 
     /**
@@ -63,8 +63,8 @@ export default class KhHelper {
      * @param code - the contract's account
      * @param symStr - symbol of resource
      */
-    res(code: string, symStr: string) {
-        return new ResHelper(this._chain, code, symStr)
+    public res(code: string, symStr: string) {
+        return new ResHelper(this._chain, code, symStr);
     }
 
     /**
@@ -75,8 +75,8 @@ export default class KhHelper {
      * @param symbolStr - symbol string like "EOS"
      * @return {Promise<Asset>} - returns null if it's not exist.
      */
-    async checkResOf(code: string, account_name: string, symbolStr: string): Promise<Asset> {
-        return await this.res(code, symbolStr).checkAsset(account_name)
+    public async checkResOf(code: string, account_name: string, symbolStr: string): Promise<Asset> {
+        return await this.res(code, symbolStr).checkAsset(account_name);
     }
 
     /**
@@ -86,8 +86,8 @@ export default class KhHelper {
      * @param symbolStr - symbol string like "EOS"
      * @return {Promise<Asset>} - returns null if it's not exist.
      */
-    async checkResInfo(code: string, symbolStr: string) {
-        return await this.res(code, symbolStr).checkInfo()
+    public async checkResInfo(code: string, symbolStr: string) {
+        return await this.res(code, symbolStr).checkInfo();
     }
 
     /**
@@ -95,8 +95,8 @@ export default class KhHelper {
      * @param memo
      * @return {TranscalPayload}
      */
-    parseTranscalPayload(memo: string) {
-        return TranscalPayload.parse(memo)
+    public parseTranscalPayload(memo: string) {
+        return TranscalPayload.parse(memo);
     }
 
     /**
@@ -105,7 +105,7 @@ export default class KhHelper {
      * @param args
      * @return {string}
      */
-    assembleTranscalPayload(func : string, ...args : string[]) {
-        return (new TranscalPayload(func, ...args)).memo()
+    public assembleTranscalPayload(func: string, ...args: string[]) {
+        return (new TranscalPayload(func, ...args)).memo();
     }
 }

@@ -10,9 +10,9 @@ export interface IAuthorization {
  * @property {string} blockchain - default: eos
  */
 export interface IIdentity {
-    name: string
-    authority: string
-    blockchain?: string
+    name: string;
+    authority: string;
+    blockchain?: string;
 }
 
 /**
@@ -80,125 +80,125 @@ export interface IIdentity {
  */
 export interface IEosClient {
 
-    abiBinToJson?: Function;
+    abiBinToJson?: () => any;
 
-    abiJsonToBin?: Function;
+    abiJsonToBin?: () => any;
 
-    bidname?: Function;
+    bidname?: () => any;
 
-    buyram?: Function;
+    buyram?: () => any;
 
-    buyrambytes?: Function;
+    buyrambytes?: () => any;
 
-    canceldelay?: Function;
+    canceldelay?: () => any;
 
-    claimrewards?: Function;
+    claimrewards?: () => any;
 
-    contract?: Function;
+    contract?: () => any;
 
-    create?: Function;
+    create?: () => any;
 
-    createTransaction?: Function;
+    createTransaction?: () => any;
 
-    delegatebw?: Function;
+    delegatebw?: () => any;
 
-    deleteauth?: Function;
+    deleteauth?: () => any;
 
-    getAbi?: Function;
+    getAbi?: () => any;
 
-    getAccount?: Function;
+    getAccount?: () => any;
 
-    getActions?: Function;
+    getActions?: () => any;
 
-    getBlock?: Function;
+    getBlock?: () => any;
 
-    getBlockHeaderState?: Function;
+    getBlockHeaderState?: () => any;
 
-    getCode?: Function;
+    getCode?: () => any;
 
-    getCodeHash?: Function;
+    getCodeHash?: () => any;
 
-    getControlledAccounts?: Function;
+    getControlledAccounts?: () => any;
 
-    getCurrencyBalance?: Function;
+    getCurrencyBalance?: () => any;
 
-    getCurrencyStats?: Function;
+    getCurrencyStats?: () => any;
 
-    getInfo: Function;
+    getInfo: () => any;
 
-    getKeyAccounts?: Function;
+    getKeyAccounts?: () => any;
 
-    getProducerSchedule?: Function;
+    getProducerSchedule?: () => any;
 
-    getProducers?: Function;
+    getProducers?: () => any;
 
-    getRawCodeAndAbi?: Function;
+    getRawCodeAndAbi?: () => any;
 
-    getRequiredKeys?: Function;
+    getRequiredKeys?: () => any;
 
-    getScheduledTransactions?: Function;
+    getScheduledTransactions?: () => any;
 
-    getTableRows?: Function;
+    getTableRows?: () => any;
 
-    getTransaction?: Function;
+    getTransaction?: () => any;
 
-    issue?: Function;
+    issue?: () => any;
 
-    linkauth?: Function;
+    linkauth?: () => any;
 
-    newaccount?: Function;
+    newaccount?: () => any;
 
-    nonce?: Function;
+    nonce?: () => any;
 
-    onerror?: Function;
+    onerror?: () => any;
 
-    pushBlock?: Function;
+    pushBlock?: () => any;
 
-    pushTransaction?: Function;
+    pushTransaction?: () => any;
 
-    pushTransactions?: Function;
+    pushTransactions?: () => any;
 
-    refund?: Function;
+    refund?: () => any;
 
-    regproducer?: Function;
+    regproducer?: () => any;
 
-    regproxy?: Function;
+    regproxy?: () => any;
 
-    reqauth?: Function;
+    reqauth?: () => any;
 
-    rmvproducer?: Function;
+    rmvproducer?: () => any;
 
-    sellram?: Function;
+    sellram?: () => any;
 
-    setabi?: Function;
+    setabi?: () => any;
 
-    setalimits?: Function;
+    setalimits?: () => any;
 
-    setcode?: Function;
+    setcode?: () => any;
 
-    setglimits?: Function;
+    setglimits?: () => any;
 
-    setparams?: Function;
+    setparams?: () => any;
 
-    setpriv?: Function;
+    setpriv?: () => any;
 
-    setprods?: Function;
+    setprods?: () => any;
 
-    setram?: Function;
+    setram?: () => any;
 
-    transaction: Function;
+    transaction: () => any;
 
-    transfer?: Function;
+    transfer?: () => any;
 
-    undelegatebw?: Function;
+    undelegatebw?: () => any;
 
-    unlinkauth?: Function;
+    unlinkauth?: () => any;
 
-    unregprod?: Function;
+    unregprod?: () => any;
 
-    updateauth?: Function;
+    updateauth?: () => any;
 
-    voteproducer?: Function;
+    voteproducer?: () => any;
 
     __conf?: any;
 }
@@ -216,14 +216,13 @@ export interface IEosClient {
  * @property {Object} voter_info
  */
 export interface IAccountInfo {
-    account_name: string
-    core_liquid_balance: string  //- asset format, which is a string like '1.0000 EOS'
-    cpu_limit: any // - {available,max,used}
-    net_limit: any // - {available,max,used}
-    ram_quota: number
-    ram_usage: number
-    permissions: any[]
-    total_resources: any // {cpu_weight,net_weight,owner,ram_bytes}
-    voter_info: any
+    account_name: string;
+    core_liquid_balance: string;  // - asset format, which is a string like '1.0000 EOS'
+    cpu_limit: any; // - {available,max,used}
+    net_limit: any; // - {available,max,used}
+    ram_quota: number;
+    ram_usage: number;
+    permissions: any[];
+    total_resources: any; // {cpu_weight,net_weight,owner,ram_bytes}
+    voter_info: any;
 }
-

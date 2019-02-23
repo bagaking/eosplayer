@@ -1,3 +1,3 @@
-export * from './asset'
-export * from './transcalPayload'
-export * from './eosProvider'
+export * from './asset';
+export * from './transcalPayload';
+export * from './eosProvider';

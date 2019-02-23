@@ -20,11 +20,12 @@
     "build:web": "rimraf ./build/web/ &&webpack --config webpack.prod.js -p --display-error-details",
     "build:play": "webpack --config webpack.debug.js -p --display-error-details",
     "build:lib": "rimraf ./build/lib/ && npx tsc && cp LICENSE ./build/lib && cp README.md ./build/lib && cp package.json ./build",
-    "build": "npm run build:web && npm run build:lib && npm run build:play",
+    "build": "npm run lint:fix && npm run build:web && npm run build:lib && npm run build:play",
+    "lint:fix": "npx tslint --fix --project .",
     "test": "./node_modules/.bin/mocha test/*test.js --reporter spec",
     "doc": "jsdoc -c .jsdocrc",
     "update_version": "node ./scripts/prepublish.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run update_version && npm run build"
   },
   "homepage": "https://github.com/bagaking/eosglue#readme",
   "dependencies": {
@@ -59,6 +60,7 @@
     "hserve": "^0.0.1-beta.14",
     "rimraf": "^2.6.3",
     "ts-loader": "^5.3.3",
+    "tslint": "^5.12.1",
     "typescript": "^3.3.3",
     "uglifyjs-webpack-plugin": "^2.1.1",
     "webpack": "^4.19.0",

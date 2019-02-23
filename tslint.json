@@ -1,0 +1,65 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {
+    "no-unused-expression": true
+  },
+  "linterOptions": {
+    "autoFixOnSave": true,
+    "exclude": [
+      "node_modules/**/*.ts"
+    ]
+  },
+  "rules": {
+    "eofline": false,
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "indent": [
+      true,
+      "spaces",
+      4
+    ],
+    "max-line-length": [
+      true,
+      180
+    ],
+    "curly": false,
+    "array-type": false,
+    "interface-name": true,
+    "no-console": false,
+    "no-empty": false,
+    "no-empty-interface": false,
+    "member-ordering": false,
+    "ordered-imports": true,
+    "arrow-parens": false,
+    "object-literal-sort-keys": false,
+    "no-var-requires": false,
+    "no-unused-expression": true,
+    "max-classes-per-file": true,
+    "one-variable-per-declaration": false,
+    "prefer-for-of": false,
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-pascal-case",
+        "allow-leading-underscore",
+        "allow-snake-case"
+      ]
+    },
+    "one-line": {
+      "options": [
+        "check-catch",
+        "check-else",
+        "check-finally",
+        "check-open-brace",
+        "check-whitespace"
+      ]
+    }
+  },
+  "rulesDirectory": []
+}

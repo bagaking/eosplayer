@@ -1,1 +1,1 @@
-export * from './signPlayer'
+export * from './signPlayer';

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /**
  * Asset - asset type of eos
@@ -13,7 +13,7 @@ export default class Asset {
      * @return {*}
      */
     get val() {
-        return this._val
+        return this._val;
     }
 
     /**
@@ -21,7 +21,7 @@ export default class Asset {
      * @return {*}
      */
     get sym() {
-        return this._sym
+        return this._sym;
     }
 
     /**
@@ -29,7 +29,7 @@ export default class Asset {
      * @return {number|*}
      */
     get decimal() {
-        return this._decimal
+        return this._decimal;
     }
 
     /**
@@ -37,15 +37,15 @@ export default class Asset {
      * @return {string | *}
      */
     get valStr() {
-        return this._val.toFixed(this.decimal)
+        return this._val.toFixed(this.decimal);
     }
 
     /**
      * Get string val with symbol, such as '1.0000 EOS'
      * @return {string}
      */
-    toString() {
-        return `${this.valStr} ${this.sym}`
+    public toString() {
+        return `${this.valStr} ${this.sym}`;
     }
 
     /**
@@ -53,20 +53,20 @@ export default class Asset {
      * @param {string} assetStr
      * @return {Asset}
      */
-    static parse(assetStr: string) {
-        if (!assetStr) return null
+    public static parse(assetStr: string) {
+        if (!assetStr) return null;
 
-        assetStr = assetStr.trim()
-        let blankPos = assetStr.indexOf(' ')
-        if (blankPos < 0) return null
+        assetStr = assetStr.trim();
+        const blankPos = assetStr.indexOf(' ');
+        if (blankPos < 0) return null;
 
-        let strVal = assetStr.slice(0, blankPos)
-        let strSym = assetStr.slice(1 + blankPos)
-        if (!strVal || !strSym) return null
-        let decimalPos = assetStr.indexOf('.')
-        let decimal = decimalPos < 0 ? 0 : blankPos - decimalPos - 1
-        let val = parseFloat(strVal)
+        const strVal = assetStr.slice(0, blankPos);
+        const strSym = assetStr.slice(1 + blankPos);
+        if (!strVal || !strSym) return null;
+        const decimalPos = assetStr.indexOf('.');
+        const decimal = decimalPos < 0 ? 0 : blankPos - decimalPos - 1;
+        const val = parseFloat(strVal);
 
-        return new Asset(val, strSym, decimal)
+        return new Asset(val, strSym, decimal);
     }
 }

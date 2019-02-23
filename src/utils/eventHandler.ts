@@ -1,4 +1,13 @@
-'use strict'
+'use strict';
+
+interface IEvent {
+    cb: (...args: any[]) => any;
+    ctx: any;
+}
+
+interface IEventMap {
+    [event: string]: IEvent;
+}
 
 /**
  * Event Handler
@@ -9,25 +18,23 @@
  */
 export default class EventHandler {
 
-    protected _defaultCb!: Function;
-    protected _eventMap: any = {};
+    protected _defaultCb!: (...args: any[]) => any;
+    protected _eventMap: IEventMap = {};
     protected _supportedEvents: string[] = [];
 
-    constructor(supportedEvents?: any) {
-        this._defaultCb = function (...args: any[]) {
+    constructor(supportedEvents?: string[] | IEventMap) {
+        this._defaultCb = (...args: any[]) => {
             args.forEach(v => {
                 if (v instanceof Error) {
-                    throw v
+                    throw v;
                 } else {
-                    throw new Error(v)
+                    throw new Error(v);
                 }
-            })
-        }
-        this._eventMap = {}
-
+            });
+        };
         if (supportedEvents) {
-            this.enableEvents(supportedEvents)
-            this._eventMap = Array.isArray(supportedEvents) ? {} : supportedEvents
+            this.enableEvents(supportedEvents);
+            this._eventMap = Array.isArray(supportedEvents) ? {} : supportedEvents;
         }
     }
 
@@ -36,23 +43,23 @@ export default class EventHandler {
      * @param {Array | Object} supportedEvents - keys will be used when it's an object
      */
     public enableEvents(supportedEvents: any) {
-        let newEventKeys = Array.isArray(supportedEvents) ? supportedEvents : Object.keys(supportedEvents)
-        this._supportedEvents = (this._supportedEvents || []).concat(newEventKeys)
+        const newEventKeys = Array.isArray(supportedEvents) ? supportedEvents : Object.keys(supportedEvents);
+        this._supportedEvents = (this._supportedEvents || []).concat(newEventKeys);
     }
 
     /**
      * set callback of an event name
      * @param {string} event - event name
      * @param {Function} fnCallback - if there is already a callback, then the new one will cover the previous one.
-     * @param {any} instance - the instance of the callback.
+     * @param {*} instance - the instance of the callback.
      * @return {EventHandler} - for pipeline
      */
-    public setEvent(event: string, fnCallback: Function, instance: any) {
+    public setEvent(event: string, fnCallback: (...args: any[]) => any, instance: any) {
         if (!this._supportedEvents.find((name: string) => name === event)) {
-            throw new Error(`event handler : event ${event} are not supported.`)
+            throw new Error(`event handler : event ${event} are not supported.`);
         }
-        this._eventMap[event] = {cb: fnCallback, ctx: instance}
-        return this
+        this._eventMap[event] = {cb: fnCallback, ctx: instance};
+        return this;
     }
 
     /**
@@ -62,10 +69,10 @@ export default class EventHandler {
      */
     public emitEvent(event: string, ...args: any[]) {
         if (!this._supportedEvents.find((name: string) => name === event)) {
-            throw new Error(`event handler : event ${event} are not found.`)
+            throw new Error(`event handler : event ${event} are not found.`);
         }
 
-        let e = this._eventMap[event]
-        return e ? e.cb.call(e.ctx, ...args) : this._defaultCb.call(event, ...args)
+        const e = this._eventMap[event];
+        return e ? e.cb.call(e.ctx, ...args) : this._defaultCb.call(event, ...args);
     }
 }

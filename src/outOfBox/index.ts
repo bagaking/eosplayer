@@ -1,2 +1,2 @@
-export * from './readingPlayer'
-export * from './signPlayer'
+export * from './readingPlayer';
+export * from './signPlayer';

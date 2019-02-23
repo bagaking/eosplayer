@@ -1,11 +1,11 @@
-import {IEosNodeConfig} from "./configs";
+import {IEosNodeConfig} from './configs';
 
-import {IReadingPlayerConfig} from "./outOfBox";
-import {Player} from "./player";
+import {IReadingPlayerConfig} from './outOfBox';
+import {Player} from './player';
 
 export interface IMultiSourcePlayerConfig {
-    node: IEosNodeConfig,
-    urls: string[]
+    node: IEosNodeConfig;
+    urls: string[];
 }
 
 const defaultConfig: IReadingPlayerConfig = {
@@ -20,9 +20,9 @@ const defaultConfig: IReadingPlayerConfig = {
     urls: [
         'https://mars.fn.eosbixin.com',
         'https://eos.eoscafeblock.com',
-        'https://api.eosdublin.io'
-    ]
-}
+        'https://api.eosdublin.io',
+    ],
+};
 
 export class MultiSourcePlayer extends Player {
 
@@ -35,19 +35,19 @@ export class MultiSourcePlayer extends Player {
         const {node, urls} = conf;
         this._conf = {
             ...defaultConfig.node,
-            ...node
+            ...node,
         };
         this._urls = urls;
         this._nodeConfigs = this._urls.map(url => {
-            let ret: any = {
-                chainId: ''
+            const ret: any = {
+                chainId: '',
             };
-            for (let key in this._conf) {
-                if (!this._conf.hasOwnProperty(key)) continue
-                ret[key] = this._conf[key]
+            for (const key in this._conf) {
+                if (!this._conf.hasOwnProperty(key)) continue;
+                ret[key] = this._conf[key];
             }
             ret.httpEndpoint = url;
-            return ret as IEosNodeConfig
+            return ret as IEosNodeConfig;
         });
     }
 

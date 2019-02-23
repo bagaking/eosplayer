@@ -1,23 +1,23 @@
-export function forMs (ms : number) {
+export function forMs(ms: number) {
   return new Promise(resolve => {
-    setTimeout(resolve, ms)
-  })
+    setTimeout(resolve, ms);
+  });
 }
-export async function forCondition (fnPredict : Function, spanMs : number = 100) {
+export async function forCondition(fnPredict: () => boolean, spanMs: number = 100) {
   while (true) {
-    if (fnPredict()) return
-    await forMs(spanMs)
+    if (fnPredict()) return;
+    await forMs(spanMs);
   }
 }
 
-export async function TimeoutPromise<T> (ms : number, promise : Promise<T>) {
-  let timeout = new Promise((resolve, reject) => {
+export async function TimeoutPromise<T>(ms: number, promise: Promise<T>) {
+  const timeout = new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject(new Error(`Timed out in ${ms} ms.`))
-    }, ms)
-  })
+      reject(new Error(`Timed out in ${ms} ms.`));
+    }, ms);
+  });
   return Promise.race([
     promise,
-    timeout
-  ])
+    timeout,
+  ]);
 }
