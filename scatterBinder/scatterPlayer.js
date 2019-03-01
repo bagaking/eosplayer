@@ -4,6 +4,7 @@ import DB from './db'
 
 import { Player } from '../src/player'
 import { forMs, forCondition } from '../src/utils/wait'
+import { MykeyPlugins } from '../src/helpers/mykeyPlugins'
 
 import Log_ from '../src/utils/log'
 const log = Log_('scatterPlayer')
@@ -104,6 +105,14 @@ export default class ScatterPlayer extends Player {
   }
 
   /**
+     * get Mykey plugins for sign and verify signature
+     */
+  get mykeyPlugins () {
+    return new MykeyPlugins(this.chain)
+  }
+
+
+  /**
      * try get scatter async - if not find
      * @see https://get-scatter.com/docs/examples-interaction-flow
      * @return {Scatter}
@@ -199,12 +208,37 @@ export default class ScatterPlayer extends Player {
   /**
      * sign a message with current identity
      * @param message
+     * @param {Object.<string,function>} plugins - plugin should be object
      * @return {Promise<void>} - signed data
      * @constructor
      */
-  async sign (message) {
+  async sign (message, signPlugins) {
     let identity = await this.getIdentity()
-    let pubkeys = await this.chain.getPubKeys(identity.name, identity.authority)
+    let account = identity.name
+
+    const { permissions } = await this.getAccountInfo(account)
+    if (!permissions) {
+      log.warning(`permissions of account ${account} are not found.`)
+      return
+    }
+
+    const perm = permissions.find(p => p.perm_name === identity.authority)
+    log.info(`perm : ${JSON.stringify(perm)}`)
+    const { accounts, keys } = perm.required_auth
+
+    let pubkeys = keys
+    if(pubkeys.length == 0 && signPlugins) {
+      const accountsStrs = accounts.map(acc => `${acc.permission.actor}@${acc.permission.permission}`)
+      log.verbose('try sign', accounts, accountsStrs, signPlugins)
+      for (let i in accountsStrs) {
+        const plugin = signPlugins[accountsStrs[i]]
+        if (!plugin) {
+          continue
+        }
+        let signKey = await Promise.resolve(plugin(account))
+        pubkeys.push({key: signKey})
+      }
+    }
 
     let ret = ''
     for (let i = 0; i < pubkeys.length; i++) {
