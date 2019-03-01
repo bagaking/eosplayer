@@ -6,6 +6,10 @@ frontd releases : [https://github.com/bagaking/eosplayer/releases](https://githu
 
 LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE)
 
+## structure
+
+![Alt text](./dependency.svg)
+
 ## build (for broswer)
 
 `npm run build` or `yarn run build`
@@ -13,11 +17,11 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 ## play
 
 1. clone the repo  
-1. cd into the folder  
-1. install hserve : `npm i -g hserve`
-1. serve the play folder : `hserve play`
-1. open the test site in your chrome : `http://localhost:3000` by default 
-1. test it in your chrome console
+2. cd into the folder  
+3. install hserve : `npm i -g hserve`
+4. serve the play folder : `hserve play`
+5. open the test site in your chrome : `http://localhost:3000` by default 
+6. test it in your chrome console
 
 or using the online play ground:
 [https://play.eosplayer.pro](https://play.eosplayer.pro)
