@@ -1,6 +1,9 @@
-export type FnSignPluginSignKey = (accountName: string) => string;
-export type FnSignPluginValidate = (accountName: string, recoverKey: string) => boolean;
+import ChainHelper from '../helpers/chain';
+
+export type GetSignKeyDelegate = (accountName: string, chain?: ChainHelper) => Promise<string>;
+export type ValidateDelegate = (accountName: string, recoverKey: string, chain?: ChainHelper) => Promise<boolean>;
+
 export interface ISignPlugin {
-    signkeyPlugin(): { [perm: string]: FnSignPluginSignKey };
-    validateSignPlugin(): { [perm: string]: FnSignPluginValidate };
+    signKeyProvider: { [perm: string]: GetSignKeyDelegate };
+    validatorProvider: { [perm: string]: ValidateDelegate };
 }

@@ -7,6 +7,7 @@ import { eosNodeConfigs } from './src/configs'
 
 import { ScatterPlayer } from './src/outOfBox/scatterPlayer/scatterPlayer'
 import { Player, SignPlayer, ReadingPlayer } from './src'
+import { MykeyPlugins } from './src/plugins'
 console.log('eosNodeConfigs', eosNodeConfigs)
 
 /**
@@ -53,6 +54,10 @@ window.idb = idb
 window.eosplayer = new ScatterPlayer(eosNodeConfigs)
 if (!window.kh) {
   window.kh = {}
+}
+
+window.eosplayer.plugins = {
+  mykey: new MykeyPlugins(window.eosplayer.chain)
 }
 
 window.kh.eos = {

@@ -8,6 +8,7 @@ import {createLogger} from '../utils/log';
 
 import {Ecc, Eos} from '../types/libs';
 
+import {ISignPlugin} from '../plugins/interface';
 import {IAccountInfo, IAuthorization, IEosClient, IEosTransactionData, IIdentity} from '../types/eos';
 
 const log = createLogger('chain');
@@ -141,7 +142,7 @@ export default class ChainHelper {
      * @param message
      * @param account_name
      * @param authority - default is 'active'
-     * @param {Object.<string,function>} accountsPermissionPlugins - plugin should be object
+     * @param {Array.<ISignPlugin>} signPlugins - plugins for validate sign
      * @example
      * validateSign(SIG, MSG, ACC, 'active', { ['pretonarts11@eosio.code'] : async (account, recoverKey) => validate rpc ... }
      * @return {string|undefined} - recover public key, and it's failed when 'undefined' return.
@@ -151,7 +152,7 @@ export default class ChainHelper {
         message: string,
         account_name: string,
         authority: string = 'active',
-        accountsPermissionPlugins: any): Promise<string | undefined> {
+        ... signPlugins: ISignPlugin[]): Promise<string | undefined> {
         const recoverKey = this.recoverSign(signature, message);
         const {permissions} = await this.getAccountInfo(account_name);
         if (!permissions) {
@@ -165,25 +166,28 @@ export default class ChainHelper {
         }
 
         const {accounts, keys} = perm.required_auth;
-        const keyObj = keys.find((v: any) => v.key === recoverKey);
+        const keyObj: { key: string } = keys.find((v: any) => v.key === recoverKey);
         if (keyObj) {
             return keyObj.key;
         }
-        if (!accountsPermissionPlugins) {
+        if (!signPlugins || signPlugins.length <= 0) {
             return;
         }
-        const accountsStrs: string[] = accounts.map((acc: any) => `${acc.permission.actor}@${acc.permission.permission}`);
-        log.verbose('try match', accounts, accountsStrs, accountsPermissionPlugins);
-        for (const i in accountsStrs) {
-            if (!accountsStrs.hasOwnProperty(i)) {
-                continue;
+        const accStrs: string[] = accounts.map((acc: any) => `${acc.permission.actor}@${acc.permission.permission}`);
+        log.verbose('try match', accounts, accStrs, signPlugins);
+        for (let iPlg = 0; iPlg < signPlugins.length; iPlg++) {
+            const signPlugin: ISignPlugin = signPlugins[iPlg];
+            for (let i = 0; i < accStrs.length; i++) {
+                const account: string = accStrs[i];
+                const validator = signPlugin.validatorProvider[account];
+                if (validator &&
+                    await Promise.resolve(validator(account_name, recoverKey, this))
+                ) {
+                    return recoverKey;
+                }
             }
-            const plugin = accountsPermissionPlugins[accountsStrs[i]];
-            if (!plugin) {
-                continue;
-            }
-            if (await Promise.resolve(plugin(account_name, recoverKey, this))) return recoverKey;
         }
+
     }
 
     /**

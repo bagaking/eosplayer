@@ -6,6 +6,7 @@ import {Player} from '../../player';
 import {forCondition, forMs} from '../../utils/wait';
 
 import {IEosNodeConfig, IEosNodeConfigTable} from '../../configs';
+import {GetSignKeyDelegate, ISignPlugin} from '../../plugins/interface';
 import {IEosClient, IIdentity} from '../../types/eos';
 import {IScatter} from '../../types/scatter';
 import {createLogger} from '../../utils/log';
@@ -221,22 +222,48 @@ export class ScatterPlayer extends Player {
 
     /**
      * sign a message with current identity
-     * @param message
+     * @param {string} message - message to sign
+     * @param {... ISignPlugin[]} signPlugins - signer map's list
      * @return {Promise<void>} - signed data
      * @constructor
      */
-    public async sign(message: string) {
+    public async sign(message: string, ...signPlugins: ISignPlugin[]) {
         const identity = await this.getIdentity();
-        const publicKeys = await this.chain.getPubKeys(identity.name, identity.authority);
+        const account = identity.name;
+
+        const {permissions} = await this.getAccountInfo(account);
+        if (!permissions) {
+            log.warning(`permissions of account ${account} are not found.`);
+            return;
+        }
+
+        const perm = permissions.find(p => p.perm_name === identity.authority);
+        log.info(`perm : ${JSON.stringify(perm)}`);
+        const {accounts, keys} = perm.required_auth;
+
+        let pubKeys: Array<{ key: string }> = keys || [];
+        for (let i = 0; signPlugins && i < signPlugins.length; i++) {
+            const signPlugin: ISignPlugin = signPlugins[i];
+            const converted: string[] = await Promise.all(accounts
+                .map(acc => `${acc.permission.actor}@${acc.permission.permission}`)
+                .map(accStr => signPlugin.signKeyProvider[accStr])
+                .filter(_ => _)
+                .map(signKeyProvider => Promise.resolve(signKeyProvider(account))),
+            );
+            pubKeys = [
+                ...pubKeys,
+                ...converted.map(key => ({key})),
+            ];
+        }
 
         let ret = '';
-        for (let i = 0; i < publicKeys.length; i++) {
+        for (let i = 0; i < pubKeys.length; i++) {
             try {
-                log.info(`try sign (${JSON.stringify(publicKeys[i])}) : ${message}`);
-                ret = await this.scatter.getArbitrarySignature(publicKeys[i].key, message);
+                log.info(`try sign (${JSON.stringify(pubKeys[i])}) : ${message}`);
+                ret = await this.scatter.getArbitrarySignature(pubKeys[i].key, message);
                 break;
             } catch (ex) {
-                log.warning(`try pub key failed ${publicKeys[i]}`);
+                log.warning(`try pub key failed ${pubKeys[i]}`);
             }
         }
         return ret;
