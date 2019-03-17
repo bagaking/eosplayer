@@ -248,7 +248,7 @@ export class ScatterPlayer extends Player {
                 .map(acc => `${acc.permission.actor}@${acc.permission.permission}`)
                 .map(accStr => signPlugin.signKeyProvider[accStr])
                 .filter(_ => _)
-                .map(signKeyProvider => Promise.resolve(signKeyProvider(account))),
+                .map(signKeyProvider => Promise.resolve(signKeyProvider(account, this.chain))),
             );
             pubKeys = [
                 ...pubKeys,

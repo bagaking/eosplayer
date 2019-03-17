@@ -1,5 +1,6 @@
 'use strict';
 
+import ChainHelper from '../../helpers/chain';
 import {ISignPlugin, ValidateDelegate} from '../interface';
 
 /**
@@ -9,43 +10,47 @@ export class MykeyPlugins implements ISignPlugin {
 
     /**
      * initiate with the chain helper
-     * @param {ChainHelper} _chain
-     * @param {Object.<string,string>} _config - default: {mgrcontract: 'mykeymanager'}
+     * @param {Object.<string,string>} config - default: {mgrcontract: 'mykeymanager'}
      */
     constructor(
-        private readonly _chain,
-        private readonly _config = {
+        private readonly config = {
             mgrcontract: 'mykeymanager',
         }) {
     }
 
-    public async getSignKey(account): Promise<string> {
-        const mykey_signkey_table = 'keydata';
-        const mykey_signkey_index = 3;
-        const keydata = await this._chain.getTable(this._config.mgrcontract, mykey_signkey_table, account, mykey_signkey_index, mykey_signkey_index + 1);
-        if (!keydata) return '';
+    public async getSignKey(account: string, chain: ChainHelper): Promise<string> {
+        const signKeyTableName = 'keydata';
+        const signKeyIndex = 3;
+        const keyObject = await chain.getTableAll(
+            this.config.mgrcontract,
+            signKeyTableName,
+            account,
+            signKeyIndex,
+            signKeyIndex + 1,
+        );
+        if (!keyObject) return '';
 
-        return keydata[0].key.pubkey;
+        return keyObject[0].key.pubkey;
     }
 
     get perm() {
-        return `${this._config.mgrcontract}@active`;
+        return `${this.config.mgrcontract}@active`;
     }
 
     get signKeyProvider() {
-        const plugin = {
-            [this.perm]: async (account: string) => await this.getSignKey(account),
+        return {
+            [this.perm]:
+                async (account: string, chain: ChainHelper) =>
+                    await this.getSignKey(account, chain),
         };
-        return plugin;
     }
 
     get validatorProvider(): { [perm: string]: ValidateDelegate } {
-        const plugin = {
-            [this.perm]: async (account: string, recoverKey: string) => {
-                const pubkey = await this.getSignKey(account);
+        return {
+            [this.perm]: async (account: string, recoverKey: string, chain: ChainHelper) => {
+                const pubkey = await this.getSignKey(account, chain);
                 return pubkey === recoverKey;
             },
         };
-        return plugin;
     }
 }

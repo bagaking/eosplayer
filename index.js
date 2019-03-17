@@ -7,8 +7,12 @@ import { eosNodeConfigs } from './src/configs'
 
 import { ScatterPlayer } from './src/outOfBox/scatterPlayer/scatterPlayer'
 import { Player, SignPlayer, ReadingPlayer } from './src'
+
 import { MykeyPlugins } from './src/plugins'
-console.log('eosNodeConfigs', eosNodeConfigs)
+
+
+console.log('eosplayer >>> configs loaded.')
+console.log(':', eosNodeConfigs)
 
 /**
  * env of browser
@@ -52,17 +56,21 @@ window.idb = idb
  * @type {Player}
  */
 window.eosplayer = new ScatterPlayer(eosNodeConfigs)
+
 if (!window.kh) {
   window.kh = {}
 }
 
-window.eosplayer.plugins = {
-  mykey: new MykeyPlugins(window.eosplayer.chain)
-}
+console.log('eosplayer >>> scatter player created.')
 
 window.kh.eos = {
   Player,
   ScatterPlayer,
   SignPlayer,
-  ReadingPlayer
+  ReadingPlayer,
+  Plugins: {
+    mykey: new MykeyPlugins()
+  }
 }
+
+console.log('eosplayer >>> plugins loaded.')

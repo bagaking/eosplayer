@@ -5,7 +5,6 @@
 
 # Build
 build
-yarn.lock
 _*/
 
 # Logs
