@@ -6,7 +6,6 @@
     "source": {
         "include": [
             "./src",
-            "./scatterBinder",
             "./Readme.md"
         ],
         "includePattern": ".+\\.js(doc|x)?$",
