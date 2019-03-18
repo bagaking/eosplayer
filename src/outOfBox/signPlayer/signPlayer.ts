@@ -2,7 +2,7 @@ import {IMultiSourcePlayerConfig, MultiSourcePlayer} from '../../multiSourcePlay
 import {IAuthorization, IEosClient, IIdentity} from '../../types/eos';
 import {Eos} from '../../types/libs';
 import {createLogger} from '../../utils/log';
-import {TimeoutPromise} from '../../utils/wait';
+import {timeoutPromise} from '../../utils/wait';
 import {ISignPlayerOptions, NodeStat, NodeStatMgr} from './nodeStat';
 
 const log = createLogger('signPlayer');
@@ -93,7 +93,7 @@ export class SignPlayer extends MultiSourcePlayer {
             `Concurrent count => ${this._concurrentCount} `,
         );
         try {
-            const ret = await TimeoutPromise(
+            const ret = await timeoutPromise(
                 this._options.maxCallPromiseExceedTime || 50000,
                 chain.call(code, func, jsonData, auth),
             ).catch(ex => {

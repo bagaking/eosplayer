@@ -2,13 +2,13 @@
 
 import axios from 'axios';
 import {BigNumber} from 'bignumber.js';
-import {forMs, TimeoutPromise} from '../utils/wait';
+import {forMs, timeoutPromise} from '../utils/wait';
 
 import {createLogger} from '../utils/log';
 
 import {Ecc, Eos} from '../types/libs';
 
-import {ISignPlugin} from '../plugins/interface';
+import {ISignPlugin} from '../plugins';
 import {IAccountInfo, IAuthorization, IEosClient, IEosTransactionData, IIdentity} from '../types/eos';
 
 const log = createLogger('chain');
@@ -238,7 +238,10 @@ export default class ChainHelper {
         while (true) {
             let ret: any;
             try {
-                ret = await TimeoutPromise(10000, this._eos.getActions({account_name, pos, offset: endPos - pos}));
+                ret = await timeoutPromise(
+                    10000,
+                    this._eos.getActions({account_name, pos, offset: endPos - pos}),
+                );
             } catch (ex) {
                 log.warning(ex);
                 continue;
