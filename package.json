@@ -1,6 +1,6 @@
 {
   "name": "eosplayer",
-  "version": "0.5.3",
+  "version": "0.5.6",
   "description": "eosplayer is the glue layer of eosjs, which is packaged based on eosjs and provides better usability for the application layer. It can be used on browsers already installed scatter or in Dapp wallets.",
   "main": "build/lib/index.js",
   "bin": {
@@ -22,7 +22,7 @@
     "dev": "webpack-dev-server --config webpack.debug.js --open",
     "build:web": "rimraf ./build/web/ &&webpack --config webpack.prod.js -p --display-error-details",
     "build:play": "webpack --config webpack.debug.js -p --display-error-details",
-    "build:lib": "rimraf ./build/lib/ && npx tsc && cp LICENSE ./build/lib && cp README.md ./build/lib && cp package.json ./build",
+    "build:lib": "rimraf ./build/lib/ && npx tsc && cp LICENSE ./build/lib && cp README.md ./build/lib && node ./scripts/copyPackage.js",
     "build": "npm run lint:fix && npm run build:web && npm run build:lib && npm run build:play",
     "build:graph": "depcruise --exclude '^node_modules' --output-type dot src | dot -T svg > dependency.svg",
     "lint:fix": "npx tslint --fix --project .",
@@ -40,7 +40,8 @@
     "debug": "^4.1.0",
     "eosjs": "^16.0.9",
     "fetch": "^1.1.0",
-    "idb": "^2.1.3"
+    "idb": "^2.1.3",
+    "yargs": "^13.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -72,7 +73,6 @@
   },
   "files": [
     "build",
-    "bin",
-    "play"
+    "bin"
   ]
 }

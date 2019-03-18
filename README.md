@@ -87,6 +87,13 @@ debug.enable('error:*,warning:*,info:*');
 
 > (temporary in beta.11) these code should be placed after the require operation of eosplayer.
 
+## Usage of eosplayer (cli)
+
+you can use call methods of eosplayer.chain by cli 
+
+install: `npm i -g eosplayer`
+use: `eosplayer --help`
+
 ## Usage of eosplayer (for browser)
 
 ### Log
