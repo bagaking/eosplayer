@@ -11,6 +11,8 @@ import {Ecc, Eos} from '../types/libs';
 import {ISignPlugin} from '../plugins';
 import {IAccountInfo, IAuthorization, IEosClient, IEosTransactionData, IIdentity} from '../types/eos';
 
+const DEFAULT_FETCH_TIMEOUT = 60000;
+
 const log = createLogger('chain');
 /**
  * chain helper, supported chain operations
@@ -228,9 +230,10 @@ export default class ChainHelper {
      * @param {string|number} account_name - string name or id
      * @param {number} startPos - start from 0
      * @param {number} offset - when offset is 0, one object returned, offset ==(should be) count - 1
+     * @param {number} fetchTimeout - fetch time out (ms)
      * @return {Promise<Array>} - [startPos, ..., startPos + offset]
      */
-    public async getActions(account_name: string, startPos = 0, offset = 0) {
+    public async getActions(account_name: string, startPos = 0, offset = 0, fetchTimeout: number = DEFAULT_FETCH_TIMEOUT) {
         let pos = startPos;
         const endPos = startPos + offset;
         const actions = [];
@@ -239,7 +242,7 @@ export default class ChainHelper {
             let ret: any;
             try {
                 ret = await timeoutPromise(
-                    10000,
+                    fetchTimeout,
                     this._eos.getActions({account_name, pos, offset: endPos - pos}),
                 );
             } catch (ex) {
