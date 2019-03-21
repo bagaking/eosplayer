@@ -6,7 +6,7 @@ import {ISignPlugin, ValidateDelegate} from '../interface';
 /**
  * Mykey plugins help to sign and validate signature
  */
-export class MykeyPlugins implements ISignPlugin {
+export class MykeyPlugin implements ISignPlugin {
 
     /**
      * initiate with the chain helper
