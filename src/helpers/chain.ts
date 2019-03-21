@@ -294,7 +294,7 @@ export default class ChainHelper {
             }
         };
 
-        const ret: any[] = [];
+        // const ret: any[] = [];
         let ranges: number[] = [];
         log.info(`===> start search actions of ${account_name} from ${startPos}, concurrent : ${concurrent}, count : ${count}, once : ${concurrent * count}`);
         const tStart = Date.now();
@@ -317,14 +317,14 @@ export default class ChainHelper {
                     if (cbReceive != null) {
                         cbReceive(acts);
                     }
-                    ret.push(...acts);
+                    // ret.push(...acts);
                 });
                 log.verbose(`===> send batch ${i} done (${Date.now() - tRound})`);
                 ranges = [];
             }
         }
         log.info(`getAllActions : all scaned (${Date.now() - tStart})`);
-        return ret;
+        // return ret;
     }
 
     /**

@@ -8,8 +8,7 @@ import { eosNodeConfigs } from './src/configs'
 import { ScatterPlayer } from './src/outOfBox/scatterPlayer/scatterPlayer'
 import { Player, SignPlayer, ReadingPlayer } from './src'
 
-import { MykeyPlugins } from './src/plugins'
-
+import { MykeyPlugin } from './src/plugins'
 
 console.log('eosplayer >>> configs loaded.')
 console.log(':', eosNodeConfigs)
@@ -69,7 +68,7 @@ window.kh.eos = {
   SignPlayer,
   ReadingPlayer,
   Plugins: {
-    mykey: new MykeyPlugins()
+    mykey: new MykeyPlugin()
   }
 }
 
