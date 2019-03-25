@@ -213,7 +213,7 @@ export class Player extends EosProvider {
 \`\`\`
 ---
 
-# eosplayer ${this.version}
+# eosplayer ${this.version()}
 
 ## Usage of eosplayer
 
