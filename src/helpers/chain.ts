@@ -157,7 +157,7 @@ export default class ChainHelper {
         message: string,
         account_name: string,
         authority: string = 'active',
-        ... signPlugins: ISignPlugin[]): Promise<string | undefined> {
+        ...signPlugins: ISignPlugin[]): Promise<string | undefined> {
         const recoverKey = this.recoverSign(signature, message);
         const {permissions} = await this.getAccountInfo(account_name);
         if (!permissions) {
@@ -286,6 +286,9 @@ export default class ChainHelper {
      */
     public async getAllActionsBatch(account_name: string, cbReceive: (acts: any[]) => any, startPos: number = 0, count: number = 100, concurrent: number = 10) {
         const offset = count - 1;
+        if (!cbReceive) {
+            return false;
+        }
         const req = async (pos: number) => {
             while (true) {
                 try {
@@ -309,25 +312,30 @@ export default class ChainHelper {
                 const results: any[][] = await Promise.all(
                     ranges.map(req),
                 );
-                if (!results.find(acts => acts.length > 0)) {
+                const nonEmptyResults = results.filter((acts: any[]) => acts.length > 0);
+                if (nonEmptyResults.length <= 0) {
                     break;
                 }
                 log.verbose(`===> deal batch ${i} done (${Date.now() - tRound})`);
-                results.forEach((acts: any[]) => {
-                    if (acts.length <= 0) {
-                        return;
-                    }
-                    if (cbReceive != null) {
-                        cbReceive(acts);
-                    }
-                    // ret.push(...acts);
-                });
+                const allFull = results
+                    .filter((acts: any[]) => acts.length > 0)
+                    .reduce((full: boolean, acts: any[]) => {
+                        if (full) {
+                            cbReceive(acts);
+                        }
+                        return full && acts.length >= count; // end when not full
+                    }, true);
                 log.verbose(`===> send batch ${i} done (${Date.now() - tRound})`);
+                if (!allFull) {
+                    break;
+                }
+
                 ranges = [];
             }
         }
         log.info(`getAllActions : all scaned (${Date.now() - tStart})`);
         // return ret;
+        return true;
     }
 
     /**
@@ -368,6 +376,17 @@ export default class ChainHelper {
      */
     public async transfer(account: IIdentity, target: string, quantity: string, memo: string = '', cbError: (err: any) => any) {
         const transOptions = {authorization: [`${account.name}@${account.authority}`]};
+        await this.call(
+            'eosio.token',
+            'transfer',
+            {
+                from: account.name,
+                to: target,
+                quantity,
+                memo,
+            },
+        );
+
         const trx = await this._eos.transfer(account.name, target, quantity, memo, transOptions).catch(
             (cbError) || log.error,
         );
