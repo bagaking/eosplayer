@@ -10,6 +10,7 @@ import {Ecc, Eos} from '../types/libs';
 
 import {ISignPlugin} from '../plugins';
 import {IAccountInfo, IAuthorization, IEosClient, IEosTransactionData, IIdentity} from '../types/eos';
+import {CQueue} from '../utils/cQueue';
 
 const DEFAULT_FETCH_TIMEOUT = 60000;
 
@@ -19,6 +20,8 @@ const log = createLogger('chain');
  * @author kinghand@foxmail.com
  */
 export default class ChainHelper {
+
+    public storyBoard: CQueue<any> = new CQueue(1000, true);
 
     constructor(public readonly _eos: IEosClient) {
     }
@@ -418,6 +421,7 @@ export default class ChainHelper {
             }],
         };
         log.info('CALL', 'code', code, 'func', func, 'jsonData', jsonData, 'authorization', jsonData);
+        this.storyBoard.push(data);
         // log.info(JSON.stringify(data, null, 2))
         return await this._eos.transaction(data);
     }
