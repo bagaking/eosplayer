@@ -8,6 +8,7 @@ import {createLogger} from '../utils/log';
 
 import {Ecc, Eos} from '../types/libs';
 
+import {throws} from 'assert';
 import {ISignPlugin} from '../plugins';
 import {IAccountInfo, IAuthorization, IEosClient, IEosTransactionData, IIdentity} from '../types/eos';
 import {CQueue} from '../utils/cQueue';
@@ -15,15 +16,20 @@ import {CQueue} from '../utils/cQueue';
 const DEFAULT_FETCH_TIMEOUT = 60000;
 
 const log = createLogger('chain');
+
+const storyBoard: CQueue<any> = new CQueue(1000, true);
+
 /**
  * chain helper, supported chain operations
  * @author kinghand@foxmail.com
  */
 export default class ChainHelper {
 
-    public storyBoard: CQueue<any> = new CQueue(1000, true);
-
     constructor(public readonly _eos: IEosClient) {
+    }
+
+    public get storyBoard() {
+        return storyBoard;
     }
 
     /**
@@ -371,25 +377,43 @@ export default class ChainHelper {
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
      * @param {string} memo - memo
+     * @param {string} tokenAccount - name of token account - default is 'eosio.token'
      * @param {Function} cbError - memo
      * @return {Promise<Object>} transactionData
      */
-    public async transfer(account: IIdentity, target: string, quantity: string, memo: string = '', cbError: (err: any) => any) {
-        const transOptions = {authorization: [`${account.name}@${account.authority}`]};
-        await this.call(
-            'eosio.token',
-            'transfer',
-            {
-                from: account.name,
-                to: target,
-                quantity,
-                memo,
-            },
-        );
+    public async transfer(
+        account: IIdentity,
+        target: string,
+        quantity: string,
+        memo: string = '',
+        cbError: (err: any) => any,
+        tokenAccount?: string) {
 
-        const trx = await this._eos.transfer(account.name, target, quantity, memo, transOptions).catch(
-            (cbError) || log.error,
-        );
+        const data = {
+            from: account.name,
+            to: target,
+            quantity,
+            memo,
+        };
+        const auth: IAuthorization = {
+            actor: account.name,
+            permission: account.authority,
+        };
+        let trx;
+        try {
+            trx = await this.call(
+                tokenAccount || 'eosio.token',
+                'transfer',
+                data,
+                auth).catch((cbError) || log.error);
+        } catch (e) {
+            cbError(e);
+        }
+
+        // const transOptions = {authorization: [`${account.name}@${account.authority}`]};
+        // const trx = await this._eos.transfer(account.name, target, quantity, memo, transOptions).catch(
+        //     (cbError) || log.error,
+        // );
         if (trx) {
             log.info(`Transfer dealed, txID: ${trx.transaction_id}`);
         }
@@ -439,10 +463,20 @@ export default class ChainHelper {
                 authorization,
             }],
         };
-        log.info('CALL', 'code', code, 'func', func, 'jsonData', jsonData, 'authorization', jsonData);
-        this.storyBoard.push(data);
+
         // log.info(JSON.stringify(data, null, 2))
-        return await this._eos.transaction(data);
+        const trx = await this._eos.transaction(data).catch((e) => {
+            throw e;
+        });
+        this.storyBoard.push(data);
+
+        log.info('CALL',
+            'code', code,
+            'func', func,
+            'jsonData', jsonData,
+            'authorization', authorization,
+            'history', this.storyBoard.toArray());
+        return trx;
     }
 
     /**

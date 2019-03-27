@@ -21,7 +21,7 @@ export class TimeoutError extends Error {
 }
 
 export async function timeoutPromise<T>(ms: number, promiseLike: Promise<T>, onCancel?: (...args: any[]) => any[]) {
-    let timeOut: NodeJS.Timeout;
+    let timeOut: any;
     const tPromise = new Promise((resolve, reject) => {
         timeOut = setTimeout(() => {
             if (onCancel) {

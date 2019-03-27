@@ -24,17 +24,27 @@ export default class KhHelper {
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
      * @param {string} func - function name
+     * @param {string} tokenAccount - name of token account
      * @param {Array} args - arguments of the transcal
      * @param {Function} cbError - memo
      * @return {Promise<*>} transactionData
      */
-    public async transcal(account: IIdentity, target: string, quantity: string, func: string, args: any[], cbError: (err: any) => any): Promise<any> {
+    public async transcal(
+        account: IIdentity,
+        target: string,
+        quantity: string,
+        func: string,
+        args: any[],
+        cbError: (err: any) => any,
+        tokenAccount?: string,
+    ): Promise<any> {
         return await this._chain.transfer(
             account,
             target,
             quantity,
             `@[${func}:${args.join(',')}]`,
-            cbError);
+            cbError,
+            tokenAccount);
     }
 
     /**

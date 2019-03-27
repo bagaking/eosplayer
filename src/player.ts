@@ -91,15 +91,17 @@ export class Player extends EosProvider {
      * @param {string} target - eos account, can be user or contract
      * @param {string} quantity - eos asset format, e.p. "1.0000 EOS"
      * @param {string} memo - memo
+     * @param {string} tokenAccount - name of token account contract, default is 'eosio.token'
      * @return {Promise<Object>} transactionData
      */
-    public async transfer(target: string, quantity: string, memo: string = '') {
+    public async transfer(target: string, quantity: string, memo: string = '', tokenAccount?: string) {
         return await this.chain.transfer(
             await this.getIdentity(),
             target,
             quantity,
             memo,
-            (err: Error) => this.events.emitEvent(EVENT_NAMES.ERR_TRANSCAL_FAILED, err),
+            (err: Error) => this.events.emitEvent(EVENT_NAMES.ERR_TRANSFER_FAILED, err),
+            tokenAccount,
         );
     }
 
