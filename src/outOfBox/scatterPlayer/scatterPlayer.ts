@@ -244,6 +244,9 @@ export class ScatterPlayer extends Player {
         let pubKeys: Array<{ key: string }> = keys || [];
         for (let i = 0; signPlugins && i < signPlugins.length; i++) {
             const signPlugin: ISignPlugin = signPlugins[i];
+            if(!signPlugin) {
+                throw new Error(`Sign Plugin Error : cannot parse the ${i}'th plugin`);
+            }
             const converted: string[] = await Promise.all(accounts
                 .map(acc => `${acc.permission.actor}@${acc.permission.permission}`)
                 .map(accStr => signPlugin.signKeyProvider[accStr])

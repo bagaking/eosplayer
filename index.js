@@ -72,4 +72,4 @@ window.kh.eos = {
   }
 }
 
-console.log('eosplayer >>> plugins loaded.')
+console.log('eosplayer >>> plugins loaded.', window.kh.eos.Plugins)
