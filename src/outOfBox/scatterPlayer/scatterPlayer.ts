@@ -11,8 +11,16 @@ import {IEosClient, IIdentity} from '../../types/eos';
 import {IScatter} from '../../types/scatter';
 import {createLogger} from '../../utils/log';
 
-const log = createLogger('scatterPlayer');
 
+import ScatterJS from 'scatterjs-core';
+import ScatterEOS from 'scatterjs-plugin-eosjs';
+import { promisify } from 'util';
+import { promises } from 'fs';
+
+// Don't forget to tell ScatterJS which plugins you are using.
+ScatterJS.plugins( new ScatterEOS() );
+
+const log = createLogger('scatterPlayer');
 /**
  * Event names supported in scatter player
  * @type {{ERR_GET_SCATTER_FAILED: string, ERR_GET_IDENTITY_FAILED: string}}
@@ -83,7 +91,6 @@ export class ScatterPlayer extends Player {
         }
         return conf;
     }
-
     /**
      * try get scatter
      * @see https://get-scatter.com/docs/examples-interaction-flow
@@ -107,6 +114,7 @@ export class ScatterPlayer extends Player {
     public async getScatterAsync(maxTry = 100): Promise<IScatter> {
         while (!(window as any).scatter && maxTry--) {
             log.verbose('get scatter failed, retry :', maxTry);
+            (window as any).scatter =await this.getPCScatter()
             await forMs(100);
         }
         if (!(window as any).scatter) {
@@ -114,7 +122,17 @@ export class ScatterPlayer extends Player {
             this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err);
         }
         return (window as any).scatter;
+        
     }
+    public async getPCScatter(): Promise<IScatter>{
+        return new Promise(resolve=>{
+            ScatterJS.scatter.connect('CryptoThrone').then(connected => {
+                if(!connected) return false;
+                resolve(ScatterJS.scatter);
+            })
+        })
+    }
+
 
     /**
      * login - require account identity from scatter
