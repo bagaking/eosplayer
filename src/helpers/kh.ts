@@ -1,7 +1,7 @@
 'use strict';
 
 import Asset from '../model/asset';
-import TranscalPayload from '../model/transcalPayload';
+import {TranscalPayload} from '../model/transcalPayload';
 import {IIdentity} from '../types/eos';
 import ChainHelper from './chain';
 import ResHelper from './khRes';

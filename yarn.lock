@@ -556,6 +556,11 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@khgame/one-line-call@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/@khgame/one-line-call/download/@khgame/one-line-call-0.1.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40khgame%2Fone-line-call%2Fdownload%2F%40khgame%2Fone-line-call-0.1.1.tgz#0f349c47988ab7013a48cdecfd7510d11fb7b687"
+  integrity sha1-DzScR5iKtwE6SM3s/XUQ0R+3toc=
+
 "@types/body-parser@*":
   version "1.17.0"
   resolved "http://registry.npm.taobao.org/@types/body-parser/download/@types/body-parser-1.17.0.tgz#9f5c9d9bd04bb54be32d5eb9fc0d8c974e6cf58c"
