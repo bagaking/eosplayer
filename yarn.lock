@@ -2758,9 +2758,10 @@ hpack.js@^2.1.6:
     readable-stream "^2.0.1"
     wbuf "^1.1.0"
 
-hserve@^0.0.1-beta.14:
-  version "0.0.1-beta.14"
-  resolved "http://registry.npm.taobao.org/hserve/download/hserve-0.0.1-beta.14.tgz#eea4eee52a679cd2c3244348f5ac6287a0b6136c"
+hserve@^0.0.1-beta.18:
+  version "0.0.1-beta.18"
+  resolved "https://registry.npm.taobao.org/hserve/download/hserve-0.0.1-beta.18.tgz#45ec78e8848c2693ba4e45c701a49e88259bf094"
+  integrity sha1-Rex46ISMJpO6TkXHAaSeiCWb8JQ=
   dependencies:
     "@types/cors" "^2.8.4"
     "@types/es6-shim" "^0.31.37"
