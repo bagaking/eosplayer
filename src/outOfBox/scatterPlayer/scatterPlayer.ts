@@ -11,11 +11,10 @@ import {IEosClient, IIdentity} from '../../types/eos';
 import {IScatter} from '../../types/scatter';
 import {createLogger} from '../../utils/log';
 
-
+import { promises } from 'fs';
 import ScatterJS from 'scatterjs-core';
 import ScatterEOS from 'scatterjs-plugin-eosjs';
 import { promisify } from 'util';
-import { promises } from 'fs';
 
 // Don't forget to tell ScatterJS which plugins you are using.
 ScatterJS.plugins( new ScatterEOS() );
@@ -114,7 +113,7 @@ export class ScatterPlayer extends Player {
     public async getScatterAsync(maxTry = 100): Promise<IScatter> {
         while (!(window as any).scatter && maxTry--) {
             log.verbose('get scatter failed, retry :', maxTry);
-            (window as any).scatter =await this.getPCScatter()
+            (window as any).scatter = await this.getPCScatter();
             await forMs(100);
         }
         if (!(window as any).scatter) {
@@ -122,17 +121,16 @@ export class ScatterPlayer extends Player {
             this.events.emitEvent(EVENT_NAMES.ERR_GET_SCATTER_FAILED, err);
         }
         return (window as any).scatter;
-        
-    }
-    public async getPCScatter(): Promise<IScatter>{
-        return new Promise(resolve=>{
-            ScatterJS.scatter.connect('CryptoThrone').then(connected => {
-                if(!connected) return false;
-                resolve(ScatterJS.scatter);
-            })
-        })
-    }
 
+    }
+    public async getPCScatter(): Promise<IScatter> {
+        return new Promise(resolve => {
+            ScatterJS.scatter.connect('CryptoThrone').then(connected => {
+                if (!connected) return false;
+                resolve(ScatterJS.scatter);
+            });
+        });
+    }
 
     /**
      * login - require account identity from scatter
