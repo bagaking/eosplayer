@@ -24,6 +24,26 @@ export interface IEosNodeConfigTable {
 }
 
 export const eosNodeConfigs: IEosNodeConfigTable = {
+    eosflare: {
+        blockchain: 'eos',
+        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+        httpEndpoint: 'https://node.eosflare.io',
+    },
+    greymass: {
+        blockchain: 'eos',
+        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+        httpEndpoint: 'https://eos.greymass.com',
+    },
+    eosio: {
+        blockchain: 'eos',
+        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+        httpEndpoint: 'https://mainnet.eosio.sg',
+    },
+    eosdac: {
+        blockchain: 'eos',
+        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+        httpEndpoint: 'https://eu.eosdac.io',
+    },
     scatter: {
         blockchain: 'eos',
         chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
@@ -58,11 +78,6 @@ export const eosNodeConfigs: IEosNodeConfigTable = {
         blockchain: 'eos',
         chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
         httpEndpoint: 'https://eospublic.chainrift.com',
-    },
-    eosio: {
-        blockchain: 'eos',
-        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
-        httpEndpoint: 'https://api.eosio.cr',
     },
     cryptolions: {
         blockchain: 'eos',
@@ -129,11 +144,6 @@ export const eosNodeConfigs: IEosNodeConfigTable = {
         chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
         httpEndpoint: 'https://api.eoscleaner.com',
     },
-    eosdac: {
-        blockchain: 'eos',
-        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
-        httpEndpoint: 'https://eu.eosdac.io',
-    },
     eosdublin: {
         blockchain: 'eos',
         chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
@@ -148,11 +158,6 @@ export const eosNodeConfigs: IEosNodeConfigTable = {
         blockchain: 'eos',
         chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
         httpEndpoint: 'https://api.eosfengwo.com',
-    },
-    eosflare: {
-        blockchain: 'eos',
-        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
-        httpEndpoint: 'https://node.eosflare.io',
     },
     genesis_mining: {
         blockchain: 'eos',
@@ -283,11 +288,6 @@ export const eosNodeConfigs: IEosNodeConfigTable = {
         blockchain: 'eos',
         chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
         httpEndpoint: 'https://api.eosgeneva.io',
-    },
-    greymass: {
-        blockchain: 'eos',
-        chainId: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
-        httpEndpoint: 'https://eos.greymass.com',
     },
     zbeos: {
         blockchain: 'eos',
