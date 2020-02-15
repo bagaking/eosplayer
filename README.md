@@ -18,24 +18,24 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 
 1. clone the repo  
 2. cd into the folder  
-3. install hserve : `npm i -g hserve`
-4. serve the play folder : `hserve play`
-5. open the test site in your chrome : `http://localhost:3000` by default 
-6. test it in your chrome console
+3. install http-server : `npm i http-server -g`
+4. serve the play folder : `http-server ./play`
+5. open the test site in your chrome : `http://localhost:8080` by default 
+6. try it in your chrome console
 
 or using the online play ground:
-[https://play.eosplayer.pro](https://play.eosplayer.pro)
+[http://eosplayer.kihand.com/](http://eosplayer.kihand.com/)
 
-- [transfer tool](https://play.eosplayer.pro/#/1)
-- [sign tool](https://play.eosplayer.pro/#/2)
-- [docs](https://play.eosplayer.pro/#/3)
+- [transfer tool](https://eosplayer-doc.kihand.com/#/1)
+- [sign tool](https://eosplayer-doc.kihand.com/#/2)
+- [docs](https://eosplayer-doc.kihand.com/#/3)
 
 ## api documents : 
 
 Doc site:
-[doc.eosplayer.pro](https://doc.eosplayer.pro)   
+[eosplayer-doc.kihand.pro](https://eosplayer-doc.kihand.com)   
 or
-[Docs in playground](https://play.eosplayer.pro/#/3)
+[playground](https://eosplayer.kihand.com/#/3)
 
 ---
 
@@ -358,5 +358,5 @@ in this version, scatter are split from the Player.
 
 ## Contact
 
-email : [kinghand@tonarts.org](kinghand@tonarts.org)  
+email : [kinghand@foxmail.com](kinghand@foxmail.com)  
 issue : [https://github.com/bagaking/eosplayer/issues](https://github.com/bagaking/eosplayer/issues)
