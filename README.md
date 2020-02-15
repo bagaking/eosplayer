@@ -26,16 +26,16 @@ LICENSE : [Apache 2.0](https://github.com/bagaking/eosplayer/blob/master/LICENSE
 or using the online play ground:
 [http://eosplayer.kihand.com/](http://eosplayer.kihand.com/)
 
-- [transfer tool](https://eosplayer-doc.kihand.com/#/1)
-- [sign tool](https://eosplayer-doc.kihand.com/#/2)
-- [docs](https://eosplayer-doc.kihand.com/#/3)
+- [transfer tool](http://eosplayer-doc.kihand.com/#/1)
+- [sign tool](http://eosplayer-doc.kihand.com/#/2)
+- [docs](http://eosplayer-doc.kihand.com/#/3)
 
 ## api documents : 
 
 Doc site:
-[eosplayer-doc.kihand.pro](https://eosplayer-doc.kihand.com)   
+[eosplayer-doc.kihand.pro](http://eosplayer-doc.kihand.com)   
 or
-[playground](https://eosplayer.kihand.com/#/3)
+[playground](http://eosplayer.kihand.com/#/3)
 
 ---
 
