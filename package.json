@@ -37,7 +37,7 @@
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.2.0",
     "@khgame/one-line-call": "^0.1.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bignumber.js": "^8.0.1",
     "debug": "^4.1.0",
     "eosjs": "^16.0.9",
